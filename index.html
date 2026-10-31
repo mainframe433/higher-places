@@ -1,0 +1,1501 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b100d">
+<title>Higher Places Night Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Yellowtail&display=swap">
+<style>
+/* Layout: one phone-width column, dark lounge palette, gold hairlines; bottom tab bar */
+:root{
+  --bg:#0b100d; --bg2:#101812; --panel:#121a15; --gold:#3fe08a; --gold-hi:#3fe08a; --haze:#c46cf5; --sun:#f6a821;
+  --cream:#eef5f0; --muted:#93a39a; --dim:#6e7d75; --line:rgba(63,224,138,.4); --line-soft:rgba(255,255,255,.08);
+  --serif:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --sans:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:#050806;color:var(--cream);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:1px solid var(--gold-hi);outline-offset:2px}
+svg{display:block}
+.app{position:relative;max-width:430px;min-height:100%;margin:0 auto;background:var(--bg);overflow:hidden;box-shadow:0 0 80px rgba(0,0,0,.8)}
+.screen{display:none;min-height:100vh;padding-bottom:96px;position:relative}
+.screen.on{display:block;animation:fadein .35s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* shared type */
+.spaced{font-family:var(--serif);text-transform:uppercase;letter-spacing:.32em;font-weight:500;color:var(--cream)}
+.label{font-family:var(--sans);text-transform:uppercase;letter-spacing:.16em;font-size:8.5px;font-weight:500}
+.btn{display:inline-flex;align-items:center;gap:9px;height:27px;padding:0 16px;border:1px solid var(--gold);border-radius:999px;color:var(--cream);font-family:var(--sans);font-size:8.6px;letter-spacing:.17em;text-transform:uppercase;font-weight:500;background:rgba(255,255,255,.35);transition:background .2s,box-shadow .2s}
+.btn:hover{background:rgba(31,178,107,.12);box-shadow:0 0 14px rgba(31,178,107,.25)}
+.btn svg{flex:none}
+.btn.solid{background:var(--gold);color:#ffffff;font-weight:600}
+.btn.solid:hover{background:var(--gold-hi)}
+.stars{display:flex;gap:2.5px;color:var(--gold)}
+
+/* HOME ---------------------------------------------------- */
+.hero{position:relative;height:288px}
+.hero-bg{position:absolute;top:0;right:0;width:170px;height:288px;background:url(assets/hero.jpg) right top/cover;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 34%),linear-gradient(0deg,transparent 0,#000 18%);mask-image:linear-gradient(90deg,transparent 0,#000 34%);}
+.hero::before{content:"";position:absolute;inset:0;background:
+  radial-gradient(120px 90px at 300px 210px,rgba(255,170,80,.10),transparent 70%),
+  radial-gradient(160px 220px at -20px 60px,rgba(70,90,40,.18),transparent 70%),
+  linear-gradient(180deg,#0b100d,#0b100d 70%)}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:40px;background:linear-gradient(transparent,var(--bg))}
+.smoke{position:absolute;inset:0;pointer-events:none;opacity:.4;mix-blend-mode:screen}
+.hero-in{position:relative;z-index:2;padding:34px 0 0 22px}
+.logo{width:116px;display:flex;flex-direction:column;align-items:center}
+.logo-leaf{display:flex;align-items:center;gap:6px;color:var(--gold)}
+.logo-leaf i{display:block;width:9px;height:1px;background:var(--gold);opacity:.8;margin-top:6px}
+.logo h1{margin:2px 0 0;font-family:var(--serif);font-weight:500;font-size:30.5px;line-height:.82;letter-spacing:.005em;text-align:center;color:#2fc979;
+  background:linear-gradient(180deg,#34d488,#3fe08a);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.logo .soc{margin-top:8px;display:flex;align-items:center;gap:5px;font-family:var(--sans);font-size:6px;letter-spacing:.34em;color:#4f8f74}
+.logo .soc i{display:block;width:7px;height:1px;background:#4f8f74}
+.top-actions{position:absolute;z-index:3;top:54px;right:16px;display:flex;align-items:center;gap:20px}
+.avatar{width:36px;height:36px;border-radius:50%;border:1.3px solid var(--gold);overflow:hidden;background:rgba(63,224,138,.12);box-shadow:0 0 12px rgba(31,178,107,.25)}
+.burger{width:19px;display:grid;gap:4.5px}.burger i{height:1.5px;background:var(--cream);border-radius:2px}
+.find{margin-top:32px;font-size:11.4px;letter-spacing:.335em}
+.tag{margin:9px 0 0;font-family:var(--serif);font-style:italic;font-size:13.6px;line-height:14.6px;color:#b7c4bc}
+.hero .btn{margin-top:15px;padding:0 17px 0 18px;height:27px;gap:13px}
+
+.feature{position:relative;margin:2px 17px 0;height:184px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#1d3b31;box-shadow:0 8px 30px rgba(0,0,0,.6)}
+.feature .ph{position:absolute;top:0;right:0;bottom:0;left:120px;background:right top/cover no-repeat;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 30%);mask-image:linear-gradient(90deg,transparent 0,#000 30%)}
+.feature::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(255,255,255,.75)),linear-gradient(90deg,rgba(255,255,255,.65),transparent 55%);pointer-events:none}
+.feature .in{position:relative;z-index:2;padding:12px 0 0 11px}
+.badge{display:inline-flex;align-items:center;gap:8px;height:21px;padding:0 10px 0 9px;border:1px solid var(--gold);border-radius:999px;background:rgba(255,255,255,.7);font-size:7.6px;letter-spacing:.11em;color:var(--cream);text-transform:uppercase}
+.feature h2{margin:13px 0 0 0;padding-left:1px;font-family:var(--serif);font-weight:400;font-size:29.5px;line-height:24.5px;color:var(--cream)}
+.loc{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--cream)}
+.feature .loc{margin-top:8px;padding-left:2px}
+.feature p{margin:10px 0 0;font-size:9.4px;line-height:12px;color:#b7c4bc;max-width:150px;padding-left:1px}
+.feature .rate{margin-top:10px;display:flex;align-items:center;gap:9px;font-size:9.5px;color:var(--cream);padding-left:1px}
+.feature .rate span:not(.stars){color:var(--muted)}
+.feature .btn{position:absolute;z-index:3;right:9px;bottom:10px;height:25px;padding:0 11px 0 12px;gap:8px;font-size:8.2px;letter-spacing:.12em}
+
+.sec-head{display:flex;align-items:center;gap:12px;padding:0 15px 0 18px;margin-top:29px}
+.sec-head h3{margin:0;font-size:12.6px;letter-spacing:.34em;font-weight:500;white-space:nowrap}
+.sec-head .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+.sec-head .see{display:flex;align-items:center;gap:5px;font-size:8px;letter-spacing:.12em;color:var(--cream);white-space:nowrap}
+.rotation{display:flex;gap:9px;overflow-x:auto;padding:9px 16px 4px 15px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.rotation::-webkit-scrollbar{display:none}
+.rcard{position:relative;flex:none;width:114px;height:113px;border-radius:10px;border:1px solid rgba(31,178,107,.5);overflow:hidden;scroll-snap-align:start;text-align:left;background:#ffffff}
+.rcard img{position:absolute;inset:0;width:100%;height:82%;object-fit:cover}
+.rcard::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(255,255,255,.92) 74%)}
+.rcard .lb{position:absolute;top:4px;right:4px;z-index:2;width:21px;height:21px;border-radius:50%;background:rgba(255,255,255,.88);border:1px solid var(--gold);display:grid;place-items:center;color:var(--gold)}
+.rcard .meta{position:absolute;z-index:2;left:7px;right:6px;bottom:7px}
+.rcard b{display:block;font-family:var(--serif);font-weight:600;font-size:12.4px;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rcard .row{margin-top:4px;display:flex;justify-content:space-between;align-items:center;font-size:6.6px;color:#b7c4bc}
+.rcard .row span{display:flex;align-items:center;gap:3px}
+.rcard .row em{font-style:normal;display:flex;align-items:center;gap:3px;font-size:7px;color:var(--cream)}
+
+.smokemap{position:relative;margin-top:14px;height:120px;border-top:1px solid rgba(31,178,107,.08)}
+.smokemap .mapimg{position:absolute;right:4px;top:-8px;width:214px;height:132px;background:transparent;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 52%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 52%,transparent 100%);cursor:pointer}
+.smokemap .txt{position:relative;z-index:2;padding:22px 0 0 18px}
+.smokemap h3{margin:0;font-size:12.5px;letter-spacing:.34em;font-weight:500}
+.smokemap p{margin:5px 0 0;font-size:9.6px;color:#b7c4bc}
+.smokemap .btn{margin-top:15px;height:27px;padding:0 15px 0 14px;gap:9px;font-size:8.4px}
+.pin{position:absolute;transform:translate(-50%,-100%);color:var(--gold);filter:drop-shadow(0 0 5px rgba(31,178,107,.55));transition:transform .2s}
+.pin:hover{transform:translate(-50%,-100%) scale(1.12)}
+.pin.sel{color:#c46cf5;filter:drop-shadow(0 0 9px rgba(196,108,245,.9))}
+
+/* NAV ------------------------------------------------------ */
+.nav{position:fixed;z-index:40;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,430px);padding:0 max(7px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(7px,env(safe-area-inset-left,0px));pointer-events:none}
+.nav-in{pointer-events:auto;display:grid;grid-template-columns:repeat(4,1fr);height:77px;border:1px solid rgba(31,178,107,.28);border-bottom:0;border-radius:18px 18px 0 0;background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(255,255,255,.99));backdrop-filter:blur(8px)}
+.tab{position:relative;display:flex;flex-direction:column;align-items:center;padding-top:9px;gap:4px;color:#7e8f86;font-size:10px}
+.tab svg{height:22px}
+.tab.on{color:var(--gold-hi)}
+.tab.on::after{content:"";position:absolute;top:50px;width:40px;height:2px;border-radius:2px;background:var(--gold-hi);box-shadow:0 0 10px 1px rgba(31,178,107,.7)}
+
+/* GENERIC SCREEN CHROME ----------------------------------- */
+.bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;padding:calc(14px + env(safe-area-inset-top,0px)) 16px 12px;background:linear-gradient(180deg,var(--bg) 70%,rgba(255,255,255,0))}
+.bar h2{margin:0;font-size:13px;letter-spacing:.34em;font-weight:500;flex:1}
+.iconbtn{width:34px;height:34px;border-radius:50%;border:1px solid var(--line-soft);display:grid;place-items:center;color:var(--cream);background:rgba(255,255,255,.6)}
+.sub{padding:0 18px;color:var(--muted);font-size:11px;margin:-4px 0 12px}
+
+/* map screen */
+.mapscreen.on{display:block;height:100vh;height:100dvh;padding:0;overflow:hidden}
+#bigmap{position:absolute;inset:0;touch-action:none;cursor:grab}
+#bigmap:active{cursor:grabbing}
+.maptop{position:absolute;z-index:6;top:0;left:0;right:0;padding-bottom:22px;background:linear-gradient(180deg,rgba(255,255,255,.97) 60%,rgba(255,255,255,0));pointer-events:none}
+.maptop>*{pointer-events:auto}
+.maptop .bar{position:relative;background:none;padding-bottom:10px}
+.mapsub{font-size:10.5px;color:var(--muted);margin-top:5px;letter-spacing:.04em}
+.radius{display:flex;gap:7px;padding:0 16px;flex-wrap:wrap}
+.radius .chip{height:27px}
+.locrow{display:flex;align-items:center;gap:10px;padding:10px 16px 0;flex-wrap:wrap}
+.locrow .btn{height:27px;font-size:8.2px}
+.mapnote{font-size:10.5px;color:var(--muted)}
+.mapctl{position:absolute;z-index:6;right:14px;top:46%;display:grid;gap:8px}
+.mapctl .iconbtn{font-size:17px;background:rgba(255,255,255,.9);border-color:var(--line)}
+.drawer{position:absolute;z-index:7;left:10px;right:10px;bottom:calc(86px + env(safe-area-inset-bottom,0px));border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.97);box-shadow:0 -8px 30px rgba(0,0,0,.55);overflow:hidden}
+.handle{width:100%;display:flex;justify-content:space-between;align-items:center;padding:13px 16px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--cream)}
+.handle svg{transition:transform .3s;color:var(--gold)}
+.drawer.open .handle svg{transform:rotate(180deg)}
+.dlist{max-height:0;overflow:auto;transition:max-height .35s ease;display:grid;gap:10px;padding:0 10px}
+.drawer.open .dlist{max-height:46vh;padding:0 10px 10px}
+.lmap{position:relative;overflow:hidden;background:#e7efe2}
+.lmap canvas{position:absolute;inset:0;display:block}
+.lm-layer{position:absolute;inset:0;pointer-events:none}
+.lm-layer .pin{pointer-events:auto}
+.pin{position:absolute;transform:translate(-50%,-100%);color:var(--gold);filter:drop-shadow(0 0 5px rgba(31,178,107,.55));transition:transform .2s,opacity .3s}
+.pin:hover{transform:translate(-50%,-100%) scale(1.12)}
+.pin.sel{color:#c46cf5;filter:drop-shadow(0 0 9px rgba(196,108,245,.9))}
+.pin.out{opacity:.22;filter:none}
+.me{position:absolute;width:0;height:0;z-index:2}
+.me i{position:absolute;left:-14px;top:-14px;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--gold-hi);animation:pulse 2.4s ease-out infinite}
+.me b{position:absolute;left:-13px;top:-13px;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--gold-hi);overflow:hidden;background:rgba(63,224,138,.12);box-shadow:0 0 0 2px rgba(255,255,255,.85),0 0 14px 2px rgba(31,178,107,.7)}
+.me.sm i{left:-10px;top:-10px;width:20px;height:20px}.me.sm b{left:-9px;top:-9px;width:18px;height:18px}
+@keyframes pulse{from{transform:scale(.8);opacity:.9}to{transform:scale(2.6);opacity:0}}
+.sheet{position:fixed;z-index:45;left:50%;bottom:0;width:min(100%,430px);transform:translate(-50%,110%);transition:transform .35s cubic-bezier(.2,.8,.2,1);padding:0 10px calc(86px + env(safe-area-inset-bottom,0px))}
+.sheet.on{transform:translate(-50%,0)}
+.sheet{pointer-events:none}.sheet-in{pointer-events:auto;position:relative}
+.sheet-in{display:flex;gap:12px;padding:12px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.97);box-shadow:0 -10px 40px rgba(0,0,0,.6)}
+.sheet img{width:96px;height:86px;border-radius:10px;object-fit:cover;flex:none}
+.sheet .info{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.sheet b{font-family:var(--serif);font-size:19px;font-weight:600;line-height:1}
+.sheet .btn{align-self:flex-start;margin-top:auto;height:25px;font-size:8px}
+.x{position:absolute;top:8px;right:18px;color:var(--muted);font-size:18px;line-height:1}
+
+/* spot detail */
+.dhero{position:relative;height:330px;overflow:hidden}
+.dhero img{width:100%;height:100%;object-fit:cover}
+.dhero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.35),transparent 30%,transparent 50%,var(--bg))}
+.dhero .iconbtn{position:absolute;z-index:2;top:calc(14px + env(safe-area-inset-top,0px));left:14px}
+.dhero .save-top{left:auto;right:14px}
+.dbody{position:relative;padding:0 20px;margin-top:-70px;z-index:2}
+.dbody h2{margin:10px 0 8px;font-family:var(--serif);font-weight:400;font-size:38px;line-height:.95}
+.dbody .rate{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px}
+.dbody .rate span:not(.stars){color:var(--muted)}
+.dbody .desc{font-size:13.5px;line-height:1.55;color:#b7c4bc;margin:16px 0 0;max-width:62ch}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.chip{height:26px;padding:0 12px;border-radius:999px;border:1px solid var(--line-soft);font-size:10.5px;letter-spacing:.06em;color:#b7c4bc;display:inline-flex;align-items:center}
+.chip.on{border-color:var(--gold);color:#ffffff;background:var(--gold)}
+.dbody .actions{display:flex;gap:10px;margin-top:20px}
+.dbody .actions .btn{height:38px;padding:0 20px;font-size:9.5px}
+.h4{margin:30px 0 12px;font-size:11.5px;letter-spacing:.32em}
+.review{padding:14px 0;border-top:1px solid rgba(31,178,107,.14);display:grid;grid-template-columns:34px 1fr;gap:12px}
+.review .who{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:600}
+.review p{margin:5px 0 0;font-size:12.5px;line-height:1.5;color:#b7c4bc}
+.review small{color:var(--dim);font-size:10.5px;font-weight:400}
+.ini{width:34px;height:34px;border-radius:50%;border:1px solid var(--gold);display:grid;place-items:center;font-family:var(--serif);font-weight:600;font-size:14px;color:var(--gold-hi);background:rgba(63,224,138,.12)}
+.legal{margin:24px 0 10px;padding:12px 14px;border:1px dashed rgba(31,178,107,.3);border-radius:10px;font-size:11px;color:var(--muted);line-height:1.5}
+
+/* lists */
+.list{display:grid;gap:12px;padding:0 16px}
+.lcard{display:grid;grid-template-columns:104px 1fr;gap:12px;align-items:center;padding:8px;border:1px solid var(--line-soft);border-radius:14px;background:var(--panel);text-align:left;width:100%}
+.lcard img{width:104px;height:80px;border-radius:9px;object-fit:cover}
+.lcard b{font-family:var(--serif);font-weight:600;font-size:18px;display:block;line-height:1.05}
+.lcard .loc{font-size:10.5px;color:#b7c4bc;margin-top:5px}
+.lcard .r{display:flex;align-items:center;gap:5px;margin-top:6px;font-size:10.5px;color:var(--cream)}
+.empty{margin:30px 16px;padding:34px 22px;text-align:center;border:1px dashed var(--line-soft);border-radius:16px;color:var(--muted);font-size:12.5px;line-height:1.6}
+.empty .leafbig{color:var(--gold);display:grid;place-items:center;margin-bottom:12px}
+
+/* form */
+.form{display:grid;gap:16px;padding:0 18px}
+.field label{display:block;margin-bottom:7px;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.field input,.field textarea,.field select{width:100%;padding:11px 13px;border-radius:10px;border:1px solid var(--line-soft);background:#ffffff;color:var(--cream);font:13px var(--sans)}
+.field textarea{min-height:80px;resize:vertical}
+.field .hint{font-size:10.5px;color:var(--dim);margin-top:6px}
+.pick{position:relative;height:250px;border:1px solid var(--line-soft);border-radius:12px;overflow:hidden;cursor:crosshair;touch-action:none}
+.photo{display:grid;place-items:center;height:130px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:11.5px;cursor:pointer;overflow:hidden;position:relative;background:#1d3b31}
+.photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.field label.photo{display:grid;margin:0;font-size:11.5px;letter-spacing:.04em;text-transform:none;color:var(--muted)}
+.photo input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.err{color:#e5484d;font-size:11.5px;min-height:14px}
+
+/* circle feed */
+.post{margin:0 16px 12px;padding:14px;border:1px solid var(--line-soft);border-radius:14px;background:var(--panel)}
+.post .hd{display:flex;align-items:center;gap:10px}
+.post .hd b{font-size:12.5px}
+.post .hd small{display:block;color:var(--dim);font-size:10.5px;margin-top:2px}
+.post p{font-size:13px;line-height:1.5;color:#b7c4bc;margin:10px 0}
+.post .ref{display:flex;align-items:center;gap:10px;padding:7px;border:1px solid rgba(31,178,107,.18);border-radius:10px;width:100%;text-align:left}
+.post .ref img{width:44px;height:36px;border-radius:7px;object-fit:cover}
+.post .ref b{font-family:var(--serif);font-size:14.5px}
+.post .ft{display:flex;gap:18px;margin-top:10px;font-size:11px;color:var(--muted)}
+.post .ft button{display:flex;align-items:center;gap:6px}
+.post .ft button.on{color:var(--gold-hi)}
+.members{display:flex;gap:14px;overflow-x:auto;padding:4px 16px 16px;scrollbar-width:none}
+.members div{flex:none;display:grid;justify-items:center;gap:6px;font-size:10px;color:#b7c4bc}
+.members .ini{width:50px;height:50px;font-size:19px}
+
+/* menu, toast, gate */
+.scrim{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .3s}
+.scrim.on{opacity:1;pointer-events:auto}
+.menu{position:fixed;z-index:61;top:0;bottom:0;right:max(0px,calc(50% - 215px));width:min(78%,300px);transform:translateX(105%);transition:transform .35s cubic-bezier(.2,.8,.2,1);background:linear-gradient(180deg,#ffffff,#0b100d);border-left:1px solid var(--line-soft);padding:calc(26px + env(safe-area-inset-top,0px)) 22px 22px;display:flex;flex-direction:column;gap:6px}
+.menu.on{transform:none}
+.menu .me{display:flex;align-items:center;gap:12px;padding-bottom:20px;margin-bottom:10px;border-bottom:1px solid var(--line-soft)}
+.menu .me b{font-family:var(--serif);font-size:19px;font-weight:600}
+.menu .me small{display:block;color:var(--muted);font-size:10.5px}
+.menu .item{display:flex;align-items:center;gap:12px;padding:12px 2px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--cream);text-align:left}
+.menu .item svg{color:var(--gold)}
+.menu .foot{margin-top:auto;font-size:10px;color:var(--dim);line-height:1.5}
+.toast{position:fixed;z-index:90;left:50%;bottom:100px;transform:translate(-50%,20px);opacity:0;transition:.3s;padding:10px 16px;border:1px solid var(--gold);border-radius:999px;background:#ffffff;font-size:11.5px;letter-spacing:.06em;pointer-events:none;white-space:nowrap}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.gate{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:radial-gradient(70% 50% at 50% 40%,#101812,#050806 75%);padding:24px;transition:opacity .4s}
+.gate.out{opacity:0;pointer-events:none}
+.gate-in{width:min(100%,340px);text-align:center;display:grid;justify-items:center;gap:14px}
+.gate .logo{width:auto;transform:scale(1.4);margin:14px 0 26px}
+.gate h2{margin:0;font-family:var(--serif);font-weight:400;font-size:28px;line-height:1.1}
+.gate p{margin:0;color:var(--muted);font-size:12.5px;line-height:1.6}
+.gate .row{display:flex;gap:10px;margin-top:8px}
+.gate .btn{height:40px;padding:0 22px;font-size:10px}
+.gate .no{color:#e5484d;font-size:12px;min-height:18px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---- map-first world ---- */
+.world{position:absolute;inset:0;background:#e7efe2}
+.world .maplibregl-canvas{outline:none}
+.maplibregl-map{overflow:hidden;position:relative;-webkit-tap-highlight-color:transparent}
+.maplibregl-canvas-container.maplibregl-interactive{cursor:grab}
+.maplibregl-canvas-container.maplibregl-interactive:active{cursor:grabbing}
+.maplibregl-canvas{left:0;position:absolute;top:0}
+.maplibregl-marker{left:0;position:absolute;top:0;will-change:transform}
+.maplibregl-ctrl-bottom-left,.maplibregl-ctrl-bottom-right,.maplibregl-ctrl-top-left,.maplibregl-ctrl-top-right{display:none}
+.wtop{position:absolute;z-index:6;top:0;left:0;right:0;padding:calc(12px + env(safe-area-inset-top,0px)) 0 30px;background:linear-gradient(180deg,rgba(255,255,255,.94) 40%,rgba(255,255,255,0));pointer-events:none}
+.wtop>*{pointer-events:auto}
+.wbar{display:flex;align-items:center;justify-content:space-between;padding:0 16px 12px 14px}
+.mini-logo{display:flex;align-items:center;gap:6px;color:var(--gold)}
+.mini-logo b{display:block;font-family:var(--serif);font-weight:500;font-size:19px;line-height:.86;background:linear-gradient(180deg,#34d488,#3fe08a);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.mini-logo small{display:block;margin-top:5px;font-size:5.5px;letter-spacing:.34em;color:#4f8f74}
+.acts{display:flex;align-items:center;gap:18px}
+.wtop .radius{padding:0 16px}
+.wtop .mapnote{padding:8px 16px 0;font-size:10px;letter-spacing:.03em;color:#b7c4bc;text-shadow:0 1px 4px #000}
+.mapctl{top:auto;bottom:calc(77px + 250px + env(safe-area-inset-bottom,0px));right:12px}
+.mapctl .iconbtn{font-size:16px;font-family:var(--sans)}
+#tilt{font-size:9.5px;letter-spacing:.08em;font-weight:600;color:var(--gold-hi)}
+.attrib{position:absolute;z-index:6;left:10px;right:70px;bottom:calc(77px + 244px + env(safe-area-inset-bottom,0px));font-size:8px;color:rgba(235,223,198,.55);text-shadow:0 1px 3px #000}
+.attrib a{color:inherit}
+.panel{position:absolute;z-index:8;left:0;right:0;bottom:calc(77px + env(safe-area-inset-bottom,0px));height:calc(100% - 140px - 77px);transform:translateY(calc(100% - 236px));transition:transform .42s cubic-bezier(.2,.8,.2,1);background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(255,255,255,.99));border:1px solid rgba(31,178,107,.34);border-bottom:0;border-radius:22px 22px 0 0;box-shadow:0 -12px 40px rgba(0,0,0,.65);display:flex;flex-direction:column}
+.panel.open{transform:none}
+.grab{flex:none;display:grid;place-items:center;height:22px;width:100%;touch-action:none;cursor:grab}
+.grab span{width:42px;height:4px;border-radius:4px;background:rgba(31,178,107,.55)}
+.pscroll{flex:1;overflow:hidden;padding-bottom:22px;overscroll-behavior:contain}
+.panel.open .pscroll{overflow-y:auto}
+.ptitle{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:0 15px 0 18px;cursor:pointer}
+.ptitle .find{margin:0;font-size:10.5px}
+.ptitle .tag{margin:4px 0 0;font-size:12px;line-height:1.1}
+.ptitle .see{display:flex;align-items:center;gap:5px;font-size:8px;letter-spacing:.12em;color:var(--cream);white-space:nowrap;padding-top:2px}
+.panel .feature{margin-top:18px}
+.panel .sec-head{margin-top:24px}
+.panel .rotation{padding-top:10px}
+.mk{width:30px;height:40px}
+.mk .pin{position:static;transform:none;display:block;transform-origin:50% 100%}
+.mk .pin:hover{transform:scale(1.12)}
+.ring3d{position:relative;width:64px;height:64px}
+.ring3d i{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(31,178,107,.85);animation:ring 2.6s ease-out infinite}
+.ring3d i+i{animation-delay:1.3s}
+.ring3d::after{content:"";position:absolute;inset:24px;border-radius:50%;background:rgba(31,178,107,.45);filter:blur(5px)}
+@keyframes ring{from{transform:scale(.25);opacity:1}to{transform:scale(1.5);opacity:0}}
+.me3d{display:flex;flex-direction:column;align-items:center}
+.me3d b{display:block;width:42px;height:42px;border-radius:50%;border:2px solid var(--gold-hi);overflow:hidden;background:rgba(63,224,138,.12);box-shadow:0 0 0 3px rgba(255,255,255,.85),0 0 18px 4px rgba(31,178,107,.55)}
+.me3d::after{content:"";width:2px;height:18px;background:linear-gradient(var(--gold-hi),rgba(31,178,107,0))}
+.me3d.sm b{width:26px;height:26px}.me3d.sm::after{height:8px}
+/* ---- map-only home + 3-button nav ---- */
+.nav-in{grid-template-columns:1fr 96px 1fr;align-items:start;overflow:visible}
+.nav-in .tab{padding-top:14px}
+.tab.on::after{top:55px}
+.camera{position:relative;display:grid;place-items:center;margin-top:-26px;height:92px}
+.camera span{display:grid;place-items:center;width:74px;height:74px;border-radius:50%;color:#ffffff;background:radial-gradient(circle at 35% 30%,#f3d9a6,#c9a46a 55%,#9c7a45);border:3px solid #0b100d;box-shadow:0 0 0 1.5px var(--gold),0 0 24px 4px rgba(31,178,107,.45),0 8px 18px rgba(0,0,0,.6);transition:transform .15s}
+.camera:hover span{transform:scale(1.05)}.camera:active span{transform:scale(.95)}
+.brandmark{position:absolute;z-index:5;top:calc(16px + env(safe-area-inset-top,0px));left:16px;display:flex;align-items:center;gap:6px;color:var(--gold);pointer-events:none;opacity:.8}
+.brandmark span{font-family:var(--serif);font-weight:500;font-size:15px;line-height:.86;background:linear-gradient(180deg,#34d488,#3fe08a);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+#s-map .attrib{bottom:calc(84px + env(safe-area-inset-bottom,0px));left:12px;right:12px;text-align:center;pointer-events:none}
+.sheet{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+.spark-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:2px 15px 0 18px}
+.spark{margin:0;font-size:15px;letter-spacing:.34em}
+.spark-head .tag{margin:6px 0 0;font-size:12.5px;line-height:1.2}
+.spark-head .see{display:flex;align-items:center;gap:5px;font-size:8px;letter-spacing:.12em;color:var(--cream);white-space:nowrap;padding-top:4px}
+#s-circle .feature{margin-top:18px}
+#s-circle .sec-head{margin-top:26px}
+#s-circle .members{padding-bottom:12px}
+.cam{height:220px;border-radius:16px}
+.toast{bottom:auto;top:calc(62px + env(safe-area-inset-top,0px));transform:translate(-50%,-14px)}
+.camhint{display:grid;justify-items:center;gap:10px;color:var(--gold-hi);font-size:12px;letter-spacing:.06em}
+.here{display:flex;align-items:center;gap:7px;font-size:11.5px;color:#b7c4bc;margin-top:-4px}
+.here b{color:var(--gold-hi);font-weight:600}
+/* ---- drawn 3D street world ---- */
+#world .w3d{position:absolute;inset:0;overflow:hidden;perspective:700px;perspective-origin:50% 55%;background:radial-gradient(130% 55% at 50% 0%,#c5ecff 0%,#eaf8ff 38%,#0b100d 60%)}
+#world .plane3d{position:absolute;left:50%;top:calc(55% - 1500px);width:1200px;height:1900px;margin-left:-600px;transform-origin:50% 1500px;transform:rotateX(52deg);transform-style:preserve-3d;touch-action:none;cursor:grab;transition:transform .6s ease;background:#e7efe2}
+#world .plane3d:active{cursor:grabbing}
+#world.flat .plane3d{transform:none}
+#world .fog{position:absolute;left:0;right:0;top:0;height:34%;pointer-events:none;background:linear-gradient(180deg,#0b100d 0%,rgba(255,255,255,.94) 34%,rgba(255,255,255,.55) 66%,rgba(255,255,255,0) 100%)}
+#world.flat .fog{opacity:0}
+.plane3d .lm-layer,.plane3d .me{transform-style:preserve-3d}
+.tilt .pin{transform:translate(-50%,-100%) rotateX(-52deg);transform-origin:50% 100%;transition:opacity .3s}
+.tilt .pin:hover{transform:translate(-50%,-100%) rotateX(-52deg) scale(1.12)}
+#world.flat .tilt .pin{transform:translate(-50%,-100%)}
+.pin.near{color:#c46cf5;filter:drop-shadow(0 0 10px rgba(196,108,245,.95))}
+.pin.near svg{animation:hop 1s ease-in-out infinite}
+@keyframes hop{50%{transform:translateY(-7px)}}
+.me .fig,.me .disc{display:none}
+.tilt .me b{display:none}
+.tilt .me i{left:-30px;top:-30px;width:60px;height:60px;border-width:2px}
+.me i.i2{animation-delay:1.2s}
+.tilt .me .disc{display:block;position:absolute;left:-20px;top:-20px;width:40px;height:40px;border-radius:50%;background:radial-gradient(circle,rgba(31,178,107,.75),rgba(31,178,107,.18) 45%,rgba(31,178,107,0) 70%)}
+.tilt .me .fig{display:block;position:absolute;left:-23px;bottom:0;width:46px;height:78px;transform:rotateX(-52deg);transform-origin:50% 100%;filter:drop-shadow(0 0 7px rgba(31,178,107,.5))}
+#world.flat .tilt .me .fig{transform:none}
+.me .face{display:block;width:100%;height:100%;transition:transform .2s}
+#world.left .me .face{transform:scaleX(-1)}
+.me .face svg{width:100%;height:100%;display:block}
+#world.walking .me .face svg{animation:bob .42s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-3px)}}
+#walkbtn.on{background:var(--gold);color:#ffffff;border-color:var(--gold)}
+
+/* settings, profile, guidelines */
+.bar .iconbtn:last-child:not(:first-child){margin-left:auto}
+.setlist{display:grid;gap:10px;padding:4px 16px}
+.setrow{display:flex;align-items:center;gap:14px;width:100%;padding:14px 16px;border-radius:14px;background:#fff;border:1px solid var(--line-soft);box-shadow:0 2px 10px rgba(0,0,0,.06);font-size:14px;font-weight:600;color:var(--cream);text-align:left}
+.setrow .ic{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:rgba(63,224,138,.12);color:var(--gold-hi)}
+.setrow .chev{margin-left:auto;color:var(--dim)}
+.setrow.out{color:#d93a3f}.setrow.out .ic{background:#fdecec;color:#d93a3f}
+.setfoot{padding:14px 20px;color:var(--dim);font-size:11px}
+.prof{display:grid;justify-items:center;gap:6px;padding:10px 20px}
+.prof-av{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 50% 35%,#ffffff,#dcf3e5);border:3px solid var(--gold);display:grid;place-items:center;box-shadow:0 8px 24px rgba(31,178,107,.25);margin-bottom:8px}
+.prof-av .face{display:block;width:52px;height:88px}
+.prof>b{font-family:var(--serif);font-size:28px;font-weight:600}
+.prof>small{color:var(--muted);font-size:12px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;margin-top:18px}
+.stats div{display:grid;gap:4px;justify-items:center;padding:14px 6px;border-radius:14px;background:#fff;border:1px solid var(--line-soft);font-size:11px;color:var(--muted);text-align:center}
+.stats b{font-size:18px;color:var(--gold-hi);font-weight:700}
+.rules{margin:0;padding:4px 18px 0 38px;display:grid;gap:14px;font-size:13.5px;line-height:1.55;color:#b7c4bc;max-width:62ch}
+.rules li::marker{color:var(--gold);font-weight:700}
+.rules b{color:var(--cream)}
+/* community section headers + showcase cards */
+.sect{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:0 18px;margin-top:34px}
+#s-circle .bar+.sect{margin-top:6px}
+.sect .eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#c46cf5}
+.sect h3{margin:6px 0 0;font-family:var(--serif);font-weight:700;font-size:34px;line-height:.95;color:#eef5f0;letter-spacing:-.01em}
+.sect p{margin:7px 0 0;font-size:13px;line-height:1.35;color:#b7c4bc}
+.sect .more{flex:none;display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 15px;border-radius:999px;background:rgba(63,224,138,.12);color:#3fe08a;font-size:12px;font-weight:700}
+.scards{display:flex;gap:14px;overflow-x:auto;padding:16px 18px 14px;scroll-snap-type:x mandatory;scroll-padding-left:18px;scrollbar-width:none}
+.scards::-webkit-scrollbar{display:none}
+.scard{position:relative;flex:none;width:224px;height:290px;border-radius:24px;overflow:hidden;scroll-snap-align:start;text-align:left;background:#1d3b31;box-shadow:0 14px 28px rgba(0,0,0,.22)}
+.scard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.scard:hover img{transform:scale(1.05)}
+.scard::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,28,22,.35) 0,transparent 24%,transparent 46%,rgba(8,28,22,.92) 86%)}
+.scard .rank{position:absolute;z-index:2;top:12px;left:12px;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#fff;color:#eef5f0;font-family:var(--serif);font-weight:700;font-size:17px;box-shadow:0 4px 10px rgba(0,0,0,.2)}
+.scard .rise{position:absolute;z-index:2;top:16px;right:12px;display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 10px;border-radius:999px;background:#c46cf5;color:#fff;font-size:10.5px;font-weight:700}
+.scard .meta{position:absolute;z-index:2;left:16px;right:14px;bottom:16px}
+.scard b{display:block;font-family:var(--serif);font-weight:700;font-size:25px;line-height:1;color:#fff}
+.scard .row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:9px;font-size:11.5px;color:rgba(255,255,255,.88)}
+.scard .row span{display:flex;align-items:center;gap:4px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scard .row em{flex:none;display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 9px;border-radius:999px;background:rgba(255,255,255,.95);color:#eef5f0;font-style:normal;font-weight:700;font-size:11.5px}
+.scard .row em svg{color:#f6a821}
+#s-circle .feature{margin-top:14px;height:210px}
+.seg{display:flex;gap:4px;margin:16px 18px 0;padding:4px;border-radius:999px;background:rgba(255,255,255,.06)}
+.seg button{flex:1;height:34px;border-radius:999px;font-size:12.5px;font-weight:700;color:#93a39a}
+.seg button.on{background:#fff;color:#3fe08a;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.ncards{display:grid;gap:16px;padding:16px 18px 4px}
+.ncard{display:block;width:100%;text-align:left;border-radius:22px;overflow:hidden;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.1)}
+.nimg{position:relative;display:block;height:168px}
+.nimg img{width:100%;height:100%;object-fit:cover;display:block}
+.away{position:absolute;left:12px;bottom:12px;display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:999px;background:#2fc979;color:#fff;font-size:12px;font-weight:700;box-shadow:0 4px 10px rgba(0,0,0,.2)}
+.nrate{position:absolute;right:12px;top:12px;display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 10px;border-radius:999px;background:#fff;color:#eef5f0;font-size:12px;font-weight:700}
+.nrate svg{color:#f6a821}.nrate i{font-style:normal;font-weight:500;color:#7e8f86}
+.nbody{display:grid;gap:6px;padding:14px 16px 16px}
+.nbody b{font-family:var(--serif);font-weight:700;font-size:24px;line-height:1;color:#eef5f0}
+.narea{display:flex;align-items:center;gap:5px;font-size:12.5px;color:#b7c4bc}.narea svg{color:#2fc979}
+.ntags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.ntags i{font-style:normal;height:24px;padding:0 10px;display:inline-flex;align-items:center;border-radius:999px;background:rgba(63,224,138,.08);color:#3fe08a;font-size:11px;font-weight:600}
+.mine-tag{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 11px;margin-right:6px;border-radius:999px;background:rgba(63,224,138,.12);color:#3fe08a;font-size:11px;font-weight:700}
+.delbox{margin-top:22px}
+.delbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 18px;border-radius:999px;border:1.5px solid #f1c4c5;background:#fff;color:#d93a3f;font-size:12.5px;font-weight:700}
+.delbtn.solid{background:#d93a3f;border-color:#d93a3f;color:#fff}
+.delconfirm{padding:16px;border-radius:16px;background:#fff5f5;border:1.5px solid #f1c4c5}
+.delconfirm b{font-size:15px;color:#a8262b}
+.delconfirm p{margin:6px 0 12px;font-size:12.5px;line-height:1.5;color:#7a4a4c}
+.delconfirm .row{display:flex;gap:10px}.delconfirm .btn{height:40px;padding:0 18px;font-size:10px}
+#s-profile .sect{margin-top:30px}
+/* ===== fresh daytime palette: kush green + purple haze ===== */
+.app{box-shadow:0 0 60px rgba(0,0,0,.15)}
+.btn{background:#fff;color:var(--cream);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.btn:hover{background:rgba(63,224,138,.08);box-shadow:0 4px 14px rgba(31,178,107,.2)}
+.btn.solid{background:linear-gradient(135deg,#2bd17e,#2fc979);color:#fff;border-color:transparent;box-shadow:0 6px 16px rgba(31,178,107,.35)}
+.btn.solid:hover{background:linear-gradient(135deg,#34dd89,#3fe08a)}
+.stars{color:var(--sun)}
+.feature{background:#1d3b31;border:0;box-shadow:0 10px 26px rgba(0,0,0,.2)}
+.feature::after{background:linear-gradient(180deg,transparent 50%,rgba(8,28,22,.72)),linear-gradient(90deg,rgba(8,28,22,.8),transparent 62%)}
+.feature h2,.feature .loc,.feature .rate{color:#fff}.feature p{color:rgba(255,255,255,.9)}.feature .rate span:not(.stars){color:rgba(255,255,255,.7)}
+.feature .btn{background:#fff;border-color:#fff;color:#eef5f0}
+.badge{background:var(--haze);border-color:var(--haze);color:#fff;font-weight:600}.badge svg{color:#ffe28a!important}
+.rcard{background:#1d3b31;border:0;box-shadow:0 6px 16px rgba(0,0,0,.2)}
+.rcard::after{background:linear-gradient(180deg,transparent 38%,rgba(8,28,22,.9) 76%)}
+.rcard b,.rcard .row em{color:#fff}.rcard .row{color:rgba(255,255,255,.85)}
+.rcard .lb{background:var(--gold);border-color:#fff;color:#fff}
+.lcard{box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.field input,.field textarea,.field select{background:#fff}
+.field label{color:var(--gold-hi);font-weight:600}
+.photo{background:rgba(63,224,138,.08);border-color:rgba(31,178,107,.55)}
+.iconbtn{background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.ini{background:rgba(63,224,138,.12);color:var(--gold-hi);border-color:var(--gold)}
+.chip.on{color:#fff;background:var(--gold);border-color:var(--gold)}
+.dhero::after{background:linear-gradient(180deg,rgba(0,0,0,.25),transparent 30%,transparent 50%,var(--bg))}
+.sheet-in{background:#fff;border-color:rgba(0,0,0,.08);box-shadow:0 -6px 30px rgba(0,0,0,.18)}
+.nav-in{background:rgba(255,255,255,.97);border-color:rgba(0,0,0,.08);box-shadow:0 -6px 24px rgba(0,0,0,.1)}
+.tab{color:#7e8f86}.tab.on{color:var(--gold-hi)}.tab.on::after{background:var(--gold);box-shadow:0 0 10px 1px rgba(31,178,107,.5)}
+.camera span{color:#fff;background:radial-gradient(circle at 35% 30%,#6af3b0,#22c274 55%,#3fe08a);border:4px solid #fff;box-shadow:0 0 0 1.5px rgba(31,178,107,.5),0 0 22px 6px rgba(196,108,245,.25),0 8px 18px rgba(0,0,0,.3)}
+.toast{background:#eef5f0;color:#fff;border-color:#eef5f0;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+.gate{background:radial-gradient(80% 60% at 50% 35%,#ffffff,#101812 60%,#cdeedc)}
+.menu{background:#fff}
+.spark{color:var(--gold-hi)}
+.spark-head .tag{color:#b7c4bc}
+.here b{color:var(--gold-hi)}
+.legal{border-color:rgba(31,178,107,.35)}
+.pin{color:var(--gold);filter:drop-shadow(0 3px 4px rgba(0,0,0,.35))}
+.pin:hover{filter:drop-shadow(0 4px 8px rgba(0,0,0,.4))}
+.pin.sel,.pin.near{color:var(--haze);filter:drop-shadow(0 0 9px rgba(196,108,245,.7))}
+.pin.out{opacity:.35}
+#world .w3d{background:linear-gradient(180deg,#86cffd 0%,#bfe8ff 22%,#e8f7ff 42%,#eef5ea 62%)}
+#world .plane3d{background:#e7efe2}
+#world .fog{background:linear-gradient(180deg,#9fd8ff 0%,rgba(196,234,255,.96) 32%,rgba(230,246,255,.55) 64%,rgba(236,246,236,0) 100%)}
+.brandmark{opacity:1;color:var(--gold-hi);filter:drop-shadow(0 1px 2px rgba(255,255,255,.9))}
+#s-map .attrib{color:rgba(0,0,0,.6);text-shadow:0 1px 2px #fff}
+.me i{border-color:var(--gold)}
+.tilt .me .disc{background:radial-gradient(circle,rgba(31,178,107,.55),rgba(31,178,107,.15) 45%,rgba(31,178,107,0) 70%)}
+.tilt .me .fig{filter:drop-shadow(0 4px 4px rgba(0,0,0,.35))}
+.ring3d i{border-color:rgba(31,178,107,.85)}.ring3d::after{background:rgba(31,178,107,.4)}
+.me3d b,.me b{border-color:var(--gold);background:rgba(63,224,138,.12);box-shadow:0 0 0 3px #fff,0 4px 12px rgba(0,0,0,.3)}
+.me3d::after{background:linear-gradient(var(--gold),rgba(31,178,107,0))}
+
+/* ===== night map, after the reference picture ===== */
+#world .w3d{background:linear-gradient(180deg,#04070a 0%,#0a1311 28%,#121c17 55%)}
+#world .plane3d{background:#18201a}
+#world .fog{height:24%;background:linear-gradient(180deg,rgba(5,8,10,.97) 0%,rgba(6,10,10,.8) 30%,rgba(9,15,13,.35) 65%,rgba(9,15,13,0) 100%)}
+#world .pin{color:#3fe08a;filter:none}
+#world .pin.pp{color:#c46cf5}
+#world .pin .np{overflow:visible;filter:drop-shadow(0 0 4px currentColor) drop-shadow(0 0 12px currentColor)}
+#world .pin.sel .np,#world .pin.near .np{filter:drop-shadow(0 0 7px currentColor) drop-shadow(0 0 22px currentColor)}
+#world .pin.out{opacity:.3}
+#world .pin:hover{filter:brightness(1.15)}
+.plabel{position:absolute;left:calc(100% + 3px);top:2px;display:grid;gap:4px;padding:8px 12px 8px 11px;border-radius:12px;background:rgba(12,16,14,.84);border:1px solid rgba(255,255,255,.07);box-shadow:0 6px 16px rgba(0,0,0,.45);white-space:nowrap;text-align:left;pointer-events:none;color:#fff;font-family:var(--sans)}
+.plabel b{font-size:13px;font-weight:600;letter-spacing:.01em}
+.plabel small{display:flex;align-items:center;gap:5px;font-size:11.5px;color:#e6efe9}
+.plabel small svg{color:#3fe08a}
+.plabel i{font-style:normal;color:#93a39a}
+.plabel em{font-style:normal;color:#93a39a;margin-left:8px;font-size:10.5px}
+#world .tilt .me i{left:-34px;top:-34px;width:68px;height:68px;border:2px solid rgba(214,140,255,.9);box-shadow:0 0 10px rgba(196,108,245,.8)}
+#world .tilt .me .disc{left:-62px;top:-62px;width:124px;height:124px;border-radius:50%;border:2.5px solid rgba(214,140,255,.95);background:radial-gradient(circle,rgba(196,108,245,.22),rgba(196,108,245,.06) 55%,rgba(196,108,245,0) 70%);box-shadow:0 0 16px rgba(196,108,245,.85),inset 0 0 16px rgba(196,108,245,.55)}
+#world .tilt .me .fig{filter:drop-shadow(0 6px 6px rgba(0,0,0,.6))}
+.ring3d i{border-color:rgba(214,140,255,.9)}.ring3d::after{background:rgba(196,108,245,.4)}
+.brandmark.nb{align-items:flex-start;gap:4px;opacity:1;filter:none;color:#3fe08a;top:calc(14px + env(safe-area-inset-top,0px));left:14px}
+.brandmark.nb .bmw{display:block;font-family:"Yellowtail","Brush Script MT",cursive;font-weight:400;font-size:34px;line-height:1;background:none;-webkit-text-fill-color:#fff;color:#fff;transform:rotate(-7deg);transform-origin:left bottom;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+.brandmark.nb small{display:block;margin:3px 0 0 26px;font-size:7.5px;font-weight:600;letter-spacing:.3em;color:#e8f0eb}
+.brandmark.nb svg{margin-top:-4px;filter:drop-shadow(0 0 6px rgba(63,224,138,.7))}
+body.on-map .nav-in{background:rgba(12,16,14,.86);border-color:rgba(255,255,255,.07);box-shadow:0 -8px 30px rgba(0,0,0,.4);backdrop-filter:blur(12px)}
+body.on-map .tab{color:#a8b5ae}
+body.on-map .camera span{color:#3fe08a;background:radial-gradient(circle at 50% 40%,#16201a,#0a0f0c);border:2.5px solid #3fe08a;box-shadow:0 0 0 5px rgba(63,224,138,.12),0 0 26px 2px rgba(63,224,138,.55),inset 0 0 18px rgba(63,224,138,.28)}
+body.on-map .sheet-in{background:rgba(12,16,14,.94);border-color:rgba(255,255,255,.08);box-shadow:0 -8px 30px rgba(0,0,0,.5);color:#fff}
+body.on-map .sheet b{color:#fff}
+body.on-map .sheet .loc{color:#c9d4ce!important}
+body.on-map .sheet .info>div{color:#e6efe9}
+body.on-map .sheet .btn{background:transparent;color:#3fe08a;border-color:#3fe08a;box-shadow:0 0 12px rgba(63,224,138,.25)}
+body.on-map .sheet .x{color:#93a39a}
+body.on-map #s-map .attrib{color:rgba(230,240,232,.55);text-shadow:0 1px 2px #000}
+#world .plane3d{top:calc(55% - 2900px);width:1800px;height:3300px;margin-left:-900px;transform-origin:50% 2900px}
+#world .fog{height:20%}
+
+/* center button: camera on the map, leaf (back to map) everywhere else */
+.camera .ic-leaf{display:block}.camera .ic-cam{display:none}
+body.on-map .camera .ic-leaf{display:none}body.on-map .camera .ic-cam{display:block}
+.camera span{transition:transform .15s,background .3s,box-shadow .3s}
+.camera .ic-leaf{animation:leafin .35s cubic-bezier(.2,.9,.3,1.4)}
+@keyframes leafin{from{transform:scale(.4) rotate(-40deg);opacity:0}to{transform:none;opacity:1}}
+#s-circle .bar h2,#s-stash .bar h2,#s-drop .bar h2{padding-left:4px}
+
+/* ===== whole app in the night-map style ===== */
+body{background:#050806}
+.app{background:var(--bg);box-shadow:0 0 60px rgba(0,0,0,.6)}
+.bar{background:linear-gradient(180deg,var(--bg) 72%,rgba(11,16,13,0))}
+.spaced{font-family:var(--sans);font-weight:700;letter-spacing:.24em}
+.bar h2{font-size:12px;color:#eef5f0}
+.btn{background:rgba(255,255,255,.04);color:var(--cream);border-color:rgba(63,224,138,.55);box-shadow:none;font-weight:700}
+.btn:hover{background:rgba(63,224,138,.1);box-shadow:0 0 14px rgba(63,224,138,.3)}
+.btn.solid{background:linear-gradient(135deg,#46e893,#22b872);color:#06120b;border-color:transparent;box-shadow:0 0 18px rgba(63,224,138,.4)}
+.btn.solid:hover{background:linear-gradient(135deg,#5af0a2,#2fc979)}
+.iconbtn{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#eef5f0;box-shadow:none}
+.lcard,.ncard,.setrow,.stats div,.post,.field input,.field textarea,.field select,.empty{background:#121a15;border-color:rgba(255,255,255,.07);box-shadow:0 8px 22px rgba(0,0,0,.35)}
+.field input,.field textarea{color:#eef5f0}
+.field input::placeholder,.field textarea::placeholder{color:#6e7d75}
+.post .ref{border-color:rgba(255,255,255,.08);background:rgba(255,255,255,.02)}
+.sect .eyebrow{color:#c46cf5}
+.sect h3{font-family:var(--sans);font-weight:800;font-size:28px;line-height:1.05;letter-spacing:-.02em;color:#fff}
+.sect .more{background:rgba(63,224,138,.12);color:#3fe08a;box-shadow:inset 0 0 0 1px rgba(63,224,138,.35)}
+.scard{box-shadow:0 14px 30px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.06)}
+.scard b{font-family:var(--sans);font-weight:800;font-size:21px;line-height:1.1;letter-spacing:-.01em}
+.scard .rank{background:rgba(12,16,14,.82);color:#fff;font-family:var(--sans);font-size:14px;font-weight:800;box-shadow:0 0 0 1.5px rgba(63,224,138,.7),0 0 12px rgba(63,224,138,.35)}
+.scard .rise{background:#c46cf5;box-shadow:0 0 12px rgba(196,108,245,.55)}
+.scard .row em{background:rgba(12,16,14,.82);color:#fff}
+.feature{box-shadow:0 14px 30px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.06)}
+.feature h2{font-family:var(--sans);font-weight:800;font-size:25px;line-height:1.05;letter-spacing:-.01em}
+.feature .btn{background:rgba(12,16,14,.6);color:#3fe08a;border-color:#3fe08a;box-shadow:0 0 12px rgba(63,224,138,.3)}
+.seg{background:rgba(255,255,255,.05)}
+.seg button{color:#93a39a}
+.seg button.on{background:#1b2620;color:#3fe08a;box-shadow:inset 0 0 0 1px rgba(63,224,138,.5),0 0 12px rgba(63,224,138,.2)}
+.nbody b{font-family:var(--sans);font-weight:800;font-size:19px;line-height:1.15;color:#fff}
+.narea svg{color:#3fe08a}
+.ntags i,.mine-tag{background:rgba(63,224,138,.1);color:#3fe08a}
+.away{background:#2fc979;color:#06120b;box-shadow:0 0 14px rgba(63,224,138,.45)}
+.nrate{background:rgba(12,16,14,.85);color:#fff}
+.lcard b{font-family:var(--sans);font-weight:800;font-size:16px;color:#fff}
+.dbody h2{font-family:var(--sans);font-weight:800;font-size:32px;line-height:1.05;letter-spacing:-.02em}
+.dbody .desc{color:#c3cec7}
+.chip{border-color:rgba(255,255,255,.12);color:#cfd8d2}
+.chip.on{background:#3fe08a;color:#06120b;border-color:#3fe08a}
+.review{border-top-color:rgba(255,255,255,.07)}
+.review p{color:#c3cec7}
+.ini{background:rgba(63,224,138,.1);color:#3fe08a;border-color:rgba(63,224,138,.6);font-family:var(--sans);font-size:12px;font-weight:800}
+.members .ini{font-size:16px}
+.legal{border-color:rgba(63,224,138,.3);color:#93a39a}
+.photo{background:rgba(63,224,138,.05);border-color:rgba(63,224,138,.4)}
+.field label{color:#3fe08a}
+.setrow{color:#eef5f0}
+.setrow .ic{background:rgba(63,224,138,.12);color:#3fe08a}
+.setrow.out{color:#ff6b70}.setrow.out .ic{background:rgba(229,72,77,.14);color:#ff6b70}
+.prof-av{background:radial-gradient(circle at 50% 35%,#1b2a21,#0e1511);border-color:#3fe08a;box-shadow:0 0 26px rgba(63,224,138,.35)}
+.prof>b{font-family:var(--sans);font-weight:800;font-size:24px}
+.stats b{color:#3fe08a}
+.rules b{color:#fff}.rules li::marker{color:#3fe08a}
+.delbtn{background:transparent;border-color:rgba(255,107,112,.5);color:#ff6b70}
+.delbtn.solid{background:#e5484d;border-color:#e5484d;color:#fff}
+.delconfirm{background:rgba(229,72,77,.08);border-color:rgba(229,72,77,.4)}
+.delconfirm b{color:#ff8a8e}.delconfirm p{color:#d9b7b8}
+.toast{background:#121a15;color:#eef5f0;border:1px solid rgba(63,224,138,.45);box-shadow:0 0 18px rgba(63,224,138,.25)}
+.gate{background:radial-gradient(80% 60% at 50% 35%,#16241c,#0b100d 60%,#050806)}
+.gate h2{font-family:var(--sans);font-weight:800;font-size:24px}
+.logo h1{font-family:"Yellowtail",cursive;font-weight:400;font-size:44px;line-height:.9;-webkit-text-fill-color:#fff;background:none;color:#fff;transform:rotate(-6deg)}
+.sheet b{font-family:var(--sans);font-weight:800;font-size:17px}
+/* nav + sheet stay dark on every screen */
+.nav-in{background:rgba(12,16,14,.9);border-color:rgba(255,255,255,.07);box-shadow:0 -8px 30px rgba(0,0,0,.45);backdrop-filter:blur(12px)}
+.tab{color:#a8b5ae}.tab.on{color:#3fe08a}.tab.on::after{background:#3fe08a;box-shadow:0 0 10px 1px rgba(63,224,138,.7)}
+.camera span{color:#3fe08a;background:radial-gradient(circle at 50% 40%,#16201a,#0a0f0c);border:2.5px solid #3fe08a;box-shadow:0 0 0 5px rgba(63,224,138,.12),0 0 26px 2px rgba(63,224,138,.55),inset 0 0 18px rgba(63,224,138,.28)}
+.camera .ic-leaf{filter:drop-shadow(0 0 6px rgba(63,224,138,.8))}
+.sheet-in{background:rgba(12,16,14,.94);border-color:rgba(255,255,255,.08);box-shadow:0 -8px 30px rgba(0,0,0,.5);color:#fff}
+.sheet .loc{color:#c9d4ce!important}
+.sheet .btn{background:transparent;color:#3fe08a;border-color:#3fe08a}
+</style>
+</head>
+<body>
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="gg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8cb94"/><stop offset="1" stop-color="#b48a50"/></linearGradient>
+  </defs>
+  <symbol id="leaf" viewBox="-50 -52 100 66">
+    <g fill="currentColor">
+      <path id="lf" d="M0 2 C 5 -10, 6 -30, 0 -50 C -6 -30, -5 -10, 0 2Z"/>
+      <use href="#lf" transform="rotate(-30) scale(.9)"/><use href="#lf" transform="rotate(30) scale(.9)"/>
+      <use href="#lf" transform="rotate(-60) scale(.72)"/><use href="#lf" transform="rotate(60) scale(.72)"/>
+      <use href="#lf" transform="rotate(-92) scale(.45)"/><use href="#lf" transform="rotate(92) scale(.45)"/>
+      <rect x="-.9" y="0" width="1.8" height="13" rx=".9"/>
+    </g>
+  </symbol>
+  <symbol id="pinmark" viewBox="0 0 30 40">
+    <path d="M15 1.5C7.5 1.5 2 7 2 14.2c0 9.3 13 24.3 13 24.3s13-15 13-24.3C28 7 22.5 1.5 15 1.5Z" fill="currentColor" stroke="#fff" stroke-width="2"/>
+    <svg x="5.5" y="5.5" width="19" height="15" style="color:#fff"><use href="#leaf"/></svg>
+  </symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.6A2.6 2.6 0 1 1 12 6.4a2.6 2.6 0 0 1 0 5.2Z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path fill="currentColor" d="m12 2.3 2.9 6.2 6.8.8-5 4.6 1.3 6.7L12 17.3l-6 3.3 1.3-6.7-5-4.6 6.8-.8Z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 12h15M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M20 12H5M11 6l-6 6 6 6"/></symbol>
+  <symbol id="i-plane" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M21 3 3 10.5l7.2 2.6L13 21z M10.2 13.1 21 3"/></symbol>
+  <symbol id="i-crown" viewBox="0 0 24 24"><path fill="currentColor" d="M3 7l4.5 4L12 4l4.5 7L21 7l-2 11H5Zm2 12.5h14V21H5z"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.5 1.5 11.4l1.3 1.5L4 11.9V21h6v-6h4v6h6v-9.1l1.2 1 1.3-1.5L19 9.3V4h-3v2.8Z"/></symbol>
+  <symbol id="i-mappin" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5a7.6 7.6 0 0 0-7.6 7.6c0 5.8 7.6 13.4 7.6 13.4s7.6-7.6 7.6-13.4A7.6 7.6 0 0 0 12 1.5Zm0 10.4a2.9 2.9 0 1 1 0-5.8 2.9 2.9 0 0 1 0 5.8Z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M12 7v10M7 12h10"/></g></symbol>
+  <symbol id="i-people" viewBox="0 0 24 24"><g fill="currentColor"><circle cx="12" cy="7.2" r="3.4"/><circle cx="5" cy="8.6" r="2.5"/><circle cx="19" cy="8.6" r="2.5"/><path d="M5.5 19c0-3.8 2.9-6.6 6.5-6.6s6.5 2.8 6.5 6.6Z"/><path d="M0 18c0-3 2-5.2 4.8-5.2 1 0 1.6.2 2.2.6A8 8 0 0 0 4.2 18Zm24 0c0-3-2-5.2-4.8-5.2-1 0-1.6.2-2.2.6a8 8 0 0 1 2.8 4.6Z"/></g></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path fill="currentColor" d="M12 21s-8.5-5.3-8.5-11.2A4.8 4.8 0 0 1 12 7a4.8 4.8 0 0 1 8.5 2.8C20.5 15.7 12 21 12 21Z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" d="M4 5h16v11H9l-5 4Z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></g></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></g></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M4 4h6a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4Zm16 0h-6a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h6Z"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M14 4H5v16h9M10 12h10M16 8l4 4-4 4"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="6.5"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></g><circle cx="12" cy="12" r="2.2" fill="currentColor"/></symbol>
+  <symbol id="i-steps" viewBox="0 0 24 24"><g fill="currentColor"><ellipse cx="8" cy="7.5" rx="2.8" ry="4.2" transform="rotate(-10 8 7.5)"/><ellipse cx="7.4" cy="15" rx="1.9" ry="1.5"/><ellipse cx="16" cy="11.5" rx="2.8" ry="4.2" transform="rotate(10 16 11.5)"/><ellipse cx="16.6" cy="19" rx="1.9" ry="1.5"/></g></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M3 8.5A2 2 0 0 1 5 6.5h2.3l1.6-2.3h6.2l1.6 2.3H19a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><circle cx="12" cy="13" r="3.8"/></g><circle cx="17.6" cy="9.4" r=".9" fill="currentColor"/></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24"><path fill="currentColor" d="M12.6 2.2c.4 3.1-1.4 4.9-3 6.6C8 10.4 6.5 12 6.5 14.7A5.5 5.5 0 0 0 12 20.2a5.5 5.5 0 0 0 5.5-5.5c0-2.2-.9-3.6-1.7-4.6-.2 1.6-1 2.7-2.1 3.1.6-3.6-.2-7.6-1.1-11Z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13M10 11v6M14 11v6"/></g></symbol>
+  <symbol id="ic-palm" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12.5 21.5c.6-4 .5-8-.5-11.5"/><path d="M12 10C10 7 7 6 3.5 7.2M12 10c2-3 5-4 8.5-2.8M12 10c-.8-3-.4-5.8 1.6-7.6M12 10c-3-.6-6 1-7 4.4M12 10c3-.6 6 1 7 4.4"/></g></symbol>
+  <symbol id="ic-cloud" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" d="M7 18.5h10.2a4.1 4.1 0 0 0 .5-8.2 5.6 5.6 0 0 0-10.8 1.5A3.4 3.4 0 0 0 7 18.5Z"/></symbol>
+  <symbol id="ic-mountain" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" d="M2 19.5 9 7.5l4.2 6.6 2.1-3.1 6.7 8.5Z M6.6 11.6 9 13l2.2-1.6"/></symbol>
+  <symbol id="ic-eye" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9"><path d="M2 12s3.6-6.3 10-6.3S22 12 22 12s-3.6 6.3-10 6.3S2 12 2 12Z"/><circle cx="12" cy="12" r="3.1"/></g></symbol>
+  <symbol id="ic-tree" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.5 6.5 10h3L5 16.5h5.6V21h2.8v-4.5H19L14.5 10h3Z"/></symbol>
+  <symbol id="ic-flame" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" d="M12.6 2.5c.4 3.1-1.4 4.9-3 6.5C8 10.6 6.6 12.2 6.6 14.8a5.4 5.4 0 0 0 10.8 0c0-2.2-.9-3.6-1.7-4.6-.2 1.6-1 2.6-2.1 3 .6-3.5-.2-7.4-1-10.7Z"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 15l6-6 6 6"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" d="M6 3h12v18l-6-4.5L6 21Z"/></symbol>
+  <symbol id="i-bookmark-f" viewBox="0 0 24 24"><path fill="currentColor" stroke="currentColor" stroke-width="1.7" d="M6 3h12v18l-6-4.5L6 21Z"/></symbol>
+  <symbol id="hood" viewBox="0 0 40 40"><rect width="40" height="40" fill="#dff3e7"/><radialGradient id="hg" cx=".5" cy=".3" r=".7"><stop offset="0" stop-color="#f4fff8"/><stop offset="1" stop-color="#cbeeda"/></radialGradient><rect width="40" height="40" fill="url(#hg)"/><path d="M20 7c-6.5 0-10 5-10 11 0 3 1 5 2 6.5-4 2-7 5-7.5 15.5h31c-.5-10.5-3.5-13.5-7.5-15.5 1-1.5 2-3.5 2-6.5 0-6-3.5-11-10-11Z" fill="#1fb26b"/><path d="M15 19.5c0-3.3 2.2-6 5-6s5 2.7 5 6-2 6-5 6-5-2.7-5-6Z" fill="#14332a"/></symbol>
+</svg>
+
+<div class="app" id="app">
+
+  <!-- MAP + HOME (fused) -->
+  <section class="screen on mapscreen" id="s-map" aria-label="Smoke map">
+    <div class="world" id="world"></div>
+    <div class="brandmark nb" aria-hidden="true"><div><span class="bmw">Higher Places</span><small>PRIVATE SOCIETY</small></div><svg width="22" height="16"><use href="#leaf"/></svg></div>
+    <div class="attrib" id="attrib"></div>
+  </section>
+
+  <!-- SPOT DETAIL -->
+  <section class="screen" id="s-spot" aria-label="Spot details"></section>
+
+  <!-- ALL -->
+  <section class="screen" id="s-all" aria-label="All spots">
+    <div class="bar"><button class="iconbtn" data-act="back" aria-label="Back"><svg width="16" height="16"><use href="#i-back"/></svg></button><h2 class="spaced">The Rotation</h2></div>
+    <div class="list" id="alllist"></div>
+  </section>
+
+  <!-- DROP (camera) -->
+  <section class="screen" id="s-drop" aria-label="Drop a spot">
+    <div class="bar"><h2 class="spaced">Drop a Spot</h2></div>
+    <form class="form" id="dropform" novalidate>
+      <label class="photo cam" for="d-photo" id="photobox"><span class="camhint"><svg width="34" height="34"><use href="#i-camera"/></svg>Tap to take a photo</span><input type="file" id="d-photo" accept="image/*" capture="environment"></label>
+      <div class="here" id="droploc"></div>
+      <div class="field"><label for="d-name">Spot name</label><input id="d-name" maxlength="40" placeholder="e.g. Dobbins Lookout"></div>
+      <div class="field"><label for="d-desc">Description</label><textarea id="d-desc" maxlength="220" placeholder="What makes it special? Views, vibe, best time to go."></textarea></div>
+      <div class="field"><label>Vibe</label><div class="chips" id="vibes"></div></div>
+      <div class="err" id="derr" role="alert"></div>
+      <button class="btn solid" type="submit" style="height:42px;justify-content:center;font-size:10px">Drop it here</button>
+    </form>
+  </section>
+
+  <!-- COMMUNITY -->
+  <section class="screen" id="s-circle" aria-label="Community">
+    <div class="bar"><h2 class="spaced">Community</h2></div>
+    <div class="sect">
+      <div><span class="eyebrow"><svg width="12" height="12"><use href="#i-flame"/></svg>Trending this week</span><h3>Sparking Up</h3><p>The spots everyone's lighting up right now.</p></div>
+      <button class="more" data-go="all">See all<svg width="12" height="12"><use href="#i-arrow"/></svg></button>
+    </div>
+    <div class="scards" id="rotation"></div>
+    <div class="sect">
+      <div><span class="eyebrow"><svg width="12" height="12" style="color:#f6a821"><use href="#i-crown"/></svg>Staff pick</span><h3>Hotbox of the Week</h3></div>
+    </div>
+    <article class="feature">
+      <div class="ph"></div>
+      <div class="in">
+        <h2>Mogollon<br>Rim Vista</h2>
+        <div class="loc"><svg width="10" height="11"><use href="#i-pin"/></svg><span id="floc">South Mountain</span></div>
+        <p>Secluded overlook with insane sunset views. Perfect for a sesh.</p>
+        <div class="rate"><span class="stars" id="fstars"></span>4.9 <span>(312)</span></div>
+      </div>
+      <button class="btn" data-spot="golden">View spot <svg width="11" height="11"><use href="#i-arrow"/></svg></button>
+    </article>
+    <div class="sect">
+      <div><span class="eyebrow"><svg width="12" height="12"><use href="#i-pin"/></svg>Around you</span><h3>Near You</h3><p id="nearcount"></p></div>
+    </div>
+    <div class="seg" id="radius" role="group" aria-label="Search radius"></div>
+    <div class="ncards" id="nearlist"></div>
+    <div class="sect">
+      <div><span class="eyebrow"><svg width="12" height="12"><use href="#i-people"/></svg>Members nearby</span><h3>The Circle</h3><p>What the Society is sharing today.</p></div>
+    </div>
+    <div class="members" id="members" style="margin-top:12px"></div>
+    <div id="feed"></div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section class="screen" id="s-settings" aria-label="Settings">
+    <div class="bar"><button class="iconbtn" data-act="back" aria-label="Back"><svg width="16" height="16"><use href="#i-back"/></svg></button><h2 class="spaced">Settings</h2></div>
+    <div class="setlist">
+      <button class="setrow" data-go="profile"><span class="ic"><svg width="18" height="18"><use href="#i-user"/></svg></span>Profile<svg class="chev" width="14" height="14"><use href="#i-arrow"/></svg></button>
+      <button class="setrow" data-go="rules"><span class="ic"><svg width="18" height="18"><use href="#i-book"/></svg></span>Community Guidelines<svg class="chev" width="14" height="14"><use href="#i-arrow"/></svg></button>
+      <button class="setrow out" data-act="logout"><span class="ic"><svg width="18" height="18"><use href="#i-out"/></svg></span>Log out</button>
+    </div>
+    <p class="setfoot">Higher Places is a prototype for the Phoenix area. Members 21+ only.</p>
+  </section>
+
+  <!-- PROFILE -->
+  <section class="screen" id="s-profile" aria-label="Profile">
+    <div class="bar"><button class="iconbtn" data-act="back" aria-label="Back"><svg width="16" height="16"><use href="#i-back"/></svg></button><h2 class="spaced">Profile</h2></div>
+    <div class="prof">
+      <div class="prof-av"><span class="face" id="profig"></span></div>
+      <b>Member 0420</b>
+      <small>Private Society · since 2026</small>
+      <div class="stats"><div><b id="st-saved">0</b>Saved</div><div><b id="st-drop">0</b>Dropped</div><div><b id="st-area">Downtown</b>Home base</div></div>
+    </div>
+    <div class="sect"><div><span class="eyebrow"><svg width="12" height="12"><use href="#i-camera"/></svg>Dropped by you</span><h3>Your Spots</h3><p>Tap a spot to view it or delete it.</p></div></div>
+    <div class="list" id="mylist" style="margin-top:14px">
+    </div>
+  </section>
+
+  <!-- GUIDELINES -->
+  <section class="screen" id="s-rules" aria-label="Community Guidelines">
+    <div class="bar"><button class="iconbtn" data-act="back" aria-label="Back"><svg width="16" height="16"><use href="#i-back"/></svg></button><h2 class="spaced">Guidelines</h2></div>
+    <ol class="rules">
+      <li><b>21+ only.</b> Higher Places is for adults. No exceptions.</li>
+      <li><b>Follow your local laws.</b> Spots are general scenic locations. You're responsible for what's allowed where you are.</li>
+      <li><b>Leave no trace.</b> Pack out everything you bring and keep every spot better than you found it.</li>
+      <li><b>No trespassing.</b> Only drop spots that are open to the public or that you have permission to use.</li>
+      <li><b>Respect people's privacy.</b> Don't post photos of people without their OK, and never share someone's home or personal info.</li>
+      <li><b>Keep it chill.</b> No harassment, hate or selling. Good vibes only in the Circle.</li>
+    </ol>
+  </section>
+
+  <!-- STASH -->
+  <section class="screen" id="s-stash" aria-label="Stash">
+    <div class="bar"><h2 class="spaced">Your Stash</h2><button class="iconbtn" data-go="settings" aria-label="Settings"><svg width="17" height="17"><use href="#i-gear"/></svg></button></div>
+    <p class="sub" id="stashsub"></p>
+    <div id="stashlist"></div>
+  </section>
+</div>
+
+<nav class="nav" aria-label="Main"><div class="nav-in">
+  <button class="tab" data-tab="circle"><svg width="27" height="25"><use href="#i-people"/></svg>Community</button>
+  <button class="camera" data-act="camera" id="centerbtn" aria-label="Camera: drop a spot here"><span><svg class="ic-cam" width="30" height="30"><use href="#i-camera"/></svg><svg class="ic-leaf" width="38" height="28"><use href="#leaf"/></svg></span></button>
+  <button class="tab" data-tab="stash"><svg width="29" height="25"><use href="#leaf"/></svg>Stash</button>
+</div></nav>
+
+<div class="sheet" id="sheet"></div>
+<div class="scrim" id="scrim"></div>
+<aside class="menu" id="menu" aria-label="Menu">
+  <div class="me"><span class="avatar" style="width:46px;height:46px"><svg width="44" height="44"><use href="#hood"/></svg></span><div><b>Member 0420</b><small>Private Society · since 2026</small></div></div>
+  <button class="item" data-toast="Profile is coming soon"><svg width="18" height="18"><use href="#i-user"/></svg>Profile</button>
+  <button class="item" data-toast="Settings are coming soon"><svg width="18" height="18"><use href="#i-gear"/></svg>Settings</button>
+  <button class="item" data-act="rules"><svg width="18" height="18"><use href="#i-book"/></svg>Community Guidelines</button>
+  <button class="item" data-act="logout"><svg width="18" height="18"><use href="#i-out"/></svg>Log out</button>
+  <div class="foot">Higher Places is a prototype for the Phoenix area. Spots are general scenic locations. Members 21+ only. Follow your local laws.</div>
+</aside>
+<div class="toast" id="toast" role="status"></div>
+
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-label="Age check">
+  <div class="gate-in">
+    <div class="logo">
+      <div class="logo-leaf"><i></i><svg width="60" height="40"><use href="#leaf"/></svg><i></i></div>
+      <h1>HIGHER<br>PLACES</h1>
+      <div class="soc"><i></i>PRIVATE SOCIETY<i></i></div>
+    </div>
+    <h2>Are you 21 or older?</h2>
+    <p>Higher Places is a members-only community for adults. Confirm your age to enter.</p>
+    <div class="row"><button class="btn solid" id="yes21">I'm 21+</button><button class="btn" id="no21">Not yet</button></div>
+    <div class="no" id="nomsg" role="alert"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script>
+(()=>{
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rng=seed=>()=>{seed=(seed*16807)%2147483647;return (seed-1)/2147483646};
+
+/* ================= drawn Arizona scenes ================= */
+const W=400,H=280;
+const lg=(id,stops,x2=0,y2=1)=>`<linearGradient id="${id}" x1="0" y1="0" x2="${x2}" y2="${y2}">${stops.map((c,i)=>`<stop offset="${(i/(stops.length-1)).toFixed(2)}" stop-color="${c}"/>`).join('')}</linearGradient>`;
+const glow=(id,c)=>`<radialGradient id="${id}"><stop offset="0" stop-color="${c}" stop-opacity="1"/><stop offset=".25" stop-color="${c}" stop-opacity=".55"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient>`;
+function ridge(r,base,amp,color,op=1){const f1=.008+r()*.01,f2=.025+r()*.02,p1=r()*6,p2=r()*6;let d=`M0 ${H}`;
+  for(let x=0;x<=W;x+=6){const y=base-amp*(.55*Math.sin(x*f1+p1)+.3*Math.sin(x*f2+p2)+.15*Math.sin(x*.09+p1*2));d+=` L${x} ${y.toFixed(1)}`}
+  return `<path d="${d} L${W} ${H}Z" fill="${color}" opacity="${op}"/>`}
+function saguaro(x,b,h,c){const w=Math.max(2,h*.11),y1=b-h*.42,y2=b-h*.56;
+  return `<path d="M${x} ${b} V${b-h} M${x} ${y1} Q${x-w*1.9} ${y1} ${x-w*1.9} ${y1-w*1.3} V${b-h*.78} M${x} ${y2} Q${x+w*1.7} ${y2} ${x+w*1.7} ${y2-w*1.2} V${b-h*.88}" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`}
+function stars(r,n,maxY){let s='';for(let i=0;i<n;i++)s+=`<circle cx="${(r()*W).toFixed(1)}" cy="${(r()*maxY).toFixed(1)}" r="${(.3+r()*r()*1.1).toFixed(2)}" fill="#fff6e0" opacity="${(.25+r()*.75).toFixed(2)}"/>`;return s}
+function skyline(r,base,minH,maxH,col,lit=.35){let b='',w='',x=0;
+  while(x<W){const bw=10+r()*26,bh=minH+r()*(maxH-minH);b+=`<rect x="${x.toFixed(1)}" y="${(base-bh).toFixed(1)}" width="${bw.toFixed(1)}" height="${(bh+2).toFixed(1)}" fill="${col}"/>`;
+    for(let yy=base-bh+4;yy<base-3;yy+=6)for(let xx=x+3;xx<x+bw-3;xx+=5)if(r()<lit)w+=`<rect x="${xx.toFixed(1)}" y="${yy.toFixed(1)}" width="1.8" height="2.6" fill="#f2c27a" opacity="${(.4+r()*.6).toFixed(2)}"/>`;
+    x+=bw+1}
+  return b+w}
+function scene(kind,seed=3){
+  const r=rng(seed*7919+11);let s='';
+  if(kind==='ridge'){
+    s=`<defs>${lg('a',['#211427','#5b2935','#c4613a','#f3b35f'])}${glow('g','#ffd98a')}</defs><rect width="${W}" height="${H}" fill="url(#a)"/>
+    <circle cx="150" cy="176" r="110" fill="url(#g)" opacity=".85"/><circle cx="150" cy="176" r="9" fill="#fff4cf"/>
+    <g opacity=".08" fill="#ffe2a0"><path d="M150 176 L40 0 H70Z"/><path d="M150 176 L250 0 H290Z"/><path d="M150 176 L400 60 V95Z"/></g>
+    ${ridge(r,174,12,'#7a3a37',.85)}${ridge(r,190,20,'#4a2329')}${ridge(r,214,14,'#241315')}
+    <path d="M165 280 C200 238 280 226 400 230 V280Z" fill="#120a09"/><path d="M200 262 C240 248 300 244 360 250" stroke="#3a2016" stroke-width="2" fill="none" opacity=".6"/>
+    ${saguaro(318,236,64,'#0c0606')}${saguaro(362,233,40,'#0c0606')}${saguaro(60,226,30,'#1a0d0c')}`;
+  } else if(kind==='citynight'){
+    let l='';for(let i=0;i<620;i++){const t=r()*r();const y=158+t*52;const big=(y-158)/52;l+=`<circle cx="${(r()*W).toFixed(1)}" cy="${y.toFixed(1)}" r="${(.35+big*1.1*r()).toFixed(2)}" fill="${['#ffd28a','#ffb35c','#fff1c9'][i%3]}" opacity="${(.45+r()*.55).toFixed(2)}"/>`}
+    s=`<defs>${lg('a',['#04050b','#10132a','#2d2033','#6b3d33'])}${glow('h','#ffb86a')}</defs><rect width="${W}" height="${H}" fill="url(#a)"/>${stars(r,110,135)}
+    <ellipse cx="200" cy="165" rx="300" ry="38" fill="url(#h)" opacity=".35"/>${ridge(r,158,6,'#1a1320')}<rect y="158" width="${W}" height="60" fill="#120d12" opacity=".6"/>${l}
+    <path d="M0 210 C110 200 230 232 400 268 V280 H0Z" fill="#0b0708"/><path d="M30 262 C90 240 150 236 200 244" stroke="#3a2a20" stroke-width="1.5" stroke-dasharray="3 4" fill="none"/>
+    ${saguaro(52,224,74,'#050303')}${saguaro(100,214,40,'#050303')}`;
+  } else if(kind==='buttes'){
+    s=`<defs>${lg('a',['#1b1931','#4f3150','#b45e48','#e9a464'])}${lg('rk',['#b25d3c','#6b2f22','#2e140f'],1,1)}${glow('g','#ffd08a')}</defs><rect width="${W}" height="${H}" fill="url(#a)"/>
+    <circle cx="232" cy="150" r="70" fill="url(#g)" opacity=".7"/>${ridge(r,196,10,'#3d2433')}
+    <path fill-rule="evenodd" fill="url(#rk)" d="M110 236 C102 160 160 92 232 98 C306 104 338 164 326 236Z M206 152 C204 132 236 126 248 144 C256 160 234 174 216 170 C208 167 206 160 206 152Z"/>
+    <path d="M140 200 C170 190 200 205 230 196 M150 170 C180 160 205 170 225 165" stroke="#2e140f" stroke-width="2" fill="none" opacity=".5"/>
+    ${ridge(r,240,7,'#22120c')}${saguaro(58,256,62,'#100806')}${saguaro(352,250,48,'#100806')}`;
+  } else if(kind==='saguaro'){
+    s=`<defs>${lg('a',['#2c2140','#93503f','#e89a58','#f6cf86'])}${lg('gr',['#3a2418','#140b07'])}${glow('g','#fff0c0')}</defs><rect width="${W}" height="${H}" fill="url(#a)"/>
+    <circle cx="300" cy="138" r="80" fill="url(#g)" opacity=".8"/><circle cx="300" cy="138" r="18" fill="#fff3cf"/>
+    ${ridge(r,176,22,'#6a4250')}${ridge(r,196,12,'#432a35')}<path d="M0 214 C120 206 260 220 400 210 V280 H0Z" fill="url(#gr)"/>
+    ${saguaro(80,268,124,'#120a07')}${saguaro(176,238,66,'#1a0e09')}${saguaro(250,228,40,'#24130c')}${saguaro(334,258,92,'#120a07')}${saguaro(384,232,34,'#24130c')}
+    <g fill="#1d120b">${Array.from({length:9},(_,i)=>`<ellipse cx="${20+i*46}" cy="${246+(i%3)*9}" rx="${8+(i%4)*3}" ry="4"/>`).join('')}</g>`;
+  } else if(kind==='stars'){
+    let mw='';for(let i=0;i<260;i++){const t=r()*2-1;const x=200+t*300,y=120+(r()-.5)*44;mw+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(.25+r()*.6).toFixed(2)}" fill="#fff" opacity="${(.3+r()*.6).toFixed(2)}"/>`}
+    s=`<defs>${lg('a',['#020309','#090c1c','#161729','#2e2230'])}<radialGradient id="mw"><stop offset="0" stop-color="#e8dcff" stop-opacity=".22"/><stop offset="1" stop-color="#e8dcff" stop-opacity="0"/></radialGradient>${glow('h','#e0874a')}</defs>
+    <rect width="${W}" height="${H}" fill="url(#a)"/>${stars(r,200,230)}<g transform="rotate(-28 200 120)"><ellipse cx="200" cy="120" rx="280" ry="38" fill="url(#mw)"/>${mw}</g>
+    <ellipse cx="300" cy="240" rx="220" ry="40" fill="url(#h)" opacity=".35"/>${ridge(r,230,16,'#07060a')}${saguaro(92,266,98,'#020102')}${saguaro(300,262,70,'#020102')}`;
+  } else if(kind==='lake'){
+    const cliffs=`<path d="M0 118 L40 108 L72 138 L112 150 L142 176 L0 180Z" fill="#5a2e24"/><path d="M400 102 L358 114 L328 144 L290 158 L268 176 L400 178Z" fill="#47251f"/>`;
+    s=`<defs>${lg('a',['#1d1a30','#653848','#d07a4a','#f1b062'])}${lg('wt',['#b9774a','#4a2e36','#0f0c12'])}${lg('st',['#ffe0a0','#ffe0a000'])}${glow('g','#ffe2a0')}</defs>
+    <rect width="${W}" height="${H}" fill="url(#a)"/><circle cx="208" cy="166" r="70" fill="url(#g)" opacity=".7"/><circle cx="208" cy="166" r="12" fill="#fff2cc"/>
+    ${ridge(r,172,8,'#3a2230')}${cliffs}<rect y="176" width="${W}" height="${H-176}" fill="url(#wt)"/>
+    <g transform="translate(0 354) scale(1 -1)" opacity=".28">${cliffs}</g><rect x="196" y="178" width="24" height="90" fill="url(#st)" opacity=".55"/>
+    <g stroke="#ffd9a0" stroke-width="1" opacity=".35">${Array.from({length:8},(_,i)=>`<path d="M${170+i%3*8} ${186+i*10} h${60-i*5}"/>`).join('')}</g>${saguaro(362,118,42,'#1a0d0a')}`;
+  } else if(kind==='lakecity'){
+    let refl='';for(let i=0;i<40;i++){const x=r()*W;refl+=`<rect x="${x.toFixed(1)}" y="${(176+r()*6).toFixed(1)}" width="1.6" height="${(10+r()*40).toFixed(1)}" fill="#f2c27a" opacity="${(.15+r()*.35).toFixed(2)}"/>`}
+    let arch='M0 196';for(let x=0;x<W;x+=50)arch+=` Q${x+25} 176 ${x+50} 196`;
+    s=`<defs>${lg('a',['#06070e','#141428','#2e2234','#5e3a34'])}${lg('wt',['#2a1e26','#0c0a10'])}</defs><rect width="${W}" height="${H}" fill="url(#a)"/>${stars(r,50,110)}
+    ${ridge(r,150,14,'#2a1d26',.8)}${skyline(r,174,8,46,'#0d0b12',.3)}<rect y="174" width="${W}" height="${H-174}" fill="url(#wt)"/>${refl}
+    <path d="${arch}" stroke="#2a2026" stroke-width="5" fill="none"/><path d="M0 180 H400" stroke="#2a2026" stroke-width="4"/>
+    <g fill="#ffd28a">${Array.from({length:16},(_,i)=>`<circle cx="${12+i*25}" cy="180" r="1.6"/>`).join('')}</g><path d="M0 250 C120 236 260 256 400 244 V280 H0Z" fill="#07060a"/>`;
+  } else {
+    s=`<defs>${lg('a',['#07080f','#1d1426','#4a2533','#a2533a'])}</defs><rect width="${W}" height="${H}" fill="url(#a)"/>${stars(r,40,90)}
+    ${skyline(r,206,50,170,'#120e14',.38)}<rect y="204" width="${W}" height="76" fill="#0b090a"/>
+    <g stroke="#3a2c20" stroke-width="3"><path d="M0 222 H400"/>${Array.from({length:14},(_,i)=>`<path d="M${i*30+5} 222 V262"/>`).join('')}</g>
+    <path d="M0 214 Q100 200 200 214 T400 212" stroke="#f2c27a" stroke-width="1" fill="none" opacity=".5"/>
+    <g fill="#f2c27a">${[60,190,330].map(cx=>`<circle cx="${cx}" cy="240" r="3"/><circle cx="${cx}" cy="240" r="16" opacity=".14"/>`).join('')}</g>`;
+  }
+  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice">${s}</svg>`);
+}
+
+/* ================= geography (miles from Downtown Phoenix; +x east, +y south) ================= */
+const LAT0=33.4484,LNG0=-112.0740,KX=Math.cos(LAT0*Math.PI/180)*69.17,KY=69.0;
+const toXY=(lat,lng)=>[(lng-LNG0)*KX,(LAT0-lat)*KY];
+const toLL=(x,y)=>[LAT0-y/KY,LNG0+x/KX];
+function miles(a,b){const R=3958.8,t=Math.PI/180,dLa=(b[0]-a[0])*t,dLo=(b[1]-a[1])*t;
+  const h=Math.sin(dLa/2)**2+Math.cos(a[0]*t)*Math.cos(b[0]*t)*Math.sin(dLo/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
+const fmt=d=>d<10?d.toFixed(1)+' mi':Math.round(d)+' mi';
+
+const METRO=[[-31,-12],[-26,-18],[-17,-22],[-8,-21],[-3,-26],[3,-31],[10,-28],[14,-21],[20,-15],[27,-6],[30,4],[28,13],[20,17],[11,16],[6,13],[1,10.5],[-4,10.2],[-9,9],[-17,8],[-26,6],[-32,0]];
+const inMetro=(x,y)=>{let c=false;for(let i=0,j=METRO.length-1;i<METRO.length;j=i++){const[a,b]=METRO[i],[cx,cy]=METRO[j];if((b>y)!==(cy>y)&&x<(cx-a)*(y-b)/(cy-b)+a)c=!c}return c};
+/* mountains: x,y,rx,ry,height,rotation */
+const MTN=[[-5,7.6,3.2,1.1,.9,-.08],[-1,7.9,3.2,1.2,1,0],[3,7.9,3,1.1,.95,.1],[5.5,7.4,1.6,.8,.6,.2],[-11,12.5,1.6,5.5,1.1,-.75],
+ [6.5,-4.6,1.1,.55,.95,.1],[2.9,-6.9,1.1,1.6,.8,.3],[4.6,-7.6,1.3,.9,.65,0],[1.6,-8.2,.8,.8,.5,0],[-.35,-10.1,.8,1,.6,0],[-1.1,-11.3,.7,.7,.55,0],[2.5,-12.6,.6,.5,.45,0],
+ [7.3,-.8,.6,.45,.45,0],[16.5,-16,2.4,5.5,1.2,-.2],[-27.5,-9,3.5,5.5,1.2,0],[40,1.5,5.5,2.8,1.3,.15],[33,-6.5,3,3.5,.85,0],[26.5,-3,1.5,1.4,.6,0],
+ [22,-30,12,8,.75,.3],[-24,-26,5,3.5,.7,0],[-2,-38,10,4,.8,0],[-20,8,3,2.5,.6,0],[6,-27.5,3.5,2,.55,0],[-38,-2,4,8,.8,0],[30,22,8,4,.6,0]];
+const hash=(i,j)=>{let h=Math.imul(i,374761393)+Math.imul(j,668265263)|0;h=Math.imul(h^(h>>>13),1274126177);return((h^(h>>>16))>>>0)/4294967295};
+function vnoise(x,y){const i=Math.floor(x),j=Math.floor(y),fx=x-i,fy=y-j,u=fx*fx*(3-2*fx),v=fy*fy*(3-2*fy);const a=hash(i,j),b=hash(i+1,j),c=hash(i,j+1),d=hash(i+1,j+1);return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v}
+function fbm(x,y,o=4){let s=0,a=.5,f=1;for(let k=0;k<o;k++){s+=a*vnoise(x*f,y*f);f*=2.03;a*=.5}return s}
+function ridged(x,y){let s=0,a=.5,f=1;for(let k=0;k<5;k++){s+=a*(1-Math.abs(2*vnoise(x*f,y*f)-1));f*=2.1;a*=.5}return s}
+function height(x,y){let m=0;for(const[mx,my,rx,ry,amp,rot]of MTN){const dx=x-mx,dy=y-my,c=Math.cos(rot),s=Math.sin(rot),u=(dx*c+dy*s)/rx,v=(-dx*s+dy*c)/ry,q=u*u+v*v;if(q<9)m+=amp*Math.exp(-q)}
+  return (m>.015?m*(.45+1.05*ridged(x*.9+11,y*.9+7)):m)+.07*fbm(x*.3,y*.3,3)}
+/* shaded-relief raster, 8 px per mile */
+const RB={x0:-50,y0:-45,w:105,h:75,res:8};
+const HGT=new Float32Array(RB.w*RB.res*RB.h*RB.res);
+const RELIEF=(()=>{const W=RB.w*RB.res,Hh=RB.h*RB.res,cv=document.createElement('canvas');cv.width=W;cv.height=Hh;const cx=cv.getContext('2d'),img=cx.createImageData(W,Hh),d=img.data;
+  for(let j=0;j<Hh;j++)for(let i=0;i<W;i++)HGT[j*W+i]=height(RB.x0+i/RB.res,RB.y0+j/RB.res);
+  const L=[-.62,-.62,.48];
+  for(let j=0;j<Hh;j++)for(let i=0;i<W;i++){const k=j*W+i,h=HGT[k];
+    const hl=HGT[j*W+Math.max(0,i-1)],hr=HGT[j*W+Math.min(W-1,i+1)],hu=HGT[Math.max(0,j-1)*W+i],hd=HGT[Math.min(Hh-1,j+1)*W+i];
+    let nx=(hl-hr)*9,ny=(hu-hd)*9,nz=1,n=Math.hypot(nx,ny,nz);nx/=n;ny/=n;nz/=n;
+    const sh=Math.max(0,nx*L[0]+ny*L[1]+nz*L[2]);const x=RB.x0+i/RB.res,y=RB.y0+j/RB.res;
+    const mA=Math.min(1,Math.max(0,(h-.1)/.22));const urban=inMetro(x,y);
+    const edge=Math.min(1,Math.min(i,W-1-i,j,Hh-1-j)/(7*RB.res));const fA=urban?0:.55,grain=fbm(x*3,y*3,2);
+    const t=Math.pow(sh,1.4),veg=Math.max(0,.45-h)*.6;
+    let r=34+t*70,g=38+t*64,b=34+t*52;r+=(28-r)*veg;g+=(46-g)*veg;b+=(30-b)*veg;
+    const fr=26+sh*10+grain*6,fg=31+sh*10+grain*6,fb=26+sh*8+grain*4;
+    const a=Math.max(mA*.92,fA)*edge;const w=Math.max(mA*.92,fA)>0?(mA*.92)/Math.max(mA*.92,fA):0;
+    d[k*4]=fr+(r-fr)*w;d[k*4+1]=fg+(g-fg)*w;d[k*4+2]=fb+(b-fb)*w;d[k*4+3]=a*255}
+  cx.putImageData(img,0,0);return cv})();
+const hAt=(x,y)=>{const i=Math.round((x-RB.x0)*RB.res),j=Math.round((y-RB.y0)*RB.res);if(i<0||j<0||i>=RB.w*RB.res||j>=RB.h*RB.res)return 0;return HGT[j*RB.w*RB.res+i]};
+/* water */
+const SALT=[[44,-6],[36,-4.2],[28,-2.2],[20,-1.4],[14,-.2],[11.5,.6],[9.1,1.25],[5.9,1.35],[3,1.9],[0,2.3],[-3,2.6],[-8,3.2],[-14,4.4],[-22,6.2],[-32,8],[-44,9]];
+const GILA=[[22,26],[12,20],[2,17],[-6,15.5],[-14,13.5],[-24,10.5],[-32,8]];
+const LAKES=[[[5.9,1.22],[7,1.12],[8,1.16],[9.1,1.12],[9.1,1.36],[8,1.44],[7,1.42],[5.9,1.48]],
+ [[-12.2,-25.5],[-11.4,-26],[-10.6,-27],[-10.4,-28.2],[-11,-29.6],[-11.6,-30.4],[-12.1,-29.2],[-12.5,-28],[-11.9,-27],[-12.6,-26.3]],
+ [[29.6,-6.6],[30.5,-7.2],[31.4,-7.6],[32.4,-8.6],[32.6,-9.2],[32.2,-9.1],[31.2,-8.2],[30.2,-7.6],[29.5,-7]],
+ [[35.8,-5.2],[36.8,-5.6],[37.8,-6.2],[38.4,-6.9],[38.1,-7],[37.2,-6.4],[36.2,-5.8]],
+ [[-1.6,-1.9],[-1.2,-1.95],[-1.1,-1.75],[-1.5,-1.7]]];
+const CANALS=[[[33,-3.4],[26,-3.6],[20,-3.2],[14,-3.8],[10,-5],[7.6,-5.6],[4,-6.6],[1,-8.4],[-2,-8.9],[-5,-9.2],[-9,-9.6],[-13,-11]],
+ [[9,.4],[7,-.6],[4,-1.4],[1,-1.7],[-2,-2.1],[-5,-2.4],[-9,-2.9]],
+ [[25,1.8],[18,2.6],[12,2.2],[8.6,2]]];
+/* freeways: points, shield label, index of shield point */
+const FWY=[
+ [[[-45,-.95],[-6.5,-.95],[-1.6,-.95],[1.8,-.95],[2.6,-.3],[3,1],[3.2,2.6],[4.5,3.4],[6.8,3.9],[7.3,5],[7.5,8],[9.5,11],[12.5,14],[20,25],[30,40]],'10',[[2,-20],[10,8]]],
+ [[[6,-55],[1,-35],[-1.8,-25],[-2,-13],[-2,-5],[-1.6,-.95],[-1.6,.8],[-.5,1.2],[1.5,1.4],[3.1,2.7]],'17',[[3,-8],[6,-.3]]],
+ [[[1.6,-1.2],[1.9,-3.5],[2.2,-6],[3,-8.5],[2.6,-12],[2,-19.3]],'51',[[2,-4.8]]],
+ [[[1.6,-1.2],[4,-.6],[7,.6],[9,.9],[12,.5],[16,-.2],[22,-.8],[26,1],[27.5,5],[27.8,8],[26,12.2],[18,12.8],[10.8,12.6],[7.5,11.8],[2,12.3],[-4,11.6],[-6.6,8.5],[-6.6,4],[-6.5,-.95]],'202',[[19,-.5],[14,12.7],[-6.6,6]]],
+ [[[-11.6,-.95],[-11.6,-12],[-10.5,-17],[-8,-19.3],[4,-19.3],[8.5,-19],[10.6,-16.5],[10.7,-10],[10.6,-2],[10.6,6],[10.8,12.6]],'101',[[-11.6,-8],[0,-19.3],[10.7,-6],[10.6,8]]],
+ [[[6.8,3.9],[15,3.9],[30,4.1],[45,3.5]],'60',[[18,3.95]]],
+ [[[4.3,-.6],[4.4,1.5],[4.6,3.4]],'143',[]],
+ [[[22,-1],[24,-8],[27,-14],[32,-22],[37,-35]],'87',[[25.5,-11]]],
+ [[[-25,4],[-25,-10],[-21,-20],[-12,-28],[-4,-30]],'303',[[-25,-4]]],
+];
+const NS=[[-11.5,'99th Ave'],[-9.5,'83rd Ave'],[-7.5,'67th Ave'],[-5.5,'51st Ave'],[-3.5,'35th Ave'],[-2.5,'27th Ave'],[-1.5,'19th Ave'],[-.5,'7th Ave'],[0,'Central Ave'],[.5,'7th St'],[1.5,'16th St'],[2.5,'24th St'],[3.5,'32nd St'],[4.5,'40th St'],[5.5,'48th St'],[6.5,'56th St'],[7.5,'64th St'],[8.5,'Scottsdale Rd'],[9.5,'Hayden Rd'],[11.5,'McClintock Dr'],[13.5,'Dobson Rd'],[15.5,'Country Club Dr']];
+const EW=[[-13.2,'Bell Rd'],[-11.2,'Thunderbird Rd'],[-10.2,'Cactus Rd'],[-9.2,'Peoria Ave'],[-8.2,'Dunlap Ave'],[-7.2,'Northern Ave'],[-6.2,'Glendale Ave'],[-5.2,'Bethany Home Rd'],[-4.2,'Camelback Rd'],[-3.2,'Indian School Rd'],[-2.2,'Thomas Rd'],[-1.2,'McDowell Rd'],[-.2,'Van Buren St'],[0,'Washington St'],[.8,'Buckeye Rd'],[1.8,'Lower Buckeye Rd'],[2.8,'Broadway Rd'],[3.8,'Southern Ave'],[4.8,'Baseline Rd']];
+const AREAS=[['Downtown',.3,.45,1],['Tempe',8.6,2.4,1],['Scottsdale',9.6,-7.2,1],['Mesa',15.5,1.6,1],['Glendale',-6.8,-5.6,1],['Peoria',-9.6,-9.6,1],['Chandler',13.5,9.2,1],['Gilbert',18.2,7.4,1],['Ahwatukee',5.2,10.3,1],['Laveen',-5.5,5.2,1],['Paradise Valley',8.4,-9.4,1],['Arcadia',5,-2.6,1],['Encanto',-1.3,-2.6,1],['Maryvale',-6.5,-2.4,1],['Sunnyslope',.6,-9.3,1],
+ ['Cave Creek',7.2,-26.5,0],['Fountain Hills',20.4,-11,0],['Lake Pleasant',-11.4,-31.4,0],['Saguaro Lake',31,-10.4,0],['South Mountain',-.4,6.2,0],['Superstition Mtns',40,-1.8,0],['White Tank Mtns',-27.5,-2.6,0],['McDowell Mtns',16.5,-22.4,0],['Sierra Estrella',-11,18.6,0]];
+const LIGHTS=(()=>{const r=rng(42),pts=[];
+  while(pts.length<2800){let x=-31+r()*63,y=-32+r()*51;if(!inMetro(x,y)||hAt(x,y)>.12)continue;if(r()>.25+.75*Math.exp(-Math.hypot(x-3,y+1)/11))continue;
+    const t=r();if(t<.45)x=Math.round((x-.5)*8)/8+.5;else if(t<.9)y=Math.round((y+.2)*8)/8-.2;
+    const art=Math.abs((x-.5)-Math.round(x-.5))<.01||Math.abs((y+.2)-Math.round(y+.2))<.01;pts.push([x,y,r(),r(),art])}return pts})();
+
+/* ================= street-level world (drawn) ================= */
+const SB=.125,SOX=.5,SOY=-.2;
+const PARKS_D=[
+ {n:'Hance Park',x0:-.3,x1:.3,y0:-1.01,y1:-.88,cover:1},
+ {n:'Civic Space Park',x0:.035,x1:.12,y0:-.32,y1:-.235},
+ {n:'Heritage Square',x0:.64,x1:.71,y0:-.07,y1:-.01},
+ {n:'Encanto Park',x0:-1.85,x1:-.98,y0:-2.18,y1:-1.55,cover:1},
+ {n:'University Park',x0:-.62,x1:-.51,y0:.3,y1:.4},
+ {n:'Eastlake Park',x0:1.26,x1:1.34,y0:.18,y1:.26},
+ {n:'Coronado Park',x0:1.25,x1:1.33,y0:-1.45,y1:-1.36},
+ {n:'Verde Park',x0:.98,x1:1.08,y0:.06,y1:.16},
+];
+const SPECIAL=[
+ {n:'Chase Field',x0:.39,x1:.58,y0:.11,y1:.3,h:.016,roof:'#eef1f2'},
+ {n:'Footprint Center',x0:.22,x1:.35,y0:.11,y1:.22,h:.012,roof:'#f3eee6'},
+ {n:'Convention Center',x0:.15,x1:.36,y0:-.18,y1:-.08,h:.009,roof:'#e9f1ec'},
+];
+const POI=[['ROOSEVELT ROW',.36,-.58],['DOWNTOWN PHOENIX',.12,-.12],['WAREHOUSE DISTRICT',.2,.4],['EVANS CHURCHILL',.7,-.52],['GRAND AVE ARTS',-.55,-.3],['ENCANTO',-1.4,-1.35],['WILLO',-.35,-1.55],['GARFIELD',.9,-.3],['SKY HARBOR',3.6,1.0]];
+const RAIL=[[.02,-4.6],[.02,-1.2],[.02,.05],[1.5,.05],[2.3,.05],[2.32,.6]];
+const GRAND=[[-.42,.05],[-1.6,-.85],[-3,-1.95],[-6.4,-4.6]];
+const DT_N=['Fillmore St','Roosevelt St','Portland St','Culver St','Willetta St','Moreland St','Oak St'];
+const DT_S=['Monroe St','Washington St','Jefferson St','Madison St','Jackson St','Lincoln St','Grant St'];
+const ord=n=>n+(['th','st','nd','rd'][(n%100>10&&n%100<14)?0:(n%10<4?n%10:0)]||'th');
+function nsName(x){
+  for(const[xx,n]of NS)if(Math.abs(xx-x)<1e-6)return n;
+  if(Math.abs(x)<1e-6)return 'Central Ave';
+  const num=t=>{const m=/^(\d+)/.exec(t);return m?+m[1]:null};
+  const side=x>0?'St':'Ave';const arts=[[0,0],...NS.filter(([xx,n])=>n.endsWith(side)&&num(n)!=null&&Math.sign(xx)===Math.sign(x)).map(([xx,n])=>[xx,num(n)])].sort((a,b)=>Math.abs(a[0])-Math.abs(b[0]));
+  for(let i=0;i<arts.length-1;i++){const[a,na]=arts[i],[b,nb]=arts[i+1];if(Math.abs(x)>=Math.abs(a)&&Math.abs(x)<=Math.abs(b)){const n=Math.max(1,Math.round(na+(nb-na)*(x-a)/(b-a)));return ord(n)+' '+side}}
+  return null}
+function ewName(y){for(const[yy,n]of EW)if(Math.abs(yy-y)<1e-6)return n;
+  const k=Math.round((y-SOY)/SB);if(k>=1&&k<=7)return DT_S[k-1];if(k<=-1&&k>=-7)return DT_N[-k-1];return null}
+const inRect=(p,x,y)=>x>p.x0&&x<p.x1&&y>p.y0&&y<p.y1;
+const overlapsRect=(p,a,b,c2,d)=>a<p.x1&&c2>p.x0&&b<p.y1&&d>p.y0;
+function drawStreet(m,c){
+  const MG=m.M||0,s=m.s,P=(x,y)=>{const q=m.px(x,y);q[0]+=MG;q[1]+=MG;return q};
+  c.translate(-MG,-MG);const W=m.w+2*MG,Hh=m.h+2*MG;
+  const[x0,y0]=m.mi(-MG,-MG),[x1,y1]=m.mi(m.w+MG,m.h+MG);
+  c.fillStyle='#18201a';c.fillRect(0,0,W,Hh);
+  c.imageSmoothingEnabled=true;const[rx,ry]=P(RB.x0,RB.y0);c.drawImage(RELIEF,rx,ry,RB.w*s,RB.h*s);
+  const R=(a,b,w,h)=>{const[p,q]=P(a,b);c.rect(p,q,w*s,h*s)};
+  const i0=Math.floor((x0-SOX)/SB)-1,i1=Math.ceil((x1-SOX)/SB)+1,j0=Math.floor((y0-SOY)/SB)-1,j1=Math.ceil((y1-SOY)/SB)+1;
+  const sw=k=>k%8===0?.021:k%4===0?.016:.0115;
+  const towers=[],pools=[],trees=[],lots=[],parking=[],blocks=[];
+  for(let j=j0;j<=j1;j++)for(let i=i0;i<=i1;i++){
+    const bx=SOX+i*SB,by=SOY+j*SB,cx=bx+SB/2,cy=by+SB/2;
+    if(!inMetro(cx,cy)||hAt(cx,cy)>.1)continue;
+    if(cx>2.25&&cx<4.95&&cy>.55&&cy<1.45)continue;
+    if(PARKS_D.some(p=>p.cover&&inRect(p,cx,cy)))continue;
+    const ix=bx+sw(i)/2,iy=by+sw(j)/2,ex=bx+SB-sw(i+1)/2,ey=by+SB-sw(j+1)/2,bw=ex-ix,bh=ey-iy;
+    blocks.push([ix,iy,bw,bh]);
+    if(SPECIAL.some(p=>overlapsRect(p,ix,iy,ex,ey)))continue;
+    const r=rng(Math.abs(i*7919+j*104729)+17);r();
+    const core=cx>-.48&&cx<.98&&cy>-.5&&cy<.5,strip=(i%8===0||i%8===7||j%8===0||j%8===7)&&!core;
+    const pk=PARKS_D.find(p=>!p.cover&&overlapsRect(p,ix,iy,ex,ey));
+    // street trees along the block edges
+    for(let t=ix+.006;t<ex-.004;t+=.011){if(r()<.55)trees.push([t,iy+.0035,.0045+r()*.003]);if(r()<.55)trees.push([t,ey-.0035,.0045+r()*.003])}
+    if(core){
+      if(r()<.2){parking.push([ix+.004,iy+.004,bw-.008,bh-.008]);continue}
+      const dc=Math.hypot(cx-.15,cy+.05),tall=Math.exp(-dc/.32);
+      const lay=r();const fp=lay<.35?[[0,0,1,1]]:lay<.7?[[0,0,.48,1],[.52,0,1,1]]:[[0,0,.48,.48],[.52,0,1,.48],[0,.52,.48,1],[.52,.52,1,1]];
+      for(const[a,b,c2,d]of fp){if(r()<.12)continue;const m2=.006;
+        const tx0=ix+bw*a+m2,ty0=iy+bh*b+m2,tx1=ix+bw*c2-m2,ty1=iy+bh*d-m2;
+        if(pk&&overlapsRect(pk,tx0,ty0,tx1,ty1))continue;
+        towers.push({x0:tx0,y0:ty0,x1:tx1,y1:ty1,h:.003+(.004+r()*r()*.05)*tall+r()*.004,seed:r()})}
+    }else if(strip){
+      if(r()<.5)parking.push([ix+.003,iy+.003,bw-.006,bh*.5]);
+      towers.push({x0:ix+.006,y0:iy+bh*(r()<.5?.5:.08),x1:ix+bw*(.5+r()*.45),y1:ey-.006,h:.0022+r()*.003,seed:r(),low:1})
+    }else{
+      if(pk)continue;
+      lots.push([ix,iy+bh/2-.0015,bw,.003]);
+      const n=5+Math.floor(r()*2),lw=bw/n;
+      for(const row of[0,1])for(let k=0;k<n;k++){const lx=ix+k*lw,ly=row?iy+bh/2+.002:iy;const dh=bh/2-.002;
+        const hw=lw*(.58+r()*.22),hd=dh*(.42+r()*.18),hx=lx+(lw-hw)/2,hy=row?ly+dh-hd-.004:ly+.004;
+        towers.push({x0:hx,y0:hy,x1:hx+hw,y1:hy+hd,h:.0016+r()*.0012,seed:r(),house:1,tone:Math.floor(r()*4)});
+        if(r()<.22){const pw=lw*.42,ph=dh*.22;pools.push([lx+(lw-pw)/2,row?ly+.005:ly+dh-ph-.005,pw,ph])}
+        const nt=1+Math.floor(r()*2.4);for(let q=0;q<nt;q++)trees.push([lx+r()*lw,row?ly+dh*r()*.45:ly+dh*(.55+r()*.45),.004+r()*.0045])}
+    }
+  }
+  // lawns, alleys, lots
+  c.beginPath();for(const b of blocks)R(...b);c.fillStyle='#1f2d21';c.fill();
+  c.beginPath();for(const b of lots)R(...b);c.fillStyle='#192219';c.fill();
+  c.beginPath();for(const b of parking)R(...b);c.fillStyle='#2a2e30';c.fill();
+  if(s>350){c.beginPath();for(const[a,b,w,h]of parking){for(let t=a+.006;t<a+w;t+=.006){const[p,q]=P(t,b+.002),[,q2]=P(t,b+h*.4);c.moveTo(p,q);c.lineTo(p,q2);const[,q3]=P(t,b+h*.6),[,q4]=P(t,b+h-.002);c.moveTo(p,q3);c.lineTo(p,q4)}}c.strokeStyle='rgba(255,255,255,.18)';c.lineWidth=.7;c.stroke()}
+  for(const p of PARKS_D)if(!p.cover){c.beginPath();R(p.x0,p.y0,p.x1-p.x0,p.y1-p.y0);c.fillStyle='#223a22';c.fill()}
+  // streets
+  const road=k=>k%8===0?'#3b4041':k%4===0?'#353a3b':'#2f3334';
+  for(let i=i0;i<=i1;i++){const x=SOX+i*SB,w=sw(i);c.fillStyle=road(i);const[p]=P(x-w/2,0);c.fillRect(p,0,w*s,Hh)}
+  for(let j=j0;j<=j1;j++){const y=SOY+j*SB,w=sw(j);c.fillStyle=road(j);const[,q]=P(0,y-w/2);c.fillRect(0,q,W,w*s)}
+  c.lineCap='round';c.lineJoin='round';
+  const poly=(pts)=>{c.beginPath();pts.forEach(([x,y],k)=>{const[a,b]=P(x,y);k?c.lineTo(a,b):c.moveTo(a,b)})};
+  poly(GRAND);c.strokeStyle='#3b4041';c.lineWidth=.021*s;c.stroke();
+  c.save();c.setLineDash([7,9]);c.strokeStyle='rgba(255,255,255,.2)';c.lineWidth=1;c.beginPath();
+  for(let i=i0;i<=i1;i++)if(i%4===0){const[p]=P(SOX+i*SB,0);c.moveTo(p,0);c.lineTo(p,Hh)}
+  for(let j=j0;j<=j1;j++)if(j%4===0){const[,q]=P(0,SOY+j*SB);c.moveTo(0,q);c.lineTo(W,q)}
+  c.stroke();poly(GRAND);c.stroke();c.restore();
+  if(s>300){c.fillStyle='rgba(255,255,255,.34)';for(let i=i0;i<=i1;i++)for(let j=j0;j<=j1;j++)if(i%4===0&&j%4===0){const x=SOX+i*SB,y=SOY+j*SB,w=sw(i),h=sw(j);
+    for(let t=-w/2;t<w/2;t+=.004){const[p,q]=P(x+t,y-h/2-.004);c.fillRect(p,q,.002*s,.003*s);const[,q2]=P(0,y+h/2+.001);c.fillRect(p,q2,.002*s,.003*s)}}}
+  // freeways
+  for(const[pts]of FWY){poly(pts);c.strokeStyle='#151819';c.lineWidth=.056*s+3;c.stroke()}
+  for(const[pts]of FWY){poly(pts);c.strokeStyle='#43494a';c.lineWidth=.056*s;c.stroke()}
+  c.save();c.setLineDash([10,12]);for(const[pts]of FWY){poly(pts);c.strokeStyle='rgba(255,255,255,.3)';c.lineWidth=1.2;c.stroke()}c.restore();
+  // light rail
+  c.save();c.setLineDash([2,3]);poly(RAIL);c.strokeStyle='rgba(196,108,245,.55)';c.lineWidth=.006*s;c.stroke();c.restore();
+  // big parks, water
+  for(const p of PARKS_D)if(p.cover){c.beginPath();R(p.x0,p.y0,p.x1-p.x0,p.y1-p.y0);c.fillStyle='#1f3820';c.fill();c.strokeStyle='rgba(90,160,90,.3)';c.lineWidth=1;c.stroke()}
+  for(const l of LAKES){poly(l);c.closePath();const[a,b]=P(l[0][0],l[0][1]);const g=c.createLinearGradient(a,b-60,a,b+60);g.addColorStop(0,'#123447');g.addColorStop(1,'#0a2130');c.fillStyle=g;c.fill();c.strokeStyle='rgba(120,200,225,.35)';c.lineWidth=1.4;c.stroke()}
+  for(const r2 of CANALS){poly(r2);c.strokeStyle='#0f2c3a';c.lineWidth=.02*s;c.stroke();poly(r2);c.strokeStyle='rgba(120,200,225,.3)';c.lineWidth=1;c.stroke()}
+  c.beginPath();for(const b of pools){const[p,q]=P(b[0],b[1]);c.roundRect?c.roundRect(p,q,b[2]*s,b[3]*s,2):c.rect(p,q,b[2]*s,b[3]*s)}c.fillStyle='#1d8ea3';c.fill();c.strokeStyle='rgba(140,235,255,.45)';c.lineWidth=.7;c.stroke();
+  // park trees
+  for(const p of PARKS_D){const[a,b]=P(p.x0,p.y0),[a2,b2]=P(p.x1,p.y1);if(a2<0||b2<0||a>W||b>Hh)continue;const r=rng(Math.abs(Math.round(p.x0*1000+p.y0*7000))+99);
+    const n=Math.min(320,Math.round((p.x1-p.x0)*(p.y1-p.y0)*12000));for(let k=0;k<n;k++){const x=p.x0+r()*(p.x1-p.x0),y=p.y0+r()*(p.y1-p.y0);if(LAKES.some(l=>{let cc=false;for(let q=0,w=l.length-1;q<l.length;w=q++){const[xa,ya]=l[q],[xb,yb]=l[w];if((ya>y)!==(yb>y)&&x<(xb-xa)*(y-ya)/(yb-ya)+xa)cc=!cc}return cc}))continue;trees.push([x,y,.005+r()*.007])}}
+  // tree canopies: shadow, body, highlight
+  c.fillStyle='rgba(0,0,0,.35)';c.beginPath();for(const[x,y,rr]of trees){const[a,b]=P(x+rr*.35,y+rr*.45);c.moveTo(a+rr*s,b);c.arc(a,b,rr*s,0,7)}c.fill();
+  c.fillStyle='#1b3a20';c.beginPath();for(const[x,y,rr]of trees){const[a,b]=P(x,y);c.moveTo(a+rr*s,b);c.arc(a,b,rr*s,0,7)}c.fill();
+  c.fillStyle='#29522c';c.beginPath();for(const[x,y,rr]of trees){const[a,b]=P(x-rr*.28,y-rr*.32);c.moveTo(a+rr*s*.55,b);c.arc(a,b,rr*s*.55,0,7)}c.fill();
+  // spot glows on the ground
+  for(const{p}of m.items){const[a,b]=P(p.x,p.y);if(a<-80||b<-80||a>W+80||b>Hh+80)continue;const col=p._col==='p'?'196,108,245':'63,224,138';
+    const g=c.createRadialGradient(a,b,0,a,b,.06*s);g.addColorStop(0,`rgba(${col},.55)`);g.addColorStop(1,`rgba(${col},0)`);c.fillStyle=g;c.fillRect(a-.06*s,b-.06*s,.12*s,.12*s)}
+  // buildings + houses, far to near
+  const all=[...towers,...SPECIAL];all.sort((a,b)=>a.y1-b.y1);const K=2.4;
+  const roofs=['#4a4f57','#3f444c','#53473f','#45494f'];
+  for(const t of all){const[a,b]=P(t.x0,t.y0),[a2,b2]=P(t.x1,t.y1);if(a2<-20||a>W+20||b2<-10||b>Hh+60)continue;const hh=t.h*s*K,wd=a2-a,dp=b2-b;
+    c.fillStyle=t.house?'#272a30':t.low?'#24282c':'#1f2327';c.fillRect(a,b2-hh,wd,hh);
+    const r=rng(Math.floor(t.seed*1e6)+3);c.fillStyle='#ffc86b';
+    if(t.house){if(wd>6&&hh>2.5){const n=wd>12?2:1;for(let k=0;k<n;k++)if(r()<.75){c.globalAlpha=.6+r()*.4;c.fillRect(a+wd*(k+1)/(n+1)-1.2,b2-hh*.72,2.4,Math.max(1.4,hh*.38))}c.globalAlpha=1}}
+    else if(hh>5){for(let wy=b2-hh+3;wy<b2-3;wy+=4.2)for(let wx=a+2;wx<a2-2;wx+=3.6)if(r()<(t.low?.28:.42)){c.globalAlpha=.45+r()*.55;c.fillRect(wx,wy,1.5,2)}c.globalAlpha=1}
+    if(t.house){const rf=roofs[t.tone||0];c.fillStyle=rf;c.fillRect(a,b-hh,wd,dp);
+      c.fillStyle='rgba(0,0,0,.28)';c.fillRect(a,b-hh,wd,dp*.5);
+      c.strokeStyle='rgba(255,255,255,.14)';c.lineWidth=.8;c.beginPath();c.moveTo(a+1,b-hh+dp*.5);c.lineTo(a2-1,b-hh+dp*.5);c.stroke()}
+    else{const v=Math.min(1,t.h*30);c.fillStyle=t.roof?'#4b5158':`rgb(${70+v*22|0},${76+v*22|0},${84+v*24|0})`;c.fillRect(a,b-hh,wd,dp);
+      c.strokeStyle='rgba(255,255,255,.12)';c.lineWidth=.8;c.strokeRect(a+.4,b-hh+.4,wd-.8,dp-.8);
+      if(!t.low&&wd>14){c.fillStyle='rgba(0,0,0,.28)';c.fillRect(a+wd*.3,b-hh+dp*.3,wd*.25,dp*.2)}}}
+  // warm street lights
+  for(let i=i0;i<=i1;i++)if(i%4===0){const x=SOX+i*SB;for(let y=Math.ceil(y0/.0625)*.0625;y<y1;y+=.0625){const[a,b]=P(x+sw(i)/2+.002,y);c.fillStyle='#ffd590';c.globalAlpha=.9;c.fillRect(a-1,b-1,2,2);c.globalAlpha=.12;c.beginPath();c.arc(a,b,9,0,7);c.fill()}}
+  for(let j=j0;j<=j1;j++)if(j%4===0){const y=SOY+j*SB;for(let x=Math.ceil(x0/.0625)*.0625;x<x1;x+=.0625){const[a,b]=P(x,y+sw(j)/2+.002);c.fillStyle='#ffd590';c.globalAlpha=.9;c.fillRect(a-1,b-1,2,2);c.globalAlpha=.12;c.beginPath();c.arc(a,b,9,0,7);c.fill()}}
+  c.globalAlpha=1;
+  // quiet labels
+  c.textAlign='center';c.textBaseline='middle';const halo=(t,x,y)=>{c.lineWidth=3;c.strokeStyle='rgba(8,12,10,.85)';c.strokeText(t,x,y);c.fillText(t,x,y)};
+  if(s>=240){c.font='600 9.5px -apple-system,Helvetica,Arial,sans-serif';c.fillStyle='rgba(225,235,228,.5)';
+    for(let i=i0;i<=i1;i++){const x=SOX+i*SB;if(i%4)continue;const n=nsName(Math.round(x*1000)/1000);if(!n)continue;const[a]=P(x,0);
+      for(let y=Math.floor(y0/.5)*.5+.31;y<y1;y+=.5){const[,b]=P(x,y);if(!inMetro(x,y)||PARKS_D.some(p=>p.cover&&inRect(p,x,y)))continue;c.save();c.translate(a,b);c.rotate(-Math.PI/2);halo(n,0,0);c.restore()}}
+    for(let j=j0;j<=j1;j++){if(j%4)continue;const y=SOY+j*SB;const n=ewName(Math.round(y*1000)/1000);if(!n)continue;const[,b]=P(0,y);
+      for(let x=Math.floor(x0/.5)*.5+.19;x<x1;x+=.5){const[a]=P(x,y);if(!inMetro(x,y)||PARKS_D.some(p=>p.cover&&inRect(p,x,y)))continue;halo(n,a,b)}}}
+  c.font='600 11px "Plus Jakarta Sans",-apple-system,sans-serif';c.fillStyle='rgba(150,215,150,.6)';
+  for(const p of PARKS_D){const[a,b]=P((p.x0+p.x1)/2,(p.y0+p.y1)/2);if(a>-60&&a<W+60&&b>-20&&b<Hh+20)halo(p.n,a,b)}
+}
+
+/* ================= neon pins ================= */
+const ICON={golden:'mountain',lockett:'cloud',christopher:'tree',powell:'eye',dobbins:'eye',hole:'mountain',camel:'mountain',saguaro:'mountain',estrella:'mountain',stargaze:'cloud',canyon:'palm',townlake:'palm',skyline:'leaf',row:'flame',encanto:'palm',copper:'leaf',civic:'tree',deck:'tree',heritage:'leaf',grand:'eye'};
+const PURPLE=new Set(['palm','mountain','eye','flame']);
+function pinInner(p,size){const ic=ICON[p.id]||'leaf';p._col=PURPLE.has(ic)?'p':'g';
+  const icon=ic==='leaf'?'<svg x="6.5" y="7.5" width="17" height="13"><use href="#leaf"/></svg>':`<svg x="7.5" y="6.5" width="15" height="15"><use href="#ic-${ic}"/></svg>`;
+  return `<svg class="np" width="${size}" height="${Math.round(size*1.3)}" viewBox="0 0 30 39"><path d="M15 1.5C7.6 1.5 2.2 7 2.2 14.2c0 8.6 12.8 22.8 12.8 22.8s12.8-14.2 12.8-22.8C27.8 7 22.4 1.5 15 1.5Z" fill="rgba(10,14,12,.8)" stroke="currentColor" stroke-width="2.2"/>${icon}</svg>`+
+   (p._lab&&p.rating?`<span class="plabel"><b>${esc(p.name)}</b><small>${p.rating.toFixed(1)}<svg width="12" height="9"><use href="#leaf"/></svg><i>(${p.count})</i><em>${fmt(p.dist)}</em></small></span>`:'')}
+
+/* ================= map component ================= */
+const FIG=`<svg viewBox="0 0 34 58" aria-hidden="true"><defs><linearGradient id="hdg" x1="0" x2="1"><stop offset="0" stop-color="#b79cff"/><stop offset=".55" stop-color="#8b5cf6"/><stop offset="1" stop-color="#6435d6"/></linearGradient></defs><path d="M11.5 40 10.2 55.5h4.6l2.2-11 2.2 11h4.6L22.5 40Z" fill="#24433a"/><path d="M9.5 55.5h5.6M19 55.5h5.6" stroke="#1fb26b" stroke-width="1.8" stroke-linecap="round"/><path d="M7.5 25 4.6 38.5M26.5 25l2.9 13.5" stroke="#7646e6" stroke-width="4.6" stroke-linecap="round"/><path d="M7 24.5C7 17.5 11 14.6 17 14.6s10 2.9 10 9.9l1 17.5H6Z" fill="url(#hdg)" stroke="#ffffff" stroke-width=".8"/><path d="M12 33h10l-1 5h-8Z" fill="none" stroke="#6435d6" stroke-width=".7"/><svg x="13.5" y="25.5" width="7" height="5"><use href="#leaf" style="color:#ffffff"/></svg><path d="M9.6 13.2C9.6 5.6 13.2 2 17 2s7.4 3.6 7.4 11.2c0 4.1-3.3 6.4-7.4 6.4s-7.4-2.3-7.4-6.4Z" fill="url(#hdg)" stroke="#ffffff" stroke-width=".8"/><ellipse cx="17" cy="12.2" rx="4.3" ry="5.1" fill="#14332a"/><path d="M14.6 11.6h1.6M17.8 11.6h1.6" stroke="#efe6ff" stroke-width=".8" stroke-linecap="round" opacity=".55"/></svg>`;
+class LocalMap{
+  constructor(el,o={}){this.el=el;this.o=o;this.cx=0;this.cy=0;this.s=o.s||8;this.radius=null;this.items=[];
+    this.cv=document.createElement('canvas');el.appendChild(this.cv);this.layer=document.createElement('div');this.layer.className='lm-layer';el.appendChild(this.layer);
+    this.meEl=document.createElement('div');this.meEl.className='me'+(o.small?' sm':'');this.meEl.innerHTML='<i></i><i class="i2"></i><span class="disc"></span><b><svg width="100%" height="100%" viewBox="0 0 40 40"><use href="#hood"/></svg></b><div class="fig"><span class="face">'+FIG+'</span></div>';if(o.tilt)el.classList.add('tilt');this.layer.appendChild(this.meEl);
+    if(o.interactive)this.bind();
+    new ResizeObserver(()=>this.fit()).observe(el)}
+  fit(){const w=this.el.clientWidth,h=this.el.clientHeight;if(!w||!h)return;const d=Math.min(devicePixelRatio||1,this.o.tilt?1.1:2.5),M=this.M=this.o.street?240:0;
+    this.w=w;this.h=h;this.d=d;this.cv.width=Math.round((w+2*M)*d);this.cv.height=Math.round((h+2*M)*d);this.cv.style.width=(w+2*M)+'px';this.cv.style.height=(h+2*M)+'px';this.cv.style.position='absolute';this.cv.style.left=this.cv.style.top=(-M)+'px';this.dirty=1;
+    if(!this._fitted&&this.o.onFirstFit){this._fitted=1;this.o.onFirstFit(this)}this.draw()}
+  px(x,y){return[(x-this.cx)*this.s+this.w/2,(y-this.cy)*this.s+this.h*(this.o.originY||.5)]}
+  mi(px,py){return[(px-this.w/2)/this.s+this.cx,(py-this.h*(this.o.originY||.5))/this.s+this.cy]}
+  req(){if(!this._r)this._r=requestAnimationFrame(()=>{this._r=0;this.draw()})}
+  zoomAt(f,px=this.w/2,py=this.h*(this.o.originY||.5)){const[mx,my]=this.mi(px,py);this.s=Math.min(this.o.maxS||90,Math.max(1.6,this.s*f));this.cx=mx-(px-this.w/2)/this.s;this.cy=my-(py-this.h/2)/this.s;this.req()}
+  bind(){const pts=new Map();let start=null,moved=0,pinch=null;const el=this.el;
+    el.addEventListener('pointerdown',e=>{if(e.target.closest('.pin'))return;el.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);start=[e.clientX,e.clientY];moved=0;
+      if(pts.size===2){const[a,b]=[...pts.values()];pinch=Math.hypot(a[0]-b[0],a[1]-b[1])}});
+    el.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;const prev=pts.get(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);
+      if(pts.size===2){const[a,b]=[...pts.values()];const d=Math.hypot(a[0]-b[0],a[1]-b[1]);const r=el.getBoundingClientRect();if(pinch){if(this.o.tilt)this.zoomAt(d/pinch,this.w/2,this.h*(this.o.originY||.5));else this.zoomAt(d/pinch,(a[0]+b[0])/2-r.left,(a[1]+b[1])/2-r.top)}pinch=d;moved=99;return}
+      const k=this.o.tilt&&!el.closest('.flat')?1/Math.cos(this.o.tilt*Math.PI/180):1;const dx=e.clientX-prev[0],dy=(e.clientY-prev[1])*k;moved=Math.max(moved,Math.hypot(e.clientX-start[0],e.clientY-start[1]));if(moved>4)this.follow=false;this.cx-=dx/this.s;this.cy-=dy/this.s;this.req()});
+    const up=e=>{if(!pts.has(e.pointerId))return;pts.delete(e.pointerId);if(pts.size<2)pinch=null;
+      if(moved<6&&pts.size===0&&this.o.onTap&&e.type==='pointerup'){const r=el.getBoundingClientRect();this.o.onTap(this.mi(e.clientX-r.left,e.clientY-r.top))}};
+    el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);
+    el.addEventListener('wheel',e=>{e.preventDefault();const r=el.getBoundingClientRect();if(this.o.tilt)this.zoomAt(Math.exp(-e.deltaY*.0015),this.w/2,this.h*(this.o.originY||.5));else this.zoomAt(Math.exp(-e.deltaY*.0015),e.clientX-r.left,e.clientY-r.top)},{passive:false})}
+  setPins(list,size){this.dirty=1;this.layer.querySelectorAll('.pin').forEach(p=>p.remove());this.items=list.map(p=>{const b=document.createElement('button');b.className='pin';b.dataset.pin=p.id;
+    b.setAttribute('aria-label',p.name||'Pin');b.innerHTML=pinInner(p,size);if(p._col==='p')b.classList.add('pp');if(this.o.pinTarget)b.dataset.where=this.o.pinTarget;this.layer.appendChild(b);return{p,b}});this.req()}
+  draw(){if(!this.w)return;const c=this.cv.getContext('2d'),s=this.s,W=this.w,Hh=this.h;c.setTransform(this.d,0,0,this.d,0,0);
+    const M=this.M||0;
+    if(this.o.street&&s>=60){const dx=(this.cx-this.rcx)*s,dy=(this.cy-this.rcy)*s;
+      if(!this.dirty&&this.rs===s&&Math.abs(dx)<M*.85&&Math.abs(dy)<M*.85){this.cv.style.transform=`translate(${-dx}px,${-dy}px)`;this.overlays();return}
+      this.rcx=this.cx;this.rcy=this.cy;this.rs=s;this.dirty=0;this.cv.style.transform='';
+      c.setTransform(this.d,0,0,this.d,this.d*M,this.d*M);drawStreet(this,c);this.overlays();return}
+    this.cv.style.transform='';this.rs=null;c.setTransform(this.d,0,0,this.d,this.d*M,this.d*M);
+    const P=(x,y)=>this.px(x,y);
+    const path=(pts,close)=>{c.beginPath();pts.forEach(([x,y],i)=>{const[a,b]=P(x,y);i?c.lineTo(a,b):c.moveTo(a,b)});if(close)c.closePath()};
+    c.fillStyle='#141a16';c.fillRect(0,0,W,Hh);
+    // city base
+    path(METRO,1);c.fillStyle='#1b241d';c.fill();
+    c.save();path(METRO,1);c.clip();
+    const[gx,gy]=P(3,-2),gl=c.createRadialGradient(gx,gy,0,gx,gy,22*s);gl.addColorStop(0,'rgba(255,255,255,.03)');gl.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=gl;c.fillRect(0,0,W,Hh);
+    // streets
+    const[x0,y0]=this.mi(0,0),[x1,y1]=this.mi(W,Hh);
+    const grid=(step,offX,offY,style,lw)=>{c.beginPath();
+      for(let x=Math.ceil((x0-offX)/step)*step+offX;x<=x1;x+=step){const a=Math.round(P(x,0)[0])+.5;c.moveTo(a,0);c.lineTo(a,Hh)}
+      for(let y=Math.ceil((y0-offY)/step)*step+offY;y<=y1;y+=step){const b=Math.round(P(0,y)[1])+.5;c.moveTo(0,b);c.lineTo(W,b)}
+      c.strokeStyle=style;c.lineWidth=lw;c.stroke()};
+    if(s>=14)grid(.125,.5,-.2,`rgba(255,255,255,${Math.min(.12,(s-14)*.004+.05)})`,.6);
+    if(s>=9)grid(.5,.5,-.2,'rgba(255,255,255,.11)',.7);
+    grid(1,.5,-.2,s>=9?'rgba(255,196,90,.32)':`rgba(255,196,90,${s<4?.1:.17})`,s>=9?1.1:.6);
+    c.beginPath();let[a]=P(0,0);c.moveTo(a,0);c.lineTo(a,Hh);let[,b]=P(0,0);c.moveTo(0,b);c.lineTo(W,b);c.strokeStyle='rgba(255,196,90,.3)';c.lineWidth=1.1;c.stroke();
+    c.restore();
+    // terrain
+    c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';const[rx,ry]=P(RB.x0,RB.y0);c.drawImage(RELIEF,rx,ry,RB.w*s,RB.h*s);
+    // rivers, canals, lakes
+    c.lineJoin=c.lineCap='round';
+    for(const r of[SALT,GILA]){path(r);c.strokeStyle='rgba(205,190,150,.6)';c.lineWidth=Math.max(2,.24*s);c.stroke();path(r);c.strokeStyle='rgba(80,190,225,.85)';c.lineWidth=Math.max(.8,.05*s);c.stroke()}
+    if(s>=3.5)for(const r of CANALS){path(r);c.strokeStyle='rgba(90,195,225,.85)';c.lineWidth=Math.max(.7,.035*s);c.stroke()}
+    for(const l of LAKES){path(l,1);c.fillStyle='#0d2533';c.fill();c.strokeStyle='rgba(60,170,210,.8)';c.lineWidth=.8;c.stroke()}
+    // airport
+    if(s>=4){const[ax,ay]=P(2.4,.62);c.fillStyle='rgba(226,228,220,.95)';c.fillRect(ax,ay,2.5*s,.78*s);
+      c.strokeStyle='#ffffff';c.lineWidth=Math.max(1,.045*s);c.lineCap='butt';c.beginPath();for(const[ry1,x1a,x2a]of[[.78,2.6,4.6],[.98,2.5,4.8],[1.24,2.7,4.7]]){const[p1,q1]=P(x1a,ry1),[p2]=P(x2a,ry1);c.moveTo(p1,q1);c.lineTo(p2,q1)}c.stroke();c.lineCap='round'}
+    // freeways
+    for(const[pts]of FWY){path(pts);c.strokeStyle='#151819';c.lineWidth=s>=8?5:3.4;c.stroke()}
+    c.save();c.shadowColor='rgba(242,157,56,.35)';c.shadowBlur=4;for(const[pts]of FWY){path(pts);c.strokeStyle='#4f5556';c.lineWidth=s>=8?2.2:1.5;c.stroke()}c.restore();
+    // city lights
+    const lr=Math.max(.45,Math.min(1.5,s*.08));
+    for(const[x,y,a2,b2,art]of []){const[px,py]=P(x,y);if(px<-3||py<-3||px>W+3||py>Hh+3)continue;
+      c.globalAlpha=(art?.6:.3)+a2*.4;c.fillStyle=b2>.88?'#fff3d2':art?'#f0c27a':'#d9a35e';c.beginPath();c.arc(px,py,lr*(art?1.15:.75)*(.7+b2*.6),0,7);c.fill()}
+    c.globalAlpha=1;
+    // radius
+    if(this.radius){const[a3,b3]=P(U.x,U.y),R=this.radius*s;c.beginPath();c.arc(a3,b3,R,0,7);c.fillStyle='rgba(255,255,255,.05)';c.fill();
+      c.setLineDash([4,5]);c.strokeStyle='rgba(31,178,107,.85)';c.lineWidth=1.1;c.stroke();c.setLineDash([]);
+      c.font='600 9px -apple-system,Helvetica,Arial,sans-serif';c.textAlign='center';c.fillStyle='#119a5b';c.fillText(this.radius+' MI',a3,b3-R-6)}
+    if(!this.o.labels){this.overlays();return}
+    c.textAlign='center';c.textBaseline='middle';
+    const halo=(t,x,y)=>{c.lineWidth=3;c.strokeStyle='rgba(8,12,10,.85)';c.strokeText(t,x,y);c.fillText(t,x,y)};
+    // street names
+    if(s>=16){c.font='500 8.5px -apple-system,Helvetica,Arial,sans-serif';c.fillStyle='rgba(225,235,228,.6)';
+      for(const[x,n]of NS){const[a4]=P(x,0);if(a4<8||a4>W-8)continue;const yy=Hh*.58;const[mx2,my2]=this.mi(a4,yy);if(!inMetro(mx2,my2)||hAt(mx2,my2)>.12)continue;c.save();c.translate(a4,yy);c.rotate(-Math.PI/2);halo(n,0,0);c.restore()}
+      for(const[y,n]of EW){const[,b4]=P(0,y);if(b4<120||b4>Hh-150)continue;const xx=W*.3;const[mx2,my2]=this.mi(xx,b4);if(!inMetro(mx2,my2)||hAt(mx2,my2)>.12)continue;halo(n,xx,b4)}}
+    if(s>=7&&s<40){c.font='600 7px -apple-system,Helvetica,Arial,sans-serif';c.fillStyle='rgba(225,235,228,.6)';const[ax,ay]=P(3.6,1.55);halo('SKY HARBOR',ax,ay)}
+    // area labels
+    if('letterSpacing'in c)c.letterSpacing='1.6px';
+    if(s<3.2){c.font='500 14px "Plus Jakarta Sans",-apple-system,sans-serif';c.fillStyle='#e8f0eb';const[a5,b5]=P(2,-3.5);halo('PHOENIX',a5,b5)}
+    c.font='600 7.5px -apple-system,Helvetica,Arial,sans-serif';
+    for(const[n,x,y,near]of AREAS){if(near&&(s<3.2||s>30))continue;const[a6,b6]=P(x,y);if(a6<-40||a6>W+40||b6<-10||b6>Hh+10)continue;
+      c.fillStyle=near?'rgba(225,235,228,.6)':'rgba(225,235,228,.5)';halo(n.toUpperCase(),a6,b6)}
+    if('letterSpacing'in c)c.letterSpacing='0px';
+    // freeway shields
+    if(s>=3.5){c.font='700 7.5px -apple-system,Helvetica,Arial,sans-serif';
+      for(const[,lab,spots2]of FWY)for(const[x,y]of spots2){const[a7,b7]=P(x,y);if(a7<10||a7>W-10||b7<10||b7>Hh-10)continue;const w=lab.length*5+8;
+        c.beginPath();c.roundRect?c.roundRect(a7-w/2,b7-6.5,w,13,3.5):c.rect(a7-w/2,b7-6.5,w,13);c.fillStyle='#ffffff';c.fill();c.strokeStyle='#1fb26b';c.lineWidth=1;c.stroke();c.fillStyle='#e8f0eb';c.fillText(lab,a7,b7+.5)}}
+    this.overlays()}
+  overlays(){const[mx,my]=this.px(U.x,U.y);this.meEl.style.left=mx+'px';this.meEl.style.top=my+'px';
+    for(const{p,b}of this.items){const[a,bb]=this.px(p.x,p.y);const off=a<-30||bb<-10||a>this.w+30||bb>this.h+50;b.hidden=off;if(off)continue;
+      b.style.left=a+'px';b.style.top=bb+'px';b.classList.toggle('out',!!this.radius&&p.dist>this.radius)}
+  }
+}
+
+/* ================= data ================= */
+const U={lat:LAT0,lng:LNG0,x:0,y:0,real:false};
+const spots=[
+ {id:'golden',name:'Mogollon Rim Vista',area:'Mogollon Rim',lat:34.3088,lng:-110.9566,rating:4.9,count:312,tags:['Sunset','Secluded','Nature'],desc:'Secluded overlook with insane sunset views. Perfect for a sesh.',more:'Ponderosa pines run right up to the edge of the Rim, with a 200-mile view south over the Tonto Basin. Go for golden hour.'},
+ {id:'lockett',name:'Lockett Meadow',area:'Flagstaff',lat:35.3570,lng:-111.6200,rating:5.0,count:188,tags:['Nature','Secluded'],desc:'Aspen meadow and a mirror pond inside the San Francisco Peaks. Snowy peaks well into spring.'},
+ {id:'christopher',name:'Christopher Creek',area:'Payson',lat:34.3060,lng:-111.0330,rating:4.9,count:241,tags:['Nature','Chill'],desc:'Tall pines, a cold creek and campfire nights under the Rim. A cool escape from the valley heat.'},
+ {id:'powell',name:'Lake Powell',area:'Page',lat:36.9360,lng:-111.4840,rating:4.8,count:276,tags:['Sunset','Nature'],desc:'Red sandstone towers rising out of blue water. Sunsets light up the whole canyon.'},
+ {id:'dobbins',name:'Dobbins Lookout',area:'South Mountain',lat:33.3474,lng:-112.0604,kind:'ridge',rating:4.9,count:298,tags:['Sunset','Nature'],desc:'The highest point you can drive to in South Mountain Park, with the whole valley laid out below.'},
+ {id:'hole',name:'Hole-in-the-Rock',area:'Papago Park',lat:33.4545,lng:-111.9455,kind:'buttes',rating:4.8,count:267,tags:['Sunset','Nature'],desc:'Red sandstone butte with a natural window that frames the sunset. Short scramble, huge payoff.'},
+ {id:'camel',name:'Camelback Mountain',area:'Echo Canyon',lat:33.5151,lng:-111.9619,kind:'citynight',rating:4.9,count:201,tags:['Secluded','Sunset'],desc:'Phoenix\u2019s most famous summit. The views of the city lights from up top are wild.'},
+ {id:'saguaro',name:'Piestewa Peak',area:'Phoenix Mountains',lat:33.5477,lng:-112.0201,kind:'saguaro',rating:4.7,count:176,tags:['Sunset','Nature'],desc:'Steep desert climb through saguaros to a 360-degree view of the valley.'},
+ {id:'estrella',name:'Estrella Mountain Park',area:'Goodyear',lat:33.3800,lng:-112.3700,kind:'ridge',seed:8,rating:4.6,count:88,tags:['Secluded','Sunset'],desc:'Quiet desert trails on the west side with wide-open sky and almost nobody around.'},
+ {id:'stargaze',name:'Spur Cross Ranch',area:'Cave Creek',lat:33.8810,lng:-111.9510,kind:'stars',rating:4.9,count:154,tags:['Secluded','Nature'],desc:'Dark desert sky far from the city glow. Bring a blanket and watch the Milky Way rise.'},
+ {id:'canyon',name:'Saguaro Lake',area:'Tonto National Forest',lat:33.5660,lng:-111.5360,kind:'lake',rating:4.8,count:190,tags:['Sunset','Nature'],desc:'Desert cliffs dropping into still water. Sunsets turn the whole canyon orange.'},
+ {id:'townlake',name:'Tempe Town Lake',area:'Tempe',lat:33.4320,lng:-111.9330,kind:'lakecity',seed:7,rating:4.5,count:142,tags:['Chill'],desc:'Bridge lights reflecting off the lake. Easy, chill, and close to everything.'},
+ {id:'skyline',name:'Wesley Bolin Plaza',area:'Capitol District',xy:[-1.3,-.02],kind:'city',seed:2,rating:4.5,count:98,tags:['Chill'],desc:'Shady memorial plaza across from the Arizona State Capitol. Quiet in the evenings.'},
+ {id:'row',name:'Roosevelt Row',area:'Roosevelt Row',xy:[.42,-.62],kind:'city',seed:9,rating:4.6,count:164,tags:['Chill'],desc:'Murals, galleries and street food in Phoenix\u2019s arts district. Best on First Friday nights.'},
+ {id:'encanto',name:'Encanto Park',area:'Encanto',lat:33.4745,lng:-112.0885,kind:'lakecity',seed:4,rating:4.6,count:121,tags:['Chill','Nature'],desc:'Palm-lined lagoon with city glow on the water. Quiet once the evening crowd heads home.'},
+ {id:'copper',name:'Cesar Chavez Plaza',area:'Downtown',xy:[-.12,.04],kind:'city',seed:5,rating:4.4,count:73,tags:['Chill'],desc:'Shaded downtown plaza next to City Hall, a block from the light rail.'},
+ {id:'civic',name:'Civic Space Park',area:'Downtown',xy:[.08,-.28],kind:'citynight',seed:6,rating:4.5,count:58,tags:['Chill','Nature'],desc:'Lawn under the giant floating net sculpture. It glows soft colors after dark.'},
+ {id:'deck',name:'Hance Park',area:'Midtown',xy:[-.08,-.95],kind:'lakecity',seed:11,rating:4.6,count:91,tags:['Nature','Chill'],desc:'Wide-open lawn built right over the I-10 tunnel, with the Japanese Friendship Garden next door.'},
+ {id:'heritage',name:'Heritage Square',area:'Downtown',xy:[.675,-.04],kind:'city',seed:12,rating:4.4,count:37,tags:['Chill'],desc:'Restored 1890s Victorian homes and porches under string lights.'},
+ {id:'grand',name:'Grand Avenue',area:'Grand Ave Arts District',xy:[-.6,-.33],kind:'city',seed:14,rating:4.6,count:49,tags:['Sunset','Chill'],desc:'Artist-run galleries and murals along Phoenix\u2019s one diagonal street.'},
+];
+const PHOTOS={golden:'assets/pine.jpg',lockett:'assets/cloud.jpg',christopher:'assets/forest.jpg',powell:'assets/coast.jpg'};
+spots.forEach(s=>{if(s.xy)[s.lat,s.lng]=toLL(...s.xy);s.img=PHOTOS[s.id]||scene(s.kind,s.seed||3);[s.x,s.y]=toXY(s.lat,s.lng)});
+const rotationIds=['lockett','christopher','powell','hole','camel','dobbins','saguaro','stargaze','canyon'];
+const reviewPool=[
+ ['JM','Jade M.','Worth the walk. Sunset was unreal and nobody else up there.',5,'2 days ago'],
+ ['TK','Theo K.','Super chill vibe. Bring water, even at night it’s still warm out.',5,'1 week ago'],
+ ['RS','Rae S.','Parking fills up on weekends but the view makes up for it.',4,'3 weeks ago'],
+ ['AL','Andre L.','My go-to spot now. Quiet, clean, and the city lights are wild.',5,'1 month ago'],
+ ['NB','Nia B.','Gorgeous. Pack out what you pack in, keep it nice for everyone.',5,'1 month ago'],
+];
+const members=[['JM','Jade'],['TK','Theo'],['RS','Rae'],['AL','Andre'],['NB','Nia'],['OC','Omar'],['VP','Val']];
+const posts=[
+ {i:'JM',n:'Jade M.',t:'2h',p:'Drove up to the Rim for sunset. The whole Tonto Basin went orange for twenty minutes.',s:'golden',l:42},
+ {i:'AL',n:'Andre L.',t:'5h',p:'Roosevelt Row on First Friday is the move. Cool breeze finally hit downtown.',s:'row',l:27},
+ {i:'NB',n:'Nia B.',t:'1d',p:'Drove out to Cave Creek for the stars. Saw three shooting stars in an hour.',s:'stargaze',l:63},
+ {i:'TK',n:'Theo K.',t:'2d',p:'Hole-in-the-Rock at sunset is a must. Get there 30 min early to grab the ledge.',s:'hole',l:18},
+];
+const vibes=['Sunset','Secluded','Rooftop','Nature','Chill'];
+const RADII=[5,10,25,50];let radius=25;
+
+const saved=new Set(),liked=new Set();
+let current='home',history=[];
+const byId=id=>spots.find(s=>s.id===id);
+const starRow=(n,size=8.5)=>Array.from({length:5},(_,i)=>`<svg width="${size}" height="${size}" style="opacity:${i<Math.round(n)?1:.25}"><use href="#i-star"/></svg>`).join('');
+const leafSvg=(w,h)=>`<svg width="${w}" height="${h}"><use href="#leaf"/></svg>`;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('on'),2200)}
+function updateDistances(){spots.forEach(s=>s.dist=miles([U.lat,U.lng],[s.lat,s.lng]))}
+function nearestArea(x,y){let best='Phoenix',bd=1e9;for(const[n,ax,ay]of AREAS){const d=Math.hypot(ax-x,ay-y);if(d<bd){bd=d;best=n}}return best}
+
+/* ================= renderers ================= */
+function renderFeature(){const s=byId('golden');$('.feature .ph').style.backgroundImage=`url("${s.img}")`;$('#floc').textContent=`${s.area} · ${fmt(s.dist)}`}
+function renderRotation(){
+  const ids=[...spots.filter(s=>s.mine).map(s=>s.id).reverse(),...rotationIds];
+  $('#rotation').innerHTML=ids.map((id,k)=>{const s=byId(id);const up=s.mine?1:Math.max(6,Math.round(s.count/7));return `<button class="scard" data-spot="${s.id}" aria-label="${esc(s.name)}">
+    <img src="${s.img}" alt=""><span class="rank">#${k+1}</span><span class="rise"><svg width="10" height="10"><use href="#i-flame"/></svg>+${up} this week</span>
+    <span class="meta"><b>${esc(s.name)}</b><span class="row"><span><svg width="10" height="11"><use href="#i-pin"/></svg>${esc(s.area)} \u00b7 ${fmt(s.dist)}</span><em><svg width="11" height="11"><use href="#i-star"/></svg>${s.rating.toFixed(1)}</em></span></span></button>`}).join('');
+}
+function ncard(s){return `<button class="ncard" data-spot="${s.id}"><span class="nimg"><img src="${s.img}" alt=""><span class="away">${fmt(s.dist)} away</span><span class="nrate"><svg width="11" height="11"><use href="#i-star"/></svg>${s.rating.toFixed(1)} <i>(${s.count})</i></span></span>
+  <span class="nbody"><b>${esc(s.name)}</b><span class="narea"><svg width="10" height="11"><use href="#i-pin"/></svg>${esc(s.area)}</span><span class="ntags">${s.tags.map(t=>`<i>${esc(t)}</i>`).join('')}</span></span></button>`}
+function lcard(s){return `<button class="lcard" data-spot="${s.id}"><img src="${s.img}" alt=""><div><b>${esc(s.name)}</b><div class="loc"><svg width="9" height="10"><use href="#i-pin"/></svg>${esc(s.area)} · ${fmt(s.dist)}</div><div class="r"><span class="stars">${starRow(s.rating,9)}</span>${s.rating.toFixed(1)} <span style="color:var(--muted)">(${s.count})</span></div></div></button>`}
+const sorted=()=>[...spots].sort((a,b)=>a.dist-b.dist);
+function renderAll(){$('#alllist').innerHTML=sorted().map(lcard).join('')}
+function renderDrawer(){const list=sorted().filter(s=>s.dist<=radius);
+  $('#dcount').textContent=`Near you · ${list.length} spot${list.length===1?'':'s'} within ${radius} mi`;
+  $('#dlist').innerHTML=list.length?list.map(lcard).join(''):`<p class="mapnote" style="padding:4px 6px 8px">No spots this close yet. Try a bigger radius.</p>`}
+function renderRadius(){$('#radius').innerHTML=RADII.map(r=>`<button class="${r===radius?'on':''}" data-radius="${r}" aria-pressed="${r===radius}">${r} mi</button>`).join('')}
+function renderStash(){const list=[...saved].map(byId);
+  $('#stashsub').textContent=list.length?`${list.length} saved spot${list.length>1?'s':''}`:'';
+  $('#stashlist').innerHTML=list.length?`<div class="list">${list.map(lcard).join('')}</div>`:
+   `<div class="empty"><div class="leafbig">${leafSvg(46,32)}</div>Your stash is empty.<br>Tap <b style="color:var(--cream)">Save to Stash</b> on any spot to keep it here.<div style="margin-top:16px"><button class="btn" data-go="map">Explore the map</button></div></div>`}
+function renderSpot(id){const s=byId(id),isSaved=saved.has(id);
+  const reviews=s.mine?[]:[0,1,2].map(i=>reviewPool[(id.length+i*2)%reviewPool.length]);
+  $('#s-spot').innerHTML=`<div class="dhero"><img src="${s.img}" alt="${esc(s.name)}">
+   <button class="iconbtn" data-act="back" aria-label="Back"><svg width="16" height="16"><use href="#i-back"/></svg></button>
+   <button class="iconbtn save-top" data-save="${id}" aria-label="${isSaved?'Remove from Stash':'Save to Stash'}"><svg width="15" height="15"><use href="#i-bookmark${isSaved?'-f':''}"/></svg></button></div>
+  <div class="dbody">
+   ${s.mine?`<span class="mine-tag"><svg width="12" height="12"><use href="#i-user"/></svg>Your spot</span>`:''}
+   ${id==='golden'?`<span class="badge"><svg width="11" height="11" style="color:var(--gold)"><use href="#i-crown"/></svg>Hotbox of the week</span>`:''}
+   <h2>${esc(s.name)}</h2>
+   <div class="loc" style="font-size:12px;color:#b7c4bc"><svg width="11" height="12"><use href="#i-pin"/></svg>${esc(s.area)}, Phoenix area · <b style="color:var(--gold-hi);font-weight:600">${fmt(s.dist)} away</b></div>
+   <div class="rate"><span class="stars">${starRow(s.rating,12)}</span>${s.mine?'<span>New · no reviews yet</span>':`${s.rating.toFixed(1)} <span>(${s.count} reviews)</span>`}</div>
+   <p class="desc">${esc(s.desc)}${s.more?' '+esc(s.more):''}</p>
+   <div class="chips">${s.tags.map(t=>`<span class="chip">${esc(t)}</span>`).join('')}</div>
+   <div class="actions"><button class="btn ${isSaved?'':'solid'}" data-save="${id}"><svg width="13" height="13"><use href="#i-bookmark${isSaved?'-f':''}"/></svg>${isSaved?'Saved to Stash':'Save to Stash'}</button>
+     <button class="btn" data-mapto="${id}"><svg width="12" height="13"><use href="#i-mappin"/></svg>Show on map</button></div>
+   ${s.mine?`<div class="delbox" id="delbox"><button class="delbtn" data-act="delask" data-id="${id}"><svg width="15" height="15"><use href="#i-trash"/></svg>Delete this spot</button></div>`:''}
+   <h4 class="spaced h4">Reviews</h4>
+   ${reviews.length?'':'<p class="desc" style="margin-top:0">No reviews yet. Members can review this spot once they visit.</p>'}${reviews.map(r=>`<div class="review"><span class="ini">${r[0]}</span><div><div class="who">${r[1]} <small>${r[4]}</small></div><span class="stars" style="margin-top:4px">${starRow(r[3],9)}</span><p>${r[2]}</p></div></div>`).join('')}
+   <div class="legal">Spots are general scenic locations. Follow your local laws.</div></div>`}
+function renderCircle(){
+  $('#members').innerHTML=members.map(m=>`<div><span class="ini">${m[0]}</span>${m[1]}</div>`).join('');
+  $('#feed').innerHTML=posts.map((p,i)=>{const s=byId(p.s),on=liked.has(i);return `<article class="post">
+   <div class="hd"><span class="ini">${p.i}</span><div><b>${p.n}</b><small>${p.t} ago · Phoenix</small></div></div><p>${esc(p.p)}</p>
+   <button class="ref" data-spot="${s.id}"><img src="${s.img}" alt=""><div><b>${esc(s.name)}</b><div class="loc" style="font-size:10px;color:var(--muted)">${esc(s.area)} · ${fmt(s.dist)}</div></div></button>
+   <div class="ft"><button data-like="${i}" class="${on?'on':''}" aria-pressed="${on}"><svg width="14" height="14"><use href="#i-heart"/></svg>${p.l+(on?1:0)}</button><button data-toast="Comments are coming soon"><svg width="14" height="14"><use href="#i-chat"/></svg>Reply</button></div></article>`}).join('')}
+
+/* ================= map-first world ================= */
+current='map';
+radius=5;
+const ATTR='© <a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> © <a href="https://www.openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a> Data from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>';
+const lineW=(stops)=>['interpolate',['exponential',1.5],['zoom'],...stops];
+const cls=(list)=>['in',['get','class'],['literal',list]];
+const STYLE={version:8,glyphs:'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf',
+ sources:{omt:{type:'vector',url:'https://tiles.openfreemap.org/planet'}},
+ sky:{'sky-color':'#05080a','horizon-color':'#16241c','fog-color':'#0d1410','sky-horizon-blend':.7,'horizon-fog-blend':.6,'fog-ground-blend':.35,'atmosphere-blend':0},
+ light:{anchor:'viewport',color:'#ffd9a0',intensity:.3,position:[1.3,200,35]},
+ layers:[
+  {id:'bg',type:'background',paint:{'background-color':'#141b16'}},
+  {id:'landuse',type:'fill',source:'omt','source-layer':'landuse',paint:{'fill-color':['match',['get','class'],['residential','suburb','neighbourhood'],'#18211a',['commercial','retail','industrial'],'#1c2020','#151c17']}},
+  {id:'landcover',type:'fill',source:'omt','source-layer':'landcover',filter:cls(['grass','wood','scrub','farmland','sand']),paint:{'fill-color':['match',['get','class'],'sand','#24261e','#1c3020'],'fill-opacity':.7}},
+  {id:'park',type:'fill',source:'omt','source-layer':'park',paint:{'fill-color':'#1f3820','fill-opacity':.85}},
+  {id:'park-edge',type:'line',source:'omt','source-layer':'park',paint:{'line-color':'#2e5a32','line-width':1,'line-opacity':.6}},
+  {id:'water',type:'fill',source:'omt','source-layer':'water',paint:{'fill-color':'#0d2533'}},
+  {id:'waterway',type:'line',source:'omt','source-layer':'waterway',paint:{'line-color':'#123447','line-width':lineW([10,.5,16,3])}},
+  {id:'path',type:'line',source:'omt','source-layer':'transportation',minzoom:14,filter:cls(['path','track']),paint:{'line-color':'#4a4f48','line-width':1,'line-dasharray':[1.5,1.5]}},
+  {id:'minor',type:'line',source:'omt','source-layer':'transportation',filter:cls(['minor','service']),layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#2f3334','line-width':lineW([12,.4,15,2,18,9])}},
+  {id:'mid',type:'line',source:'omt','source-layer':'transportation',filter:cls(['tertiary','secondary']),layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#3a3f40','line-width':lineW([9,.4,13,1.4,16,5,18,14])}},
+  {id:'primary',type:'line',source:'omt','source-layer':'transportation',filter:cls(['primary','trunk']),layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#474c4d','line-width':lineW([7,.5,12,1.6,16,7,18,18])}},
+  {id:'mw-glow',type:'line',source:'omt','source-layer':'transportation',filter:cls(['motorway']),paint:{'line-color':'#c46cf5','line-width':lineW([6,3,12,8,16,26]),'line-blur':lineW([6,3,12,6,16,14]),'line-opacity':.28}},
+  {id:'motorway',type:'line',source:'omt','source-layer':'transportation',filter:cls(['motorway']),layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#555b5c','line-width':lineW([6,.8,10,1.6,14,4,18,20])}},
+  {id:'bld',type:'fill-extrusion',source:'omt','source-layer':'building',minzoom:13,paint:{
+    'fill-extrusion-color':['interpolate',['linear'],['coalesce',['get','render_height'],5],0,'#3a3f46',15,'#444a52',60,'#4f5660',150,'#5c6470'],
+    'fill-extrusion-height':['interpolate',['linear'],['zoom'],13,0,14.5,['coalesce',['get','render_height'],5]],
+    'fill-extrusion-base':['coalesce',['get','render_min_height'],0],'fill-extrusion-opacity':.92,'fill-extrusion-vertical-gradient':true}},
+  {id:'roadname',type:'symbol',source:'omt','source-layer':'transportation_name',minzoom:14,layout:{'symbol-placement':'line','text-field':['coalesce',['get','name_en'],['get','name']],'text-font':['Noto Sans Regular'],'text-size':10.5,'text-letter-spacing':.06},paint:{'text-color':'#b9c6bf','text-halo-color':'#0b0f0d','text-halo-width':1.5}},
+  {id:'place',type:'symbol',source:'omt','source-layer':'place',filter:cls(['city','town','suburb','neighbourhood','village','quarter']),layout:{'text-field':['upcase',['coalesce',['get','name_en'],['get','name']]],'text-font':['Noto Sans Bold'],'text-size':['match',['get','class'],'city',14,'town',12,10],'text-letter-spacing':.25,'text-max-width':8},paint:{'text-color':'#e8f0eb','text-opacity':.8,'text-halo-color':'#0b0f0d','text-halo-width':1.6}},
+ ]};
+function circlePoly(lat,lng,mi){const pts=[];for(let i=0;i<=72;i++){const a=i/72*2*Math.PI;pts.push([lng+Math.sin(a)*mi/(Math.cos(lat*Math.PI/180)*69.17),lat+Math.cos(a)*mi/69])}return{type:'Feature',properties:{},geometry:{type:'Polygon',coordinates:[pts]}}}
+function pinEl(s,size,where){const w=document.createElement('div');w.className='mk';
+  w.innerHTML=`<button class="pin" data-pin="${s.id}" data-where="${where}" aria-label="${esc(s.name||'Pin')}">${pinInner(s,size)}</button>`;if(s._col==='p')w.firstChild.classList.add('pp');return w}
+const hoodSvg='<svg width="100%" height="100%" viewBox="0 0 40 40"><use href="#hood"/></svg>';
+
+let mapFail=null;
+function realWorld(el){return new Promise(res=>{
+  let map=null,done=false,got=false;
+  const finish=ok=>{if(done)return;done=true;clearTimeout(t);if(ok)res(map);else{mapFail=1;try{map&&map.remove()}catch(e){}el.innerHTML='';res(null)}};
+  const t=setTimeout(()=>finish(got),8000);
+  try{map=new maplibregl.Map({container:el,style:STYLE,center:[U.lng,U.lat],zoom:16.4,pitch:64,bearing:-20,maxPitch:75,attributionControl:false,antialias:true,fadeDuration:150})}catch(e){return finish(false)}
+  map.on('error',e=>{if(!got)finish(false)});
+  map.on('data',e=>{if(e.sourceId==='omt'&&e.tile){got=true;finish(true)}});
+});}
+function adapterReal(map){
+  const ring=document.createElement('div');ring.className='ring3d';ring.innerHTML='<i></i><i></i>';
+  const me=document.createElement('div');me.className='me3d';me.innerHTML='<b>'+hoodSvg+'</b>';
+  const ringM=new maplibregl.Marker({element:ring,pitchAlignment:'map',rotationAlignment:'map'}).setLngLat([U.lng,U.lat]).addTo(map);
+  const meM=new maplibregl.Marker({element:me,anchor:'bottom'}).setLngLat([U.lng,U.lat]).addTo(map);
+  const addRadius=()=>{if(map.getSource('radius'))return;map.addSource('radius',{type:'geojson',data:circlePoly(U.lat,U.lng,radius)});
+    map.addLayer({id:'rad-fill',type:'fill',source:'radius',paint:{'fill-color':'#c9a46a','fill-opacity':.06}},'bld');
+    map.addLayer({id:'rad-line',type:'line',source:'radius',paint:{'line-color':'#e3c58f','line-width':1.6,'line-dasharray':[2,2],'line-opacity':.85}},'bld')};
+  if(map.isStyleLoaded())addRadius();else map.once('load',addRadius);
+  let pins=[],follow=true;
+  map.on('dragstart',()=>{follow=false});
+  let idle=null;map.on('dragend',()=>{clearTimeout(idle);idle=setTimeout(()=>{if(!follow&&!$('#sheet').classList.contains('on'))api.recenter()},9000)});
+  const pad=()=>({top:240,bottom:90,left:30,right:30});
+  const api={kind:'real',map,
+    update(){pins.forEach(p=>p.remove());pins=spots.map(s=>{const w=pinEl(s,30,'big');w.firstChild.classList.toggle('out',s.dist>radius);return new maplibregl.Marker({element:w,anchor:'bottom'}).setLngLat([s.lng,s.lat]).addTo(map)});
+      api.moveUser();const src=map.getSource('radius');if(src)src.setData(circlePoly(U.lat,U.lng,radius))},
+    moveUser(instant){ringM.setLngLat([U.lng,U.lat]);meM.setLngLat([U.lng,U.lat]);if(follow){if(instant)map.jumpTo({center:[U.lng,U.lat],padding:pad()});else map.easeTo({center:[U.lng,U.lat],padding:pad(),duration:600})}},
+    recenter(){follow=true;map.easeTo({center:[U.lng,U.lat],zoom:Math.max(map.getZoom(),16.2),pitch:64,padding:pad(),duration:900})},
+    fitRadius(){const c=circlePoly(U.lat,U.lng,radius).geometry.coordinates[0];let w=180,s=90,e=-180,n=-90;c.forEach(([x,y])=>{w=Math.min(w,x);e=Math.max(e,x);s=Math.min(s,y);n=Math.max(n,y)});
+      follow=false;map.fitBounds([[w,s],[e,n]],{padding:pad(),pitch:map.getPitch()>10?45:0,bearing:map.getBearing(),duration:1000})},
+    zoom(f){map.easeTo({zoom:map.getZoom()+(f>1?1:-1),duration:400})},
+    toggleTilt(){const flat=map.getPitch()>10;map.easeTo({pitch:flat?0:62,bearing:flat?0:-20,duration:700});return !flat},
+    focus(s){follow=false;map.easeTo({center:[s.lng,s.lat],zoom:Math.max(map.getZoom(),15),padding:pad(),duration:900})},
+    select(id){$$('#world .pin').forEach(p=>p.classList.toggle('sel',p.dataset.pin===id))},
+    resize(){map.resize()}};
+  return api}
+function adapterDrawn(el){
+  el.innerHTML='<div class="w3d"><div class="plane3d"></div></div><div class="fog"></div>';
+  const plane=el.querySelector('.plane3d');let api;
+  const m=new LocalMap(plane,{interactive:true,labels:true,street:true,tilt:52,originY:2900/3300,maxS:1500,pinTarget:'big',onFirstFit:()=>api.recenter(true)});
+  m.follow=true;
+  const center=()=>{m.cx=U.x;m.cy=U.y;m.req()};
+  let idle=null;const back=()=>{clearTimeout(idle);idle=setTimeout(()=>{if(!m.follow&&!$('#sheet').classList.contains('on')){m.follow=true;m.s=Math.max(m.s,300);center()}},9000)};
+  plane.addEventListener('pointerup',back);plane.addEventListener('wheel',back,{passive:true});
+  api={kind:'drawn',
+    update(){m.radius=radius;const near=sorted().filter(x=>x.dist<2.2).slice(0,7);spots.forEach(x=>x._lab=near.includes(x));m.setPins(spots,42);m.req()},
+    moveUser(){if(m.follow)center();else m.req()},
+    recenter(first){m.follow=true;m.s=first?560:Math.max(m.s,420);center()},
+    fitRadius(){m.req()},
+    zoom(f){m.zoomAt(f)},
+    toggleTilt(){const flat=el.classList.toggle('flat');m.req();return !flat},
+    focus(s){m.follow=false;m.s=Math.max(m.s,s.dist>3?60:420);m.cx=s.x;m.cy=s.y+(m.s>200?.05:.6);m.req()},
+    select(id){$$('#world .pin').forEach(p=>p.classList.toggle('sel',p.dataset.pin===id))},
+    resize(){m.fit()}};
+  return api}
+
+let world=null;
+function refreshAll(){updateDistances();renderFeature();renderRotation();renderAll();renderNear();renderCircle();world&&world.update()}
+function renderNear(){const list=sorted().filter(s=>s.dist<=radius);
+  $('#nearcount').textContent=`${list.length} spot${list.length===1?'':'s'} within ${radius} miles of you`;
+  $('#nearlist').innerHTML=list.length?list.map(ncard).join(''):`<p class="mapnote" style="padding:0 2px">No spots this close yet. Try a bigger radius.</p>`}
+
+function openSheet(id){const s=byId(id);world&&world.select(id);
+  $('#sheet').innerHTML=`<div class="sheet-in"><button class="x" data-act="closesheet" aria-label="Close">×</button><img src="${s.img}" alt=""><div class="info"><b>${esc(s.name)}</b><div class="loc" style="font-size:10.5px;color:#b7c4bc"><svg width="9" height="10"><use href="#i-pin"/></svg>${esc(s.area)} · ${fmt(s.dist)}</div><div style="display:flex;align-items:center;gap:6px;font-size:10.5px"><span class="stars">${starRow(s.rating,9)}</span>${s.rating.toFixed(1)}</div><button class="btn" data-spot="${id}">View spot <svg width="11" height="11"><use href="#i-arrow"/></svg></button></div></div>`;
+  $('#sheet').classList.add('on')}
+function closeSheet(){$('#sheet').classList.remove('on');world&&world.select(null)}
+const panel=()=>{};
+
+/* ================= location ================= */
+function setNote(t){const n=$('#mapnote');if(n)n.textContent=t}
+let watchId=null;
+function locFail(){setNote('Showing Phoenix — location unavailable')}
+function locate(){
+  if(!navigator.geolocation)return locFail();setNote('Finding you…');
+  try{if(watchId!=null)navigator.geolocation.clearWatch(watchId);
+    watchId=navigator.geolocation.watchPosition(p=>{const ll=[p.coords.latitude,p.coords.longitude];
+      if(miles([LAT0,LNG0],ll)>120){setNote('Showing Phoenix — you’re outside the sample area');navigator.geolocation.clearWatch(watchId);watchId=null;return}
+      const first=!U.real,moved=miles([U.lat,U.lng],ll);U.lat=ll[0];U.lng=ll[1];[U.x,U.y]=toXY(U.lat,U.lng);U.real=true;
+      setNote('● Live · near '+nearestArea(U.x,U.y));
+      if(first||moved>.05){updateDistances();renderFeature();renderRotation();renderNear();renderAll();world&&world.update()}
+      else world&&world.moveUser();
+      if(first&&world)world.recenter()},locFail,{enableHighAccuracy:true,timeout:12000,maximumAge:5000})}catch(e){locFail()}}
+
+function renderProfile(){$('#profig').innerHTML=FIG.replace(/hdg/g,'hdgp');$('#st-saved').textContent=saved.size;$('#st-drop').textContent=spots.filter(s=>s.mine).length;$('#st-area').textContent=nearestArea(U.x,U.y);const mine=spots.filter(s=>s.mine).reverse();
+  $('#mylist').innerHTML=mine.length?mine.map(lcard).join(''):`<div class="empty" style="margin:0">You haven\u2019t dropped any spots yet.<br>Tap the camera to drop one where you\u2019re standing.</div>`}
+
+/* ================= demo walk ================= */
+const ROUTE=[[0,-.2],[.375,-.2],[.375,.05],[.625,.05],[.625,-.45],[.5,-.45],[.5,-.7],[0,-.7],[0,-.95],[-.25,-.95],[-.25,-.45],[0,-.45],[0,-.2]];
+let walk=null;
+function nearCheck(){updateDistances();$$('#world .pin').forEach(p=>{const s=byId(p.dataset.pin);p.classList.toggle('near',!!s&&s.dist<.07)});
+  for(const s of spots){if(s.dist<.045&&!s._hi){s._hi=1;toast('You\u2019re at '+s.name+' \u00b7 tap the pin')}if(s.dist>.15)s._hi=0}}
+function toggleWalk(){const btn=$('#walkbtn'),w=$('#world');
+  if(walk){cancelAnimationFrame(walk.raf);walk=null;btn.classList.remove('on');btn.setAttribute('aria-pressed','false');w.classList.remove('walking');renderNear();setNote(U.real?'\u25cf Live \u00b7 near '+nearestArea(U.x,U.y):'Downtown Phoenix, AZ');return}
+  walk={k:0,last:performance.now(),t:0};btn.classList.add('on');btn.setAttribute('aria-pressed','true');w.classList.add('walking');
+  setNote('Demo walk \u00b7 your avatar moves like this when location is live');world&&world.recenter();
+  const tgt=()=>ROUTE[walk.k%ROUTE.length];
+  const step=now=>{if(!walk)return;const dt=Math.min(.05,(now-walk.last)/1000);walk.last=now;let left=.05*dt;
+    while(left>0){const[tx,ty]=tgt(),dx=tx-U.x,dy=ty-U.y,d=Math.hypot(dx,dy);if(d<=left){U.x=tx;U.y=ty;left-=d;walk.k++}else{U.x+=dx/d*left;U.y+=dy/d*left;if(Math.abs(dx)>1e-4)w.classList.toggle('left',dx<0);left=0}}
+    [U.lat,U.lng]=toLL(U.x,U.y);world&&world.moveUser(true);walk.t+=dt;if(walk.t>.25){walk.t=0;nearCheck()}
+    walk.raf=requestAnimationFrame(step)};
+  walk.raf=requestAnimationFrame(step)}
+
+/* ================= navigation ================= */
+const tabOf={map:null,all:'circle',drop:null,circle:'circle',stash:'stash',settings:'stash',profile:'stash',rules:'stash',spot:null};
+function go(name,{push=true}={}){
+  if(push&&name!==current)history.push(current);
+  $$('.screen').forEach(s=>s.classList.remove('on'));$('#s-'+name).classList.add('on');document.body.classList.toggle('on-map',name==='map');$('#centerbtn').setAttribute('aria-label',name==='map'?'Camera: drop a spot here':'Back to the map');
+  const t=name in tabOf&&name!=='spot'?tabOf[name]:tabOf[history[history.length-1]]||null;$$('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
+  if(name!=='map')closeSheet();if(name==='stash')renderStash();if(name==='profile')renderProfile();if(name==='map'){renderNear();requestAnimationFrame(()=>world&&world.resize())}
+  if(name==='drop')renderDropLoc();
+  current=name;if(name!=='map')window.scrollTo(0,0)}
+function back(){go(history.pop()||'map',{push:false})}
+const menu=on=>{$('#menu').classList.toggle('on',on);$('#scrim').classList.toggle('on',on)};
+$('#scrim').onclick=()=>menu(false);
+
+/* ================= drop a spot ================= */
+$('#vibes').innerHTML=vibes.map(v=>`<button type="button" class="chip" data-vibe="${v}" aria-pressed="false">${v}</button>`).join('');
+let dropImg=null;
+function renderDropLoc(){$('#droploc').innerHTML=`<svg width="11" height="12" style="color:var(--gold)"><use href="#i-pin"/></svg>Dropping where you\u2019re standing \u00b7 <b>near ${esc(nearestArea(U.x,U.y))}</b>`}
+$('#d-photo').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();
+  rd.onload=()=>{dropImg=rd.result;$('#photobox').querySelector('img')?.remove();$('#photobox').insertAdjacentHTML('afterbegin',`<img src="${dropImg}" alt="Your photo">`);$('.camhint').hidden=true};rd.readAsDataURL(f)});
+$('#dropform').addEventListener('submit',e=>{e.preventDefault();
+  const name=$('#d-name').value.trim(),desc=$('#d-desc').value.trim(),tags=$$('#vibes .chip.on').map(c=>c.dataset.vibe);
+  const err=!name?'Give your spot a name.':'';$('#derr').textContent=err;if(err)return;
+  const dropPos={lat:U.lat,lng:U.lng},id='mine'+Date.now(),[x,y]=toXY(dropPos.lat,dropPos.lng),kinds=['saguaro','ridge','citynight','lake','buttes','stars'];
+  spots.push({id,name,area:nearestArea(x,y),lat:dropPos.lat,lng:dropPos.lng,x,y,rating:5.0,count:1,img:dropImg||scene(kinds[spots.length%kinds.length],spots.length),tags:tags.length?tags:['Chill'],desc:desc||'A fresh spot dropped by a Society member.',mine:true});
+  e.target.reset();dropImg=null;$('#photobox').querySelector('img')?.remove();$('.camhint').hidden=false;
+  $$('#vibes .chip').forEach(c=>{c.classList.remove('on');c.setAttribute('aria-pressed','false')});$('#derr').textContent='';
+  refreshAll();history=[];go('map',{push:false});setTimeout(()=>{world&&world.recenter();openSheet(id)},80);toast('Spot dropped. It’s live on the map.')});
+
+/* ================= clicks ================= */
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-go],[data-tab],[data-spot],[data-pin],[data-act],[data-save],[data-like],[data-toast],[data-vibe],[data-mapto],[data-radius]');if(!el)return;const d=el.dataset;
+  if(d.tab){history=[];go(current===d.tab?'map':d.tab,{push:false})}
+  else if(d.pin){if(d.where==='big'){panel(false);openSheet(d.pin)}}
+  else if(d.go){menu(false);go(d.go)}
+  else if(d.spot){closeSheet();renderSpot(d.spot);go('spot')}
+  else if(d.mapto){const s=byId(d.mapto);history=[];go('map',{push:false});panel(false);setTimeout(()=>{world&&world.focus(s);openSheet(d.mapto)},60)}
+  else if(d.radius){radius=+d.radius;renderRadius();renderNear();world&&world.update()}
+  else if(d.save){saved.has(d.save)?saved.delete(d.save):saved.add(d.save);toast(saved.has(d.save)?'Saved to your Stash':'Removed from your Stash');renderSpot(d.save)}
+  else if(d.like){const i=+d.like;liked.has(i)?liked.delete(i):liked.add(i);renderCircle()}
+  else if(d.vibe){const on=el.classList.toggle('on');el.setAttribute('aria-pressed',on)}
+  else if(d.toast){menu(false);toast(d.toast)}
+  else if(d.act==='menu')menu(true);
+  else if(d.act==='back')back();
+  else if(d.act==='closesheet')closeSheet();
+  else if(d.act==='expand')panel(true);
+  else if(d.act==='zin')world&&world.zoom(1.6);
+  else if(d.act==='zout')world&&world.zoom(1/1.6);
+  else if(d.act==='recenter'){closeSheet();if(!U.real&&watchId==null)locate();world&&world.recenter()}
+  else if(d.act==='walk')toggleWalk();
+  else if(d.act==='home'){history=[];go('map',{push:false})}
+  else if(d.act==='delask'){$('#delbox').innerHTML=`<div class="delconfirm" role="alertdialog" aria-label="Delete spot"><b>Delete this spot?</b><p>It\u2019ll be removed from the map, Community and everyone\u2019s stash. This can\u2019t be undone.</p><div class="row"><button class="delbtn solid" data-act="deldo" data-id="${d.id}">Delete</button><button class="btn" data-act="delno" data-id="${d.id}">Cancel</button></div></div>`}
+  else if(d.act==='delno'){$('#delbox').innerHTML=`<button class="delbtn" data-act="delask" data-id="${d.id}"><svg width="15" height="15"><use href="#i-trash"/></svg>Delete this spot</button>`}
+  else if(d.act==='deldo'){const k=spots.findIndex(x=>x.id===d.id&&x.mine);if(k<0)return;const nm=spots[k].name;spots.splice(k,1);saved.delete(d.id);closeSheet();refreshAll();history=[];go('map',{push:false});toast(nm+' was deleted')}
+  else if(d.act==='camera'&&current!=='map'){history=[];go('map',{push:false})}
+  else if(d.act==='camera'){history=[];go('drop',{push:false});const f=$('#d-photo');try{f.click()}catch(err){}}
+  else if(d.act==='tilt'){const on=world&&world.toggleTilt();el.textContent=on?'2D':'3D'}
+  else if(d.act==='rules'){menu(false);toast('Respect the spot. Pack it out. 21+ only.')}
+  else if(d.act==='logout'){menu(false);saved.clear();history=[];go('map',{push:false});$('#gate').classList.remove('out');$('#nomsg').textContent=''}
+});
+addEventListener('keydown',e=>{if(e.key==='Escape'){menu(false);closeSheet();panel(false)}});
+$('#yes21').onclick=()=>{$('#gate').classList.add('out');locate()};
+$('#no21').onclick=()=>$('#nomsg').textContent='Come back when you’re 21. See you then.';
+
+/* ================= boot ================= */
+document.body.classList.add('on-map');
+$('#fstars').innerHTML=starRow(5,11);
+renderRadius();updateDistances();renderFeature();renderRotation();renderAll();renderNear();renderCircle();
+(async()=>{const el=$('#world');let api=null;
+  if(window.maplibregl){const map=await realWorld(el);if(map){api=adapterReal(map);$('#attrib').textContent='\u00a9 OpenFreeMap \u00a9 OpenMapTiles \u00a9 OpenStreetMap contributors'}}
+  if(!api){api=adapterDrawn(el)}
+  world=api;world.update();nearCheck();
+})();
+document.fonts&&document.fonts.ready.then(()=>world&&world.resize());
+
+})();
+</script>
+
+</body>
+</html>
