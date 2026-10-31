@@ -1326,7 +1326,7 @@ function realWorld(el){return new Promise(res=>{
   let map=null,done=false,got=false;
   const finish=ok=>{if(done)return;done=true;clearTimeout(t);if(ok)res(map);else{mapFail=1;try{map&&map.remove()}catch(e){}el.innerHTML='';res(null)}};
   const t=setTimeout(()=>finish(got),8000);
-  try{map=new maplibregl.Map({container:el,style:STYLE,center:[U.lng,U.lat],zoom:16.4,pitch:64,bearing:-20,maxPitch:75,attributionControl:false,antialias:true,fadeDuration:150})}catch(e){return finish(false)}
+  try{map=new maplibregl.Map({container:el,style:STYLE,center:[U.lng,U.lat],zoom:16.4,minZoom:11,pitch:64,bearing:-20,maxPitch:75,attributionControl:false,antialias:true,fadeDuration:150});map.once('load',()=>{map.resize();map.jumpTo({center:[U.lng,U.lat],zoom:16.4,pitch:64});setTimeout(()=>map.resize(),400)})}catch(e){return finish(false)}
   map.on('error',e=>{if(!got)finish(false)});
   map.on('data',e=>{if(e.sourceId==='omt'&&e.tile){got=true;finish(true)}});
 });}
