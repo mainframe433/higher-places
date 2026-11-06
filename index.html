@@ -1243,7 +1243,7 @@ const WEBPHOTOS={
  camel:{url:'https://images.unsplash.com/photo-1437153225860-b850e2a4d0fa?auto=format&fit=crop&w=1200&q=70',by:'Drew',page:'https://unsplash.com/photos/photo-of-city-by-rock-formations-zTFTouPkkG0'},
  hole:{url:'https://images.unsplash.com/photo-1573691256515-81744fea5e82?auto=format&fit=crop&w=1200&q=70',by:'Meritt Thomas',page:'https://unsplash.com/photos/rocky-cave-during-day-2MQOyphBFoE'},
  cathedral:{url:'https://images.unsplash.com/photo-1583729476095-82e61108a043?auto=format&fit=crop&w=1200&q=70',by:'Kaileen Fitzpatrick',page:'https://unsplash.com/photos/brown-rocky-mountain-under-blue-sky-during-daytime-tfqrqGH7S9A'},
- mather:{url:'https://images.unsplash.com/photo-1691929925627-8b6db69e2813?auto=format&fit=crop&w=1200&q=70',by:'henri buenen',page:'https://unsplash.com/photos/a-view-of-the-grand-canyon-from-the-rim-of-a-cliff-eTHI_qnk46Y'},
+ mather:{url:'https://images.unsplash.com/photo-1647571322995-6bc7c402ce35?auto=format&fit=crop&w=1200&q=70',by:'Michael Kirsh',page:'https://unsplash.com/photos/a-view-of-the-grand-canyon-from-the-top-of-a-mountain-NWl3J79MKCM'},
  horseshoe:{url:'https://images.unsplash.com/photo-1483086451546-5a971a934123?auto=format&fit=crop&w=1200&q=70',by:'Des R\u00e9cits',page:'https://unsplash.com/photos/horseshoe-bend-during-daytime-szrq8mnr0eY'}
 };
 spots.forEach(s=>{if(s.xy)[s.lat,s.lng]=toLL(...s.xy);s.fallback=s.kind?scene(s.kind,s.seed||3):null;const w=WEBPHOTOS[s.id];if(w){s.img=w.url;s.credit=w}else s.img=PHOTOS[s.id]||s.fallback;[s.x,s.y]=toXY(s.lat,s.lng)});
