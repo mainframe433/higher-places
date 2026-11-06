@@ -559,7 +559,7 @@ body.on-map .camera .ic-leaf{display:none}body.on-map .camera .ic-cam{display:bl
   <section class="screen" id="s-circle" aria-label="Community">
     <div class="bar"><h2 class="spaced">Community</h2></div>
     <div class="sect">
-      <div><span class="eyebrow"><svg width="12" height="12"><use href="#i-flame"/></svg>Trending this week</span><h3>Sparking Up</h3><p>The spots everyone's lighting up right now.</p></div>
+      <div><span class="eyebrow"><svg width="12" height="12"><use href="#i-flame"/></svg>Must-see Arizona</span><h3>Sparking Up</h3><p>Iconic places to visit around the state.</p></div>
       <button class="more" data-go="all">See all<svg width="12" height="12"><use href="#i-arrow"/></svg></button>
     </div>
     <div class="scards" id="rotation"></div>
@@ -569,10 +569,9 @@ body.on-map .camera .ic-leaf{display:none}body.on-map .camera .ic-cam{display:bl
     <article class="feature">
       <div class="ph"></div>
       <div class="in">
-        <h2>Mogollon<br>Rim Vista</h2>
+        <h2>Rim Lakes<br>Vista</h2>
         <div class="loc"><svg width="10" height="11"><use href="#i-pin"/></svg><span id="floc">South Mountain</span></div>
-        <p>Secluded overlook with insane sunset views. Perfect for a sesh.</p>
-        <div class="rate"><span class="stars" id="fstars"></span>4.9 <span>(312)</span></div>
+        <p>Pines run right to the edge of the Mogollon Rim, with a view south for miles.</p>
       </div>
       <button class="btn" data-spot="golden">View spot <svg width="11" height="11"><use href="#i-arrow"/></svg></button>
     </article>
@@ -582,7 +581,7 @@ body.on-map .camera .ic-leaf{display:none}body.on-map .camera .ic-cam{display:bl
     <div class="seg" id="radius" role="group" aria-label="Search radius"></div>
     <div class="ncards" id="nearlist"></div>
     <div class="sect">
-      <div><span class="eyebrow"><svg width="12" height="12"><use href="#i-people"/></svg>Members nearby</span><h3>The Circle</h3><p>What the Society is sharing today.</p></div>
+      <div><span class="eyebrow"><svg width="12" height="12"><use href="#i-people"/></svg>The community</span><h3>The Circle</h3><p>Spots and posts from members.</p></div>
     </div>
     <div class="members" id="members" style="margin-top:12px"></div>
     <div id="feed"></div>
@@ -596,7 +595,7 @@ body.on-map .camera .ic-leaf{display:none}body.on-map .camera .ic-cam{display:bl
       <button class="setrow" data-go="rules"><span class="ic"><svg width="18" height="18"><use href="#i-book"/></svg></span>Community Guidelines<svg class="chev" width="14" height="14"><use href="#i-arrow"/></svg></button>
       <button class="setrow out" data-act="logout"><span class="ic"><svg width="18" height="18"><use href="#i-out"/></svg></span>Log out</button>
     </div>
-    <p class="setfoot">Higher Places is a prototype for the Phoenix area. Members 21+ only.</p>
+    <p class="setfoot">Higher Places is a prototype for Arizona. Members 21+ only.</p>
   </section>
 
   <!-- PROFILE -->
@@ -648,7 +647,7 @@ body.on-map .camera .ic-leaf{display:none}body.on-map .camera .ic-cam{display:bl
   <button class="item" data-toast="Settings are coming soon"><svg width="18" height="18"><use href="#i-gear"/></svg>Settings</button>
   <button class="item" data-act="rules"><svg width="18" height="18"><use href="#i-book"/></svg>Community Guidelines</button>
   <button class="item" data-act="logout"><svg width="18" height="18"><use href="#i-out"/></svg>Log out</button>
-  <div class="foot">Higher Places is a prototype for the Phoenix area. Spots are general scenic locations. Members 21+ only. Follow your local laws.</div>
+  <div class="foot">Higher Places is a prototype for Arizona. Spots are general scenic locations. Members 21+ only. Follow your local laws.</div>
 </aside>
 <div class="toast" id="toast" role="status"></div>
 
@@ -1068,44 +1067,58 @@ class LocalMap{
 /* ================= data ================= */
 const U={lat:LAT0,lng:LNG0,x:0,y:0,real:false};
 const spots=[
- {id:'golden',name:'Mogollon Rim Vista',area:'Mogollon Rim',lat:34.3088,lng:-110.9566,rating:4.9,count:312,tags:['Sunset','Secluded','Nature'],desc:'Secluded overlook with insane sunset views. Perfect for a sesh.',more:'Ponderosa pines run right up to the edge of the Rim, with a 200-mile view south over the Tonto Basin. Go for golden hour.'},
- {id:'lockett',name:'Lockett Meadow',area:'Flagstaff',lat:35.3570,lng:-111.6200,rating:5.0,count:188,tags:['Nature','Secluded'],desc:'Aspen meadow and a mirror pond inside the San Francisco Peaks. Snowy peaks well into spring.'},
- {id:'christopher',name:'Christopher Creek',area:'Payson',lat:34.3060,lng:-111.0330,rating:4.9,count:241,tags:['Nature','Chill'],desc:'Tall pines, a cold creek and campfire nights under the Rim. A cool escape from the valley heat.'},
- {id:'powell',name:'Lake Powell',area:'Page',lat:36.9360,lng:-111.4840,rating:4.8,count:276,tags:['Sunset','Nature'],desc:'Red sandstone towers rising out of blue water. Sunsets light up the whole canyon.'},
- {id:'dobbins',name:'Dobbins Lookout',area:'South Mountain',lat:33.3474,lng:-112.0604,kind:'ridge',rating:4.9,count:298,tags:['Sunset','Nature'],desc:'The highest point you can drive to in South Mountain Park, with the whole valley laid out below.'},
- {id:'hole',name:'Hole-in-the-Rock',area:'Papago Park',lat:33.4545,lng:-111.9455,kind:'buttes',rating:4.8,count:267,tags:['Sunset','Nature'],desc:'Red sandstone butte with a natural window that frames the sunset. Short scramble, huge payoff.'},
- {id:'camel',name:'Camelback Mountain',area:'Echo Canyon',lat:33.5151,lng:-111.9619,kind:'citynight',rating:4.9,count:201,tags:['Secluded','Sunset'],desc:'Phoenix\u2019s most famous summit. The views of the city lights from up top are wild.'},
- {id:'saguaro',name:'Piestewa Peak',area:'Phoenix Mountains',lat:33.5477,lng:-112.0201,kind:'saguaro',rating:4.7,count:176,tags:['Sunset','Nature'],desc:'Steep desert climb through saguaros to a 360-degree view of the valley.'},
- {id:'estrella',name:'Estrella Mountain Park',area:'Goodyear',lat:33.3800,lng:-112.3700,kind:'ridge',seed:8,rating:4.6,count:88,tags:['Secluded','Sunset'],desc:'Quiet desert trails on the west side with wide-open sky and almost nobody around.'},
- {id:'stargaze',name:'Spur Cross Ranch',area:'Cave Creek',lat:33.8810,lng:-111.9510,kind:'stars',rating:4.9,count:154,tags:['Secluded','Nature'],desc:'Dark desert sky far from the city glow. Bring a blanket and watch the Milky Way rise.'},
- {id:'canyon',name:'Saguaro Lake',area:'Tonto National Forest',lat:33.5660,lng:-111.5360,kind:'lake',rating:4.8,count:190,tags:['Sunset','Nature'],desc:'Desert cliffs dropping into still water. Sunsets turn the whole canyon orange.'},
- {id:'townlake',name:'Tempe Town Lake',area:'Tempe',lat:33.4320,lng:-111.9330,kind:'lakecity',seed:7,rating:4.5,count:142,tags:['Chill'],desc:'Bridge lights reflecting off the lake. Easy, chill, and close to everything.'},
- {id:'skyline',name:'Wesley Bolin Plaza',area:'Capitol District',xy:[-1.3,-.02],kind:'city',seed:2,rating:4.5,count:98,tags:['Chill'],desc:'Shady memorial plaza across from the Arizona State Capitol. Quiet in the evenings.'},
- {id:'row',name:'Roosevelt Row',area:'Roosevelt Row',xy:[.42,-.62],kind:'city',seed:9,rating:4.6,count:164,tags:['Chill'],desc:'Murals, galleries and street food in Phoenix\u2019s arts district. Best on First Friday nights.'},
- {id:'encanto',name:'Encanto Park',area:'Encanto',lat:33.4745,lng:-112.0885,kind:'lakecity',seed:4,rating:4.6,count:121,tags:['Chill','Nature'],desc:'Palm-lined lagoon with city glow on the water. Quiet once the evening crowd heads home.'},
- {id:'copper',name:'Cesar Chavez Plaza',area:'Downtown',xy:[-.12,.04],kind:'city',seed:5,rating:4.4,count:73,tags:['Chill'],desc:'Shaded downtown plaza next to City Hall, a block from the light rail.'},
- {id:'civic',name:'Civic Space Park',area:'Downtown',xy:[.08,-.28],kind:'citynight',seed:6,rating:4.5,count:58,tags:['Chill','Nature'],desc:'Lawn under the giant floating net sculpture. It glows soft colors after dark.'},
- {id:'deck',name:'Hance Park',area:'Midtown',xy:[-.08,-.95],kind:'lakecity',seed:11,rating:4.6,count:91,tags:['Nature','Chill'],desc:'Wide-open lawn built right over the I-10 tunnel, with the Japanese Friendship Garden next door.'},
- {id:'heritage',name:'Heritage Square',area:'Downtown',xy:[.675,-.04],kind:'city',seed:12,rating:4.4,count:37,tags:['Chill'],desc:'Restored 1890s Victorian homes and porches under string lights.'},
- {id:'grand',name:'Grand Avenue',area:'Grand Ave Arts District',xy:[-.6,-.33],kind:'city',seed:14,rating:4.6,count:49,tags:['Sunset','Chill'],desc:'Artist-run galleries and murals along Phoenix\u2019s one diagonal street.'},
+ // ---- preloaded: real Arizona places. No ratings or reviews until real members add them. ----
+ // Phoenix metro
+ {id:'dobbins',name:'Dobbins Lookout',area:'South Mountain Park, Phoenix',lat:33.3474,lng:-112.0604,kind:'ridge',icon:'eye',tags:['Sunset','Nature'],desc:'The highest point you can drive to in South Mountain Park, about 2,330 feet up, with a view across the whole valley.'},
+ {id:'hole',name:'Hole-in-the-Rock',area:'Papago Park, Phoenix',lat:33.4544,lng:-111.9449,kind:'buttes',icon:'mountain',tags:['Sunset','Nature'],desc:'A short climb to a natural window in a red sandstone butte. One of the easiest sunset views in the city.'},
+ {id:'camel',name:'Camelback Mountain',area:'Echo Canyon, Phoenix',lat:33.5212,lng:-111.9733,kind:'citynight',icon:'mountain',tags:['Sunset','Nature'],desc:'Phoenix’s best-known summit. A steep, rocky climb with a huge view of the city from the top.'},
+ {id:'piestewa',name:'Piestewa Peak',area:'Phoenix Mountains Preserve',lat:33.5477,lng:-112.0201,kind:'saguaro',icon:'mountain',tags:['Sunset','Nature'],desc:'A steep desert climb through saguaros to a 360-degree view of the valley.'},
+ {id:'northmtn',name:'North Mountain',area:'North Mountain Park, Phoenix',lat:33.5845,lng:-112.0800,kind:'citynight',icon:'eye',tags:['Nature'],desc:'A paved trail climbs to the top for wide views over central and north Phoenix.'},
+ {id:'townlake',name:'Tempe Town Lake',area:'Tempe Beach Park, Tempe',lat:33.4316,lng:-111.9440,kind:'lakecity',seed:7,icon:'palm',tags:['Chill'],desc:'A two-mile lake on the Salt River with bridge lights, paths and the Tempe skyline.'},
+ {id:'encanto',name:'Encanto Park',area:'Encanto, Phoenix',lat:33.4745,lng:-112.0885,kind:'lakecity',seed:4,icon:'palm',tags:['Chill','Nature'],desc:'A historic park with a palm-lined lagoon, a mile and a half north of downtown.'},
+ {id:'hance',name:'Hance Park',area:'Midtown Phoenix',lat:33.4610,lng:-112.0730,kind:'citynight',seed:6,icon:'tree',tags:['Chill','Nature'],desc:'A long lawn built over the I-10 tunnel, next to the Japanese Friendship Garden.'},
+ {id:'pinnacle',name:'Pinnacle Peak Park',area:'North Scottsdale',lat:33.7256,lng:-111.8702,kind:'saguaro',seed:5,icon:'mountain',tags:['Sunset','Nature'],desc:'A granite peak with a well-kept trail and big Sonoran Desert views.'},
+ {id:'gateway',name:'Gateway Loop',area:'McDowell Sonoran Preserve',lat:33.6497,lng:-111.8582,kind:'saguaro',seed:9,icon:'tree',tags:['Nature','Secluded'],desc:'A desert loop through saguaros at the base of the McDowell Mountains.'},
+ {id:'usery',name:'Wind Cave Trail',area:'Usery Mountain Park, Mesa',lat:33.4760,lng:-111.6090,kind:'ridge',seed:4,icon:'eye',tags:['Sunset','Nature'],desc:'A climb to a shallow wind-carved cave with views over the East Valley.'},
+ {id:'dutchman',name:'Lost Dutchman State Park',area:'Superstition Mountains',lat:33.4642,lng:-111.4820,kind:'ridge',seed:11,icon:'mountain',tags:['Sunset','Nature'],desc:'Desert trails right under the cliffs of the Superstition Mountains, which glow at sunset.'},
+ {id:'saguarolake',name:'Saguaro Lake',area:'Tonto National Forest',lat:33.5660,lng:-111.5360,kind:'lake',icon:'palm',tags:['Sunset','Nature'],desc:'A lake on the Salt River with desert cliffs dropping into still water.'},
+ {id:'canyonlake',name:'Canyon Lake',area:'Apache Trail',lat:33.5345,lng:-111.4239,kind:'lake',seed:8,icon:'palm',tags:['Nature','Secluded'],desc:'A narrow canyon lake on the old Apache Trail, surrounded by steep red walls.'},
+ {id:'pleasant',name:'Lake Pleasant',area:'Lake Pleasant Regional Park',lat:33.8516,lng:-112.2700,kind:'lake',seed:5,icon:'palm',tags:['Sunset','Chill'],desc:'A big desert lake northwest of Phoenix with wide-open sunsets.'},
+ {id:'estrella',name:'Estrella Mountain Park',area:'Goodyear',lat:33.3832,lng:-112.3745,kind:'ridge',seed:8,icon:'mountain',tags:['Secluded','Nature'],desc:'Quiet desert trails on the west side with wide-open sky.'},
+ {id:'whitetank',name:'White Tank Mountains',area:'White Tank Mountain Regional Park',lat:33.5868,lng:-112.5512,kind:'saguaro',seed:12,icon:'mountain',tags:['Nature','Secluded'],desc:'The largest regional park in the valley, with petroglyphs and a seasonal waterfall.'},
+ {id:'spurcross',name:'Spur Cross Ranch',area:'Cave Creek',lat:33.8810,lng:-111.9510,kind:'stars',icon:'cloud',tags:['Secluded','Nature'],desc:'A desert conservation area north of Cave Creek, far enough from the city for darker skies.'},
+ {id:'fountain',name:'Fountain Park',area:'Fountain Hills',lat:33.6046,lng:-111.7231,kind:'lake',seed:14,icon:'palm',tags:['Chill'],desc:'A lakeside park built around one of the tallest fountains in the world.'},
+ // Tucson & southern Arizona
+ {id:'gates',name:'Gates Pass Overlook',area:'Tucson Mountain Park',lat:32.2223,lng:-111.1009,kind:'ridge',seed:6,icon:'eye',tags:['Sunset'],desc:'Tucson’s classic sunset pullout, looking west over saguaro-covered hills.'},
+ {id:'windy',name:'Windy Point Vista',area:'Mount Lemmon, Tucson',lat:32.3678,lng:-110.7156,kind:'citynight',seed:9,icon:'eye',tags:['Sunset','Nature'],desc:'A rocky lookout on the Catalina Highway with Tucson spread out below.'},
+ {id:'sabino',name:'Sabino Canyon',area:'Coronado National Forest',lat:32.3224,lng:-110.8098,kind:'saguaro',seed:7,icon:'tree',tags:['Nature'],desc:'A desert canyon with a creek and trails at the foot of the Santa Catalinas.'},
+ {id:'amountain',name:'Sentinel Peak',area:'"A" Mountain, Tucson',lat:32.2153,lng:-110.9919,kind:'citynight',seed:4,icon:'eye',tags:['Sunset','Chill'],desc:'A drive-up peak just west of downtown with the city skyline in front of you.'},
+ {id:'picacho',name:'Picacho Peak State Park',area:'Picacho',lat:32.6460,lng:-111.4012,kind:'saguaro',seed:3,icon:'mountain',tags:['Nature','Sunset'],desc:'A sharp volcanic peak between Phoenix and Tucson, famous for spring wildflowers.'},
+ // Sedona & Verde Valley
+ {id:'airportmesa',name:'Airport Mesa Overlook',area:'Sedona',lat:34.8558,lng:-111.7801,kind:'buttes',seed:5,icon:'eye',tags:['Sunset'],desc:'A mesa-top lookout with a 360-degree view of Sedona’s red rocks.'},
+ {id:'cathedral',name:'Cathedral Rock',area:'Sedona',lat:34.8257,lng:-111.7889,kind:'buttes',seed:8,icon:'mountain',tags:['Sunset','Nature'],desc:'Sedona’s most photographed red rock formation, best right before sunset.'},
+ {id:'bellrock',name:'Bell Rock',area:'Village of Oak Creek',lat:34.8017,lng:-111.7637,kind:'buttes',seed:11,icon:'mountain',tags:['Nature'],desc:'A bell-shaped butte with easy trails around its base.'},
+ {id:'devilsbridge',name:'Devil’s Bridge',area:'Sedona',lat:34.9025,lng:-111.8130,kind:'buttes',seed:14,icon:'eye',tags:['Nature','Sunset'],desc:'The largest natural sandstone arch in the Sedona area.'},
+ {id:'sliderock',name:'Slide Rock State Park',area:'Oak Creek Canyon',lat:34.9443,lng:-111.7528,kind:'lake',seed:11,icon:'tree',tags:['Nature','Chill'],desc:'A natural rock waterslide on Oak Creek, deep in a red rock canyon.'},
+ // Northern Arizona
+ {id:'lockett',name:'Lockett Meadow',area:'Flagstaff',lat:35.3567,lng:-111.6203,icon:'cloud',tags:['Nature','Secluded'],desc:'An aspen meadow and pond inside the San Francisco Peaks. Snow stays on the peaks well into spring.'},
+ {id:'mather',name:'Mather Point',area:'Grand Canyon South Rim',lat:36.0616,lng:-112.1079,kind:'buttes',seed:3,icon:'eye',tags:['Sunset','Nature'],desc:'The first big Grand Canyon view for most visitors, right by the South Rim visitor center.'},
+ {id:'desertview',name:'Desert View Watchtower',area:'Grand Canyon South Rim',lat:36.0439,lng:-111.8258,kind:'buttes',seed:6,icon:'eye',tags:['Sunset'],desc:'A stone watchtower at the east end of the South Rim with views of the Colorado River.'},
+ {id:'horseshoe',name:'Horseshoe Bend',area:'Page',lat:36.8791,lng:-111.5104,kind:'lake',seed:3,icon:'eye',tags:['Sunset','Nature'],desc:'A short walk to the rim above the Colorado River’s famous horseshoe-shaped loop.'},
+ {id:'powell',name:'Lake Powell',area:'Wahweap, Page',lat:36.9950,lng:-111.4870,icon:'palm',tags:['Sunset','Nature'],desc:'Red sandstone towers rising out of blue water on the Arizona–Utah line.'},
+ {id:'golden',name:'Rim Lakes Vista',area:'Mogollon Rim',lat:34.3270,lng:-110.9480,icon:'mountain',tags:['Sunset','Secluded','Nature'],desc:'Ponderosa pines run right up to the edge of the Mogollon Rim, with a view south across the Tonto Basin.'},
+ {id:'christopher',name:'Christopher Creek',area:'Near Payson',lat:34.3060,lng:-111.0330,icon:'tree',tags:['Nature','Chill'],desc:'A cool pine-forest creek under the Rim, a popular escape from the valley heat.'},
+ {id:'watson',name:'Watson Lake',area:'Prescott',lat:34.5869,lng:-112.4233,kind:'lake',seed:12,icon:'palm',tags:['Nature','Sunset'],desc:'A lake ringed by the rounded granite boulders of the Granite Dells.'},
+ {id:'thumbbutte',name:'Thumb Butte',area:'Prescott',lat:34.5430,lng:-112.5190,kind:'ridge',seed:12,icon:'tree',tags:['Nature'],desc:'A pine-forest loop trail around Prescott’s landmark rock knob.'},
+ // Western Arizona
+ {id:'havasu',name:'London Bridge',area:'Lake Havasu City',lat:34.4717,lng:-114.3473,kind:'lakecity',seed:12,icon:'palm',tags:['Chill','Sunset'],desc:'The original London Bridge, rebuilt over a channel of Lake Havasu.'},
 ];
 const PHOTOS={golden:'assets/pine.jpg',lockett:'assets/cloud.jpg',christopher:'assets/forest.jpg',powell:'assets/coast.jpg'};
+spots.forEach(s=>{s.rating=null;s.count=0});
 spots.forEach(s=>{if(s.xy)[s.lat,s.lng]=toLL(...s.xy);s.img=PHOTOS[s.id]||scene(s.kind,s.seed||3);[s.x,s.y]=toXY(s.lat,s.lng)});
-const rotationIds=['lockett','christopher','powell','hole','camel','dobbins','saguaro','stargaze','canyon'];
-const reviewPool=[
- ['JM','Jade M.','Worth the walk. Sunset was unreal and nobody else up there.',5,'2 days ago'],
- ['TK','Theo K.','Super chill vibe. Bring water, even at night it’s still warm out.',5,'1 week ago'],
- ['RS','Rae S.','Parking fills up on weekends but the view makes up for it.',4,'3 weeks ago'],
- ['AL','Andre L.','My go-to spot now. Quiet, clean, and the city lights are wild.',5,'1 month ago'],
- ['NB','Nia B.','Gorgeous. Pack out what you pack in, keep it nice for everyone.',5,'1 month ago'],
-];
-const members=[['JM','Jade'],['TK','Theo'],['RS','Rae'],['AL','Andre'],['NB','Nia'],['OC','Omar'],['VP','Val']];
-const posts=[
- {i:'JM',n:'Jade M.',t:'2h',p:'Drove up to the Rim for sunset. The whole Tonto Basin went orange for twenty minutes.',s:'golden',l:42},
- {i:'AL',n:'Andre L.',t:'5h',p:'Roosevelt Row on First Friday is the move. Cool breeze finally hit downtown.',s:'row',l:27},
- {i:'NB',n:'Nia B.',t:'1d',p:'Drove out to Cave Creek for the stars. Saw three shooting stars in an hour.',s:'stargaze',l:63},
- {i:'TK',n:'Theo K.',t:'2d',p:'Hole-in-the-Rock at sunset is a must. Get there 30 min early to grab the ledge.',s:'hole',l:18},
-];
+const rotationIds=['lockett','christopher','powell','mather','horseshoe','cathedral','windy','gates','dobbins'];
+const members=[];
+let posts=[];
 const vibes=['Sunset','Secluded','Rooftop','Nature','Chill'];
 const RADII=[5,10,25,50];let radius=25;
 
@@ -1122,13 +1135,13 @@ function nearestArea(x,y){let best='Phoenix',bd=1e9;for(const[n,ax,ay]of AREAS){
 function renderFeature(){const s=byId('golden');$('.feature .ph').style.backgroundImage=`url("${s.img}")`;$('#floc').textContent=`${s.area} · ${fmt(s.dist)}`}
 function renderRotation(){
   const ids=[...spots.filter(s=>s.mine).map(s=>s.id).reverse(),...rotationIds];
-  $('#rotation').innerHTML=ids.map((id,k)=>{const s=byId(id);const up=s.mine?1:Math.max(6,Math.round(s.count/7));return `<button class="scard" data-spot="${s.id}" aria-label="${esc(s.name)}">
-    <img src="${s.img}" alt=""><span class="rank">#${k+1}</span><span class="rise"><svg width="10" height="10"><use href="#i-flame"/></svg>+${up} this week</span>
-    <span class="meta"><b>${esc(s.name)}</b><span class="row"><span><svg width="10" height="11"><use href="#i-pin"/></svg>${esc(s.area)} \u00b7 ${fmt(s.dist)}</span><em><svg width="11" height="11"><use href="#i-star"/></svg>${s.rating.toFixed(1)}</em></span></span></button>`}).join('');
+  $('#rotation').innerHTML=ids.map((id,k)=>{const s=byId(id);return `<button class="scard" data-spot="${s.id}" aria-label="${esc(s.name)}">
+    <img src="${s.img}" alt="">${s.mine?'<span class="rise">Your spot</span>':''}
+    <span class="meta"><b>${esc(s.name)}</b><span class="row"><span><svg width="10" height="11"><use href="#i-pin"/></svg>${esc(s.area)} \u00b7 ${fmt(s.dist)}</span><em>${esc(s.tags[0]||'Spot')}</em></span></span></button>`}).join('');
 }
-function ncard(s){return `<button class="ncard" data-spot="${s.id}"><span class="nimg"><img src="${s.img}" alt=""><span class="away">${fmt(s.dist)} away</span><span class="nrate"><svg width="11" height="11"><use href="#i-star"/></svg>${s.rating.toFixed(1)} <i>(${s.count})</i></span></span>
+function ncard(s){return `<button class="ncard" data-spot="${s.id}"><span class="nimg"><img src="${s.img}" alt=""><span class="away">${fmt(s.dist)} away</span></span>
   <span class="nbody"><b>${esc(s.name)}</b><span class="narea"><svg width="10" height="11"><use href="#i-pin"/></svg>${esc(s.area)}</span><span class="ntags">${s.tags.map(t=>`<i>${esc(t)}</i>`).join('')}</span></span></button>`}
-function lcard(s){return `<button class="lcard" data-spot="${s.id}"><img src="${s.img}" alt=""><div><b>${esc(s.name)}</b><div class="loc"><svg width="9" height="10"><use href="#i-pin"/></svg>${esc(s.area)} · ${fmt(s.dist)}</div><div class="r"><span class="stars">${starRow(s.rating,9)}</span>${s.rating.toFixed(1)} <span style="color:var(--muted)">(${s.count})</span></div></div></button>`}
+function lcard(s){return `<button class="lcard" data-spot="${s.id}"><img src="${s.img}" alt=""><div><b>${esc(s.name)}</b><div class="loc"><svg width="9" height="10"><use href="#i-pin"/></svg>${esc(s.area)} · ${fmt(s.dist)}</div><div class="r" style="color:var(--muted)">${s.tags.map(esc).join(' \u00b7 ')}</div></div></button>`}
 const sorted=()=>[...spots].sort((a,b)=>a.dist-b.dist);
 function renderAll(){$('#alllist').innerHTML=sorted().map(lcard).join('')}
 function renderDrawer(){const list=sorted().filter(s=>s.dist<=radius);
@@ -1140,7 +1153,7 @@ function renderStash(){const list=[...saved].map(byId);
   $('#stashlist').innerHTML=list.length?`<div class="list">${list.map(lcard).join('')}</div>`:
    `<div class="empty"><div class="leafbig">${leafSvg(46,32)}</div>Your stash is empty.<br>Tap <b style="color:var(--cream)">Save to Stash</b> on any spot to keep it here.<div style="margin-top:16px"><button class="btn" data-go="map">Explore the map</button></div></div>`}
 function renderSpot(id){const s=byId(id),isSaved=saved.has(id);
-  const reviews=s.mine?[]:[0,1,2].map(i=>reviewPool[(id.length+i*2)%reviewPool.length]);
+  const reviews=[];
   $('#s-spot').innerHTML=`<div class="dhero"><img src="${s.img}" alt="${esc(s.name)}">
    <button class="iconbtn" data-act="back" aria-label="Back"><svg width="16" height="16"><use href="#i-back"/></svg></button>
    <button class="iconbtn save-top" data-save="${id}" aria-label="${isSaved?'Remove from Stash':'Save to Stash'}"><svg width="15" height="15"><use href="#i-bookmark${isSaved?'-f':''}"/></svg></button></div>
@@ -1148,8 +1161,8 @@ function renderSpot(id){const s=byId(id),isSaved=saved.has(id);
    ${s.mine?`<span class="mine-tag"><svg width="12" height="12"><use href="#i-user"/></svg>Your spot</span>`:''}
    ${id==='golden'?`<span class="badge"><svg width="11" height="11" style="color:var(--gold)"><use href="#i-crown"/></svg>Hotbox of the week</span>`:''}
    <h2>${esc(s.name)}</h2>
-   <div class="loc" style="font-size:12px;color:#46645a"><svg width="11" height="12"><use href="#i-pin"/></svg>${esc(s.area)}, Phoenix area · <b style="color:var(--gold-hi);font-weight:600">${fmt(s.dist)} away</b></div>
-   <div class="rate"><span class="stars">${starRow(s.rating,12)}</span>${s.mine?'<span>New · no reviews yet</span>':`${s.rating.toFixed(1)} <span>(${s.count} reviews)</span>`}</div>
+   <div class="loc" style="font-size:12px;color:#46645a"><svg width="11" height="12"><use href="#i-pin"/></svg>${esc(s.area)} · <b style="color:var(--gold-hi);font-weight:600">${fmt(s.dist)} away</b></div>
+   <div class="rate"><span>No ratings yet</span></div>
    <p class="desc">${esc(s.desc)}${s.more?' '+esc(s.more):''}</p>
    <div class="chips">${s.tags.map(t=>`<span class="chip">${esc(t)}</span>`).join('')}</div>
    <div class="actions"><button class="btn ${isSaved?'':'solid'}" data-save="${id}"><svg width="13" height="13"><use href="#i-bookmark${isSaved?'-f':''}"/></svg>${isSaved?'Saved to Stash':'Save to Stash'}</button>
@@ -1159,9 +1172,11 @@ function renderSpot(id){const s=byId(id),isSaved=saved.has(id);
    ${reviews.length?'':'<p class="desc" style="margin-top:0">No reviews yet. Members can review this spot once they visit.</p>'}${reviews.map(r=>`<div class="review"><span class="ini">${r[0]}</span><div><div class="who">${r[1]} <small>${r[4]}</small></div><span class="stars" style="margin-top:4px">${starRow(r[3],9)}</span><p>${r[2]}</p></div></div>`).join('')}
    <div class="legal">Spots are general scenic locations. Follow your local laws.</div></div>`}
 function renderCircle(){
-  $('#members').innerHTML=members.map(m=>`<div><span class="ini">${m[0]}</span>${m[1]}</div>`).join('');
-  $('#feed').innerHTML=posts.map((p,i)=>{const s=byId(p.s),on=liked.has(i);return `<article class="post">
-   <div class="hd"><span class="ini">${p.i}</span><div><b>${p.n}</b><small>${p.t} ago · Phoenix</small></div></div><p>${esc(p.p)}</p>
+  $('#members').innerHTML=members.map(m=>`<div><span class="ini">${m[0]}</span>${m[1]}</div>`).join('');$('#members').hidden=!members.length;
+  posts=posts.filter(p=>byId(p.s));
+  $('#feed').innerHTML=posts.length?'':`<div class="empty" style="margin:8px 16px 0">The Circle is just getting started.<br>Drop a spot with the camera and it shows up here for everyone.</div>`;
+  if(posts.length)$('#feed').innerHTML=posts.map((p,i)=>{const s=byId(p.s),on=liked.has(i);return `<article class="post">
+   <div class="hd"><span class="ini">${p.i}</span><div><b>${p.n}</b><small>${p.t}</small></div></div><p>${esc(p.p)}</p>
    <button class="ref" data-spot="${s.id}"><img src="${s.img}" alt=""><div><b>${esc(s.name)}</b><div class="loc" style="font-size:10px;color:var(--muted)">${esc(s.area)} · ${fmt(s.dist)}</div></div></button>
    <div class="ft"><button data-like="${i}" class="${on?'on':''}" aria-pressed="${on}"><svg width="14" height="14"><use href="#i-heart"/></svg>${p.l+(on?1:0)}</button><button data-toast="Comments are coming soon"><svg width="14" height="14"><use href="#i-chat"/></svg>Reply</button></div></article>`}).join('')}
 
@@ -1263,7 +1278,7 @@ function renderNear(){const list=sorted().filter(s=>s.dist<=radius);
   $('#nearlist').innerHTML=list.length?list.map(ncard).join(''):`<p class="mapnote" style="padding:0 2px">No spots this close yet. Try a bigger radius.</p>`}
 
 function openSheet(id){const s=byId(id);world&&world.select(id);
-  $('#sheet').innerHTML=`<div class="sheet-in"><button class="x" data-act="closesheet" aria-label="Close">×</button><img src="${s.img}" alt=""><div class="info"><b>${esc(s.name)}</b><div class="loc" style="font-size:10.5px;color:#46645a"><svg width="9" height="10"><use href="#i-pin"/></svg>${esc(s.area)} · ${fmt(s.dist)}</div><div style="display:flex;align-items:center;gap:6px;font-size:10.5px"><span class="stars">${starRow(s.rating,9)}</span>${s.rating.toFixed(1)}</div><button class="btn" data-spot="${id}">View spot <svg width="11" height="11"><use href="#i-arrow"/></svg></button></div></div>`;
+  $('#sheet').innerHTML=`<div class="sheet-in"><button class="x" data-act="closesheet" aria-label="Close">×</button><img src="${s.img}" alt=""><div class="info"><b>${esc(s.name)}</b><div class="loc" style="font-size:10.5px;color:#46645a"><svg width="9" height="10"><use href="#i-pin"/></svg>${esc(s.area)} · ${fmt(s.dist)}</div><div style="display:flex;align-items:center;gap:6px;font-size:10.5px">${s.tags.map(esc).join(' \u00b7 ')}</div><button class="btn" data-spot="${id}">View spot <svg width="11" height="11"><use href="#i-arrow"/></svg></button></div></div>`;
   $('#sheet').classList.add('on')}
 function closeSheet(){$('#sheet').classList.remove('on');world&&world.select(null)}
 const panel=()=>{};
@@ -1325,9 +1340,10 @@ $('#dropform').addEventListener('submit',e=>{e.preventDefault();
   const name=$('#d-name').value.trim(),desc=$('#d-desc').value.trim(),tags=$$('#vibes .chip.on').map(c=>c.dataset.vibe);
   const err=!name?'Give your spot a name.':'';$('#derr').textContent=err;if(err)return;
   const dropPos={lat:U.lat,lng:U.lng},id='mine'+Date.now(),[x,y]=toXY(dropPos.lat,dropPos.lng),kinds=['saguaro','ridge','citynight','lake','buttes','stars'];
-  spots.push({id,name,area:nearestArea(x,y),lat:dropPos.lat,lng:dropPos.lng,x,y,rating:5.0,count:1,img:dropImg||scene(kinds[spots.length%kinds.length],spots.length),tags:tags.length?tags:['Chill'],desc:desc||'A fresh spot dropped by a Society member.',mine:true});
+  spots.push({id,name,area:nearestArea(x,y),lat:dropPos.lat,lng:dropPos.lng,x,y,rating:null,count:0,img:dropImg||scene(kinds[spots.length%kinds.length],spots.length),tags:tags.length?tags:['Chill'],desc:desc||'A fresh spot dropped by a Society member.',mine:true});
   e.target.reset();dropImg=null;$('#photobox').querySelector('img')?.remove();$('.camhint').hidden=false;
   $$('#vibes .chip').forEach(c=>{c.classList.remove('on');c.setAttribute('aria-pressed','false')});$('#derr').textContent='';
+  posts.unshift({i:'YOU',n:'You',t:'Just now',p:'Dropped a new spot: '+name+'.',s:id,l:0});
   refreshAll();history=[];go('map',{push:false});setTimeout(()=>{world&&world.recenter();openSheet(id)},80);toast('Spot dropped. It’s live on the map.')});
 
 /* ================= clicks ================= */
@@ -1354,7 +1370,7 @@ document.addEventListener('click',e=>{
   else if(d.act==='home'){history=[];go('map',{push:false})}
   else if(d.act==='delask'){$('#delbox').innerHTML=`<div class="delconfirm" role="alertdialog" aria-label="Delete spot"><b>Delete this spot?</b><p>It\u2019ll be removed from the map, Community and everyone\u2019s stash. This can\u2019t be undone.</p><div class="row"><button class="delbtn solid" data-act="deldo" data-id="${d.id}">Delete</button><button class="btn" data-act="delno" data-id="${d.id}">Cancel</button></div></div>`}
   else if(d.act==='delno'){$('#delbox').innerHTML=`<button class="delbtn" data-act="delask" data-id="${d.id}"><svg width="15" height="15"><use href="#i-trash"/></svg>Delete this spot</button>`}
-  else if(d.act==='deldo'){const k=spots.findIndex(x=>x.id===d.id&&x.mine);if(k<0)return;const nm=spots[k].name;spots.splice(k,1);saved.delete(d.id);closeSheet();refreshAll();history=[];go('map',{push:false});toast(nm+' was deleted')}
+  else if(d.act==='deldo'){const k=spots.findIndex(x=>x.id===d.id&&x.mine);if(k<0)return;const nm=spots[k].name;spots.splice(k,1);saved.delete(d.id);posts=posts.filter(p=>p.s!==d.id);closeSheet();refreshAll();history=[];go('map',{push:false});toast(nm+' was deleted')}
   else if(d.act==='camera'&&current!=='map'){history=[];go('map',{push:false})}
   else if(d.act==='camera'){history=[];go('drop',{push:false});const f=$('#d-photo');try{f.click()}catch(err){}}
   else if(d.act==='tilt'){const on=world&&world.toggleTilt();el.textContent=on?'2D':'3D'}
@@ -1367,7 +1383,7 @@ $('#no21').onclick=()=>$('#nomsg').textContent='Come back when you’re 21. See 
 
 /* ================= boot ================= */
 document.body.classList.add('on-map');
-$('#fstars').innerHTML=starRow(5,11);
+
 renderRadius();updateDistances();renderFeature();renderRotation();renderAll();renderNear();renderCircle();
 (async()=>{const el=$('#world');let api=null;
   if(window.maplibregl){const map=await realWorld(el);if(map){api=adapterReal(map);$('#attrib').textContent='\u00a9 OpenFreeMap \u00a9 OpenMapTiles \u00a9 OpenStreetMap contributors'}}
