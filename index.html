@@ -608,6 +608,7 @@ body{background:#050806}
 .duppics figure{margin:0}.duppics img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;display:block}
 .duppics figcaption{margin-top:4px;font-size:11px;font-weight:600;color:#93a39a;text-align:center}
 .dupcheck .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.dupcheck .btn{height:38px;font-size:9.5px}
+.mine-tag.kind{margin-right:6px}
 </style>
 <style>html,body{width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior-x:none}body{position:relative}.app{overflow:hidden}.menu:not(.on){visibility:hidden}#world,#world.maplibregl-map{position:absolute!important;top:0;left:0;right:0;bottom:0;width:100%;height:100%;overflow:hidden}
 #s-map{position:relative;height:100vh;height:100dvh}.maplibregl-ctrl-attrib,.maplibregl-ctrl-logo{display:none!important}</style>
@@ -677,11 +678,11 @@ body{background:#050806}
   </section>
 
   <!-- SPOT DETAIL -->
-  <section class="screen" id="s-spot" aria-label="Spot details"></section>
+  <section class="screen" id="s-spot" aria-label="Details"></section>
 
   <!-- ALL -->
-  <section class="screen" id="s-all" aria-label="All spots">
-    <div class="bar"><button class="iconbtn" data-act="back" aria-label="Back"><svg width="16" height="16"><use href="#i-back"/></svg></button><h2 class="spaced">The Rotation</h2></div>
+  <section class="screen" id="s-all" aria-label="All places">
+    <div class="bar"><button class="iconbtn" data-act="back" aria-label="Back"><svg width="16" height="16"><use href="#i-back"/></svg></button><h2 class="spaced">All Places</h2></div>
     <div class="list" id="alllist"></div>
   </section>
 
@@ -719,7 +720,7 @@ body{background:#050806}
         <div class="loc"><svg width="10" height="11"><use href="#i-pin"/></svg><span id="floc">South Mountain</span></div>
         <p>Pines run right to the edge of the Mogollon Rim, with a view south for miles.</p>
       </div>
-      <button class="btn" data-spot="golden">View spot <svg width="11" height="11"><use href="#i-arrow"/></svg></button>
+      <button class="btn" data-spot="golden">View place <svg width="11" height="11"><use href="#i-arrow"/></svg></button>
     </article>
     <div class="sect">
       <div><span class="eyebrow"><svg width="12" height="12"><use href="#i-camera"/></svg>Just dropped</span><h3>Fresh Finds</h3><p>Little spots members found inside the big places.</p></div>
@@ -767,7 +768,7 @@ body{background:#050806}
     <div class="bar"><button class="iconbtn" data-act="back" aria-label="Back"><svg width="16" height="16"><use href="#i-back"/></svg></button><h2 class="spaced">Guidelines</h2></div>
     <ol class="rules">
       <li><b>21+ only.</b> Higher Places is for adults. No exceptions.</li>
-      <li><b>Follow your local laws.</b> Spots are general scenic locations. You're responsible for what's allowed where you are.</li>
+      <li><b>Follow your local laws.</b> Places and spots are general scenic locations. You're responsible for what's allowed where you are.</li>
       <li><b>Leave no trace.</b> Pack out everything you bring and keep every spot better than you found it.</li>
       <li><b>No trespassing.</b> Only drop spots that are open to the public or that you have permission to use.</li>
       <li><b>Respect people's privacy.</b> Don't post photos of people without their OK, and never share someone's home or personal info.</li>
@@ -797,7 +798,7 @@ body{background:#050806}
   <button class="item" data-toast="Settings are coming soon"><svg width="18" height="18"><use href="#i-gear"/></svg>Settings</button>
   <button class="item" data-act="rules"><svg width="18" height="18"><use href="#i-book"/></svg>Community Guidelines</button>
   <button class="item" data-act="logout"><svg width="18" height="18"><use href="#i-out"/></svg>Log out</button>
-  <div class="foot">Higher Places is a prototype for Arizona. Spots are general scenic locations. Members 21+ only. Follow your local laws.</div>
+  <div class="foot">Higher Places is a prototype for Arizona. Places and spots are general scenic locations. Members 21+ only. Follow your local laws.</div>
 </aside>
 <div class="toast" id="toast" role="status"></div>
 
@@ -1271,7 +1272,8 @@ const spots=[
  {id:'havasu',name:'London Bridge',area:'Lake Havasu City',lat:34.4717,lng:-114.3473,kind:'lakecity',seed:12,icon:'palm',tags:['Chill','Sunset'],desc:'The original London Bridge, rebuilt over a channel of Lake Havasu.'},
 ];
 const PHOTOS={golden:'assets/pine.jpg',lockett:'assets/cloud.jpg',christopher:'assets/forest.jpg',powell:'assets/coast.jpg'};
-spots.forEach(s=>{s.rating=null;s.count=0;s.type='place'});
+const REACH={dobbins:.5,hole:.3,camel:.9,piestewa:.8,northmtn:.6,townlake:.9,encanto:.3,hance:.25,pinnacle:.6,gateway:.8,usery:1,dutchman:1,saguarolake:1.5,canyonlake:1.2,pleasant:2.5,estrella:2,whitetank:2.5,spurcross:1.2,fountain:.4,gates:.4,windy:.3,sabino:1,amountain:.3,picacho:1,airportmesa:.4,cathedral:.6,bellrock:.4,devilsbridge:.4,sliderock:.4,lockett:.5,mather:.5,desertview:.4,horseshoe:.4,powell:2,golden:.6,christopher:.8,watson:.8,thumbbutte:.6,havasu:.4};
+spots.forEach(s=>{s.rating=null;s.count=0;s.type='place';s.reach=REACH[s.id]||.5});
 /* free photos from Unsplash (Unsplash License: free to use, credit shown anyway) */
 const WEBPHOTOS={
  camel:{url:'https://images.unsplash.com/photo-1437153225860-b850e2a4d0fa?auto=format&fit=crop&w=1200&q=70',by:'Drew',page:'https://unsplash.com/photos/photo-of-city-by-rock-formations-zTFTouPkkG0'},
@@ -1301,7 +1303,11 @@ const FIND_ZOOM_S=250;                   // drawn map: show photo bubbles when z
 const isFind=s=>s&&s.type==='find';
 const places=()=>spots.filter(s=>s.type==='place');
 const findsOf=id=>spots.filter(s=>isFind(s)&&s.place===id).sort((a,b)=>(b.photos.length-a.photos.length)||(b.created-a.created));
-function parentPlace(lat,lng){let best=null,bd=1e9;for(const p of places()){const d=miles([lat,lng],[p.lat,p.lng]);if(d<bd){bd=d;best=p}}return bd<=(best&&best.reach||1.2)?best:null}
+function nearestPlace(lat,lng){let best=null,bd=1e9;for(const p of places()){const d=miles([lat,lng],[p.lat,p.lng]);if(d<bd){bd=d;best=p}}return[best,bd]}
+function parentPlace(lat,lng){let best=null,bd=1e9;for(const p of places()){const d=miles([lat,lng],[p.lat,p.lng])/p.reach;if(d<bd){bd=d;best=p}}return bd<=1?best:null}
+function spotArea(lat,lng){const pl=parentPlace(lat,lng);if(pl)return'on '+pl.name;const[x,y]=toXY(lat,lng);
+  if(AREAS.some(([n,ax,ay])=>Math.hypot(ax-x,ay-y)<4))return'near '+nearestArea(x,y);const[np,d]=nearestPlace(lat,lng);return d<25?'near '+np.area.split(',').pop().trim():'Arizona'}
+const noun=s=>isFind(s)?'spot':'place';
 const PRIV={public:['Public','Everyone can see it'],circle:['Circle','Only your Circle can see it'],secret:['Secret','Only you can see it']};
 function countFinds(){places().forEach(p=>p._n=findsOf(p.id).length)}
 function bubbleInner(p){return `<span class="bubble"><img src="${p.img}" alt=""></span><span class="btail"></span>`}
@@ -1320,27 +1326,28 @@ function ncard(s){return `<button class="ncard" data-spot="${s.id}"><span class=
 function lcard(s){return `<button class="lcard" data-spot="${s.id}"><img src="${s.img}" alt=""><div><b>${esc(s.name)}</b><div class="loc"><svg width="9" height="10"><use href="#i-pin"/></svg>${esc(s.area)} · ${fmt(s.dist)}</div><div class="r" style="color:var(--muted)">${s.tags.map(esc).join(' \u00b7 ')}</div></div></button>`}
 const visible=s=>!isFind(s)||s.mine||s.privacy==='public';
 const sorted=()=>spots.filter(visible).sort((a,b)=>a.dist-b.dist);
-function renderAll(){$('#alllist').innerHTML=sorted().map(lcard).join('')}
+function renderAll(){$('#alllist').innerHTML=sorted().filter(x=>!isFind(x)).map(lcard).join('')}
 function renderDrawer(){const list=sorted().filter(s=>s.dist<=radius);
-  $('#dcount').textContent=`Near you · ${list.length} spot${list.length===1?'':'s'} within ${radius} mi`;
-  $('#dlist').innerHTML=list.length?list.map(lcard).join(''):`<p class="mapnote" style="padding:4px 6px 8px">No spots this close yet. Try a bigger radius.</p>`}
+  const pc=list.filter(x=>!isFind(x)).length,fc=list.length-pc,parts=[];if(pc)parts.push(pc+' place'+(pc===1?'':'s'));if(fc)parts.push(fc+' spot'+(fc===1?'':'s'));$('#dcount').textContent=`Near you · ${parts.join(' \u00b7 ')||'nothing'} within ${radius} mi`;
+  $('#dlist').innerHTML=list.length?list.map(lcard).join(''):`<p class="mapnote" style="padding:4px 6px 8px">Nothing this close yet. Try a bigger radius.</p>`}
 function renderRadius(){$('#radius').innerHTML=RADII.map(r=>`<button class="${r===radius?'on':''}" data-radius="${r}" aria-pressed="${r===radius}">${r} mi</button>`).join('')}
 function renderStash(){const list=[...saved].map(byId);
-  $('#stashsub').textContent=list.length?`${list.length} saved spot${list.length>1?'s':''}`:'';
+  {const pc=list.filter(x=>!isFind(x)).length,fc=list.length-pc,parts=[];if(pc)parts.push(pc+' place'+(pc===1?'':'s'));if(fc)parts.push(fc+' spot'+(fc===1?'':'s'));$('#stashsub').textContent=parts.length?parts.join(' \u00b7 ')+' saved':''}
   $('#stashlist').innerHTML=list.length?`<div class="list">${list.map(lcard).join('')}</div>`:
-   `<div class="empty"><div class="leafbig">${leafSvg(46,32)}</div>Your stash is empty.<br>Tap <b style="color:var(--cream)">Save to Stash</b> on any spot to keep it here.<div style="margin-top:16px"><button class="btn" data-go="map">Explore the map</button></div></div>`}
+   `<div class="empty"><div class="leafbig">${leafSvg(46,32)}</div>Your stash is empty.<br>Tap <b style="color:var(--cream)">Save to Stash</b> on any place or spot to keep it here.<div style="margin-top:16px"><button class="btn" data-go="map">Explore the map</button></div></div>`}
 function renderSpot(id){const s=byId(id),isSaved=saved.has(id);
   const reviews=[];
   $('#s-spot').innerHTML=`<div class="dhero"><img src="${s.img}" alt="${esc(s.name)}">${s.credit?`<a class="credit" href="${s.credit.page}" target="_blank" rel="noopener">Photo: ${esc(s.credit.by)} on Unsplash</a>`:''}
    <button class="iconbtn" data-act="back" aria-label="Back"><svg width="16" height="16"><use href="#i-back"/></svg></button>
    <button class="iconbtn save-top" data-save="${id}" aria-label="${isSaved?'Remove from Stash':'Save to Stash'}"><svg width="15" height="15"><use href="#i-bookmark${isSaved?'-f':''}"/></svg></button></div>
   <div class="dbody">
-   ${s.mine?`<span class="mine-tag"><svg width="12" height="12"><use href="#i-user"/></svg>Your spot</span>`:''}
+   ${s.mine?`<span class="mine-tag"><svg width="12" height="12"><use href="#i-user"/></svg>Yours</span>`:''}
    ${id==='golden'?`<span class="badge"><svg width="11" height="11" style="color:var(--gold)"><use href="#i-crown"/></svg>Hotbox of the week</span>`:''}
-   ${isFind(s)?`<span class="mine-tag priv"><svg width="12" height="12"><use href="#i-${s.privacy==='secret'?'lock':s.privacy==='circle'?'people':'globe'}"/></svg>${PRIV[s.privacy][0]}</span>`:''}
+   ${isFind(s)?'':`<span class="mine-tag kind"><svg width="12" height="12"><use href="#i-mappin"/></svg>Place${s._n?` \u00b7 ${s._n} spot${s._n===1?'':'s'}`:''}</span>`}
+   ${isFind(s)?`<span class="mine-tag kind"><svg width="12" height="12"><use href="#i-camera"/></svg>Spot</span><span class="mine-tag priv"><svg width="12" height="12"><use href="#i-${s.privacy==='secret'?'lock':s.privacy==='circle'?'people':'globe'}"/></svg>${PRIV[s.privacy][0]}</span>`:''}
    <h2>${esc(s.name)}</h2>
    ${isFind(s)&&s.place?`<button class="onplace" data-spot="${s.place}"><svg width="12" height="12"><use href="#i-mappin"/></svg>on ${esc(byId(s.place).name)}<svg width="11" height="11"><use href="#i-arrow"/></svg></button>`:''}
-   <div class="loc" style="font-size:12px;color:#b7c4bc"><svg width="11" height="12"><use href="#i-pin"/></svg>${esc(s.area)} · <b style="color:var(--gold-hi);font-weight:600">${fmt(s.dist)} away</b></div>
+   <div class="loc" style="font-size:12px;color:#b7c4bc"><svg width="11" height="12"><use href="#i-pin"/></svg>${isFind(s)&&s.place?'':esc(s.area)+' · '}<b style="color:var(--gold-hi);font-weight:600">${fmt(s.dist)} away</b></div>
    <div class="rate"><span>No ratings yet</span></div>
    <p class="desc">${esc(s.desc)}${s.more?' '+esc(s.more):''}</p>
    <div class="chips">${s.tags.map(t=>`<span class="chip">${esc(t)}</span>`).join('')}</div>
@@ -1350,8 +1357,8 @@ function renderSpot(id){const s=byId(id),isSaved=saved.has(id);
    ${isFind(s)&&s.photos.length>1?`<h4 class="spaced h4">${s.photos.length} photos of this spot</h4><div class="pstrip">${s.photos.map(ph=>`<img src="${ph.src}" alt="">`).join('')}</div>`:''}
    ${isFind(s)?'':`<h4 class="spaced h4">Spots here</h4>${(()=>{const f=findsOf(id).filter(visible);return f.length?`<div class="fgrid">${f.map(x=>`<button class="ftile" data-spot="${x.id}"><img src="${x.img}" alt=""><b>${esc(x.name)}</b>${x.photos.length>1?`<i>${x.photos.length} photos</i>`:''}</button>`).join('')}</div>`:`<div class="empty" style="margin:0">No spots dropped here yet.<br>Found a cool boulder, ledge or view? Snap it with the camera while you\u2019re here.</div>`})()}`}
    <h4 class="spaced h4">Reviews</h4>
-   ${reviews.length?'':'<p class="desc" style="margin-top:0">No reviews yet. Members can review this spot once they visit.</p>'}${reviews.map(r=>`<div class="review"><span class="ini">${r[0]}</span><div><div class="who">${r[1]} <small>${r[4]}</small></div><span class="stars" style="margin-top:4px">${starRow(r[3],9)}</span><p>${r[2]}</p></div></div>`).join('')}
-   <div class="legal">Spots are general scenic locations. Follow your local laws.</div></div>`}
+   ${reviews.length?'':`<p class="desc" style="margin-top:0">No reviews yet. Members can review this ${noun(s)} once they visit.</p>`}${reviews.map(r=>`<div class="review"><span class="ini">${r[0]}</span><div><div class="who">${r[1]} <small>${r[4]}</small></div><span class="stars" style="margin-top:4px">${starRow(r[3],9)}</span><p>${r[2]}</p></div></div>`).join('')}
+   <div class="legal">${isFind(s)?'Spots':'Places'} are general scenic locations. Follow your local laws.</div></div>`}
 function renderCircle(){
   $('#members').innerHTML=members.map(m=>`<div><span class="ini">${m[0]}</span>${m[1]}</div>`).join('');$('#members').hidden=!members.length;
   posts=posts.filter(p=>byId(p.s));
@@ -1458,11 +1465,11 @@ function renderFresh(){const f=spots.filter(x=>isFind(x)&&visible(x)).sort((a,b)
   $('#freshfinds').innerHTML=f.length?f.map(x=>`<button class="ftile" data-spot="${x.id}"><img src="${x.img}" alt=""><b>${esc(x.name)}</b><i>${esc(x.area)}</i></button>`).join(''):`<div class="empty" style="margin:0;grid-column:1/-1">No finds yet. Snap the first one with the camera.</div>`}
 function refreshAll(){updateDistances();countFinds();renderFresh();renderFeature();renderRotation();renderAll();renderNear();renderCircle();world&&world.update()}
 function renderNear(){const list=sorted().filter(s=>s.dist<=radius);
-  $('#nearcount').textContent=`${list.length} spot${list.length===1?'':'s'} within ${radius} miles of you`;
-  $('#nearlist').innerHTML=list.length?list.map(ncard).join(''):`<p class="mapnote" style="padding:0 2px">No spots this close yet. Try a bigger radius.</p>`}
+  const pc=list.filter(x=>!isFind(x)).length,fc=list.length-pc,parts=[];if(pc)parts.push(pc+' place'+(pc===1?'':'s'));if(fc)parts.push(fc+' spot'+(fc===1?'':'s'));$('#nearcount').textContent=parts.length?`${parts.join(' \u00b7 ')} within ${radius} miles of you`:`Nothing within ${radius} miles of you yet`;
+  $('#nearlist').innerHTML=list.length?list.map(ncard).join(''):`<p class="mapnote" style="padding:0 2px">Nothing this close yet. Try a bigger radius.</p>`}
 
 function openSheet(id){const s=byId(id);world&&world.select(id);
-  $('#sheet').innerHTML=`<div class="sheet-in"><button class="x" data-act="closesheet" aria-label="Close">×</button><img src="${s.img}" alt=""><div class="info"><b>${esc(s.name)}</b><div class="loc" style="font-size:10.5px;color:#b7c4bc"><svg width="9" height="10"><use href="#i-pin"/></svg>${esc(s.area)} · ${fmt(s.dist)}</div><div style="display:flex;align-items:center;gap:6px;font-size:10.5px">${s.tags.map(esc).join(' \u00b7 ')}</div><button class="btn" data-spot="${id}">View spot <svg width="11" height="11"><use href="#i-arrow"/></svg></button></div></div>`;
+  $('#sheet').innerHTML=`<div class="sheet-in"><button class="x" data-act="closesheet" aria-label="Close">×</button><img src="${s.img}" alt=""><div class="info"><b>${esc(s.name)}</b><div class="loc" style="font-size:10.5px;color:#b7c4bc"><svg width="9" height="10"><use href="#i-pin"/></svg>${esc(s.area)} · ${fmt(s.dist)}</div><div style="display:flex;align-items:center;gap:6px;font-size:10.5px">${s.tags.map(esc).join(' \u00b7 ')}</div><button class="btn" data-spot="${id}">View ${noun(s)} <svg width="11" height="11"><use href="#i-arrow"/></svg></button></div></div>`;
   $('#sheet').classList.add('on')}
 function closeSheet(){$('#sheet').classList.remove('on');world&&world.select(null)}
 const panel=()=>{};
@@ -1517,7 +1524,7 @@ $('#scrim').onclick=()=>menu(false);
 /* ================= drop a spot ================= */
 $('#vibes').innerHTML=vibes.map(v=>`<button type="button" class="chip" data-vibe="${v}" aria-pressed="false">${v}</button>`).join('');
 let dropImg=null;
-function renderDropLoc(){const pl=parentPlace(U.lat,U.lng);$('#droploc').innerHTML=`<svg width="11" height="12" style="color:var(--gold)"><use href="#i-pin"/></svg>Dropping at your exact spot \u00b7 <b>${pl?'on '+esc(pl.name):'near '+esc(nearestArea(U.x,U.y))}</b>`;$('#dupbox').innerHTML='';dupOK=false}
+function renderDropLoc(){const pl=parentPlace(U.lat,U.lng);$('#droploc').innerHTML=`<svg width="11" height="12" style="color:var(--gold)"><use href="#i-pin"/></svg>Dropping a spot right where you\u2019re standing \u00b7 <b>${esc(spotArea(U.lat,U.lng))}</b>`;$('#dupbox').innerHTML='';dupOK=false}
 $('#d-photo').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();
   rd.onload=()=>{dropImg=rd.result;$('#photobox').querySelector('img')?.remove();$('#photobox').insertAdjacentHTML('afterbegin',`<img src="${dropImg}" alt="Your photo">`);$('.camhint').hidden=true};rd.readAsDataURL(f)});
 let priv='public',dupOK=false;
@@ -1537,9 +1544,9 @@ $('#dropform').addEventListener('submit',e=>{e.preventDefault();
         <div class="row"><button type="button" class="btn solid" data-act="dupsame" data-id="${near.id}">Same spot \u00b7 add my photo</button><button type="button" class="btn" data-act="dupdiff">Different spot</button></div></div>`;
       $('#dupbox').scrollIntoView({behavior:'smooth',block:'center'});return}}
   const pl=parentPlace(U.lat,U.lng),id='find'+Date.now(),[x,y]=toXY(U.lat,U.lng);
-  spots.push({id,type:'find',place:pl?pl.id:null,name,area:pl?'on '+pl.name:nearestArea(x,y),lat:U.lat,lng:U.lng,x,y,rating:null,count:0,img:dropImg,photos:[{src:dropImg,by:'You',at:Date.now()}],privacy:priv,created:Date.now(),
+  spots.push({id,type:'find',place:pl?pl.id:null,name,area:spotArea(U.lat,U.lng),lat:U.lat,lng:U.lng,x,y,rating:null,count:0,img:dropImg,photos:[{src:dropImg,by:'You',at:Date.now()}],privacy:priv,created:Date.now(),
     tags:tags.length?tags:['Chill'],desc:desc||'A spot found by a Society member.',mine:true});
-  if(priv!=='secret')posts.unshift({i:'YOU',n:'You',t:'Just now'+(priv==='circle'?' \u00b7 Circle only':''),p:'Found a new spot'+(pl?' on '+pl.name:'')+': '+name+'.',s:id,l:0});
+  if(priv!=='secret')posts.unshift({i:'YOU',n:'You',t:'Just now'+(priv==='circle'?' \u00b7 Circle only':''),p:'Found a new spot '+spotArea(U.lat,U.lng)+': '+name+'.',s:id,l:0});
   doneDrop(id,priv==='secret'?'Secret spot saved. Only you can see it.':'Spot dropped. It\u2019s live on the map.')});
 
 /* ================= clicks ================= */
@@ -1581,7 +1588,7 @@ $('#yes21').onclick=()=>{$('#gate').classList.add('out');locate()};
 $('#no21').onclick=()=>$('#nomsg').textContent='Come back when you’re 21. See you then.';
 
 /* ================= boot ================= */
-window.HP={spots,renderSpot,go,zoom:f=>world&&world.zoom(f)};
+window.HP={spots,renderSpot,go,zoom:f=>world&&world.zoom(f),moveTo:(lat,lng)=>{U.lat=lat;U.lng=lng;[U.x,U.y]=toXY(lat,lng);refreshAll()}};
 document.body.classList.add('on-map');
 
 renderRadius();updateDistances();renderFeature();renderRotation();renderAll();renderNear();renderCircle();
