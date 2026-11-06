@@ -576,9 +576,9 @@ body.on-map .camera .ic-leaf{display:none}body.on-map .camera .ic-cam{display:bl
   <section class="screen" id="s-drop" aria-label="Drop a spot">
     <div class="bar"><h2 class="spaced">Drop a Spot</h2></div>
     <form class="form" id="dropform" novalidate>
-      <label class="photo cam" for="d-photo" id="photobox"><span class="camhint"><svg width="34" height="34"><use href="#i-camera"/></svg>Tap to take a photo<small>The photo is the spot: the boulder, ledge or view you found</small></span><input type="file" id="d-photo" accept="image/*" capture="environment"></label>
+      <label class="photo cam" for="d-photo" id="photobox"><span class="camhint"><svg width="34" height="34"><use href="#i-camera"/></svg>Tap to take a photo</span><input type="file" id="d-photo" accept="image/*" capture="environment"></label>
       <div class="here" id="droploc"></div>
-      <div class="field"><label for="d-name">Spot name</label><input id="d-name" maxlength="40" placeholder="e.g. Hidden Boulder Window"></div>
+      <div class="field"><label for="d-name">Spot name</label><input id="d-name" maxlength="40" placeholder="Name your spot"></div>
       <div class="field"><label for="d-desc">Description</label><textarea id="d-desc" maxlength="220" placeholder="What makes it special? Views, vibe, best time to go."></textarea></div>
       <div class="field"><label>Vibe</label><div class="chips" id="vibes"></div></div>
       <div class="field"><label>Who can see it</label><div class="seg" id="privseg" role="group" aria-label="Who can see it" style="margin:0"><button type="button" class="on" data-priv="public" aria-pressed="true">Public</button><button type="button" data-priv="circle" aria-pressed="false">Circle</button><button type="button" data-priv="secret" aria-pressed="false">Secret</button></div><div class="hint" id="privhint">Everyone can see it</div></div>
