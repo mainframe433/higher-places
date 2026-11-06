@@ -1306,7 +1306,7 @@ const findsOf=id=>spots.filter(s=>isFind(s)&&s.place===id).sort((a,b)=>(b.photos
 function nearestPlace(lat,lng){let best=null,bd=1e9;for(const p of places()){const d=miles([lat,lng],[p.lat,p.lng]);if(d<bd){bd=d;best=p}}return[best,bd]}
 function parentPlace(lat,lng){let best=null,bd=1e9;for(const p of places()){const d=miles([lat,lng],[p.lat,p.lng])/p.reach;if(d<bd){bd=d;best=p}}return bd<=1?best:null}
 function spotArea(lat,lng){const pl=parentPlace(lat,lng);if(pl)return'on '+pl.name;const[x,y]=toXY(lat,lng);
-  if(AREAS.some(([n,ax,ay])=>Math.hypot(ax-x,ay-y)<4))return'near '+nearestArea(x,y);const[np,d]=nearestPlace(lat,lng);return d<25?'near '+np.area.split(',').pop().trim():'Arizona'}
+  if(AREAS.some(([n,ax,ay])=>Math.hypot(ax-x,ay-y)<4))return'near '+nearestArea(x,y);const[np,d]=nearestPlace(lat,lng);return d<25?'near '+np.area.split(',').pop().trim():'in Arizona'}
 const noun=s=>isFind(s)?'spot':'place';
 const PRIV={public:['Public','Everyone can see it'],circle:['Circle','Only your Circle can see it'],secret:['Secret','Only you can see it']};
 function countFinds(){places().forEach(p=>p._n=findsOf(p.id).length)}
@@ -1316,7 +1316,7 @@ function nearestArea(x,y){let best='Phoenix',bd=1e9;for(const[n,ax,ay]of AREAS){
 /* ================= renderers ================= */
 function renderFeature(){const s=byId('golden');$('.feature .ph').style.backgroundImage=`url("${s.img}")`;$('#floc').textContent=`${s.area} · ${fmt(s.dist)}`}
 function renderRotation(){
-  const ids=[...spots.filter(s=>s.mine).map(s=>s.id).reverse(),...rotationIds];
+  const ids=rotationIds;
   $('#rotation').innerHTML=ids.map((id,k)=>{const s=byId(id);return `<button class="scard" data-spot="${s.id}" aria-label="${esc(s.name)}">
     <img src="${s.img}" alt="">${s.mine?'<span class="rise">Your spot</span>':''}
     <span class="meta"><b>${esc(s.name)}</b><span class="row"><span><svg width="10" height="11"><use href="#i-pin"/></svg>${esc(s.area)} \u00b7 ${fmt(s.dist)}</span><em>${esc(s.tags[0]||'Spot')}</em></span></span></button>`}).join('');
@@ -1355,7 +1355,7 @@ function renderSpot(id){const s=byId(id),isSaved=saved.has(id);
      <button class="btn" data-mapto="${id}"><svg width="12" height="13"><use href="#i-mappin"/></svg>Show on map</button></div>
    ${s.mine?`<div class="delbox" id="delbox"><button class="delbtn" data-act="delask" data-id="${id}"><svg width="15" height="15"><use href="#i-trash"/></svg>Delete this spot</button></div>`:''}
    ${isFind(s)&&s.photos.length>1?`<h4 class="spaced h4">${s.photos.length} photos of this spot</h4><div class="pstrip">${s.photos.map(ph=>`<img src="${ph.src}" alt="">`).join('')}</div>`:''}
-   ${isFind(s)?'':`<h4 class="spaced h4">Spots here</h4>${(()=>{const f=findsOf(id).filter(visible);return f.length?`<div class="fgrid">${f.map(x=>`<button class="ftile" data-spot="${x.id}"><img src="${x.img}" alt=""><b>${esc(x.name)}</b>${x.photos.length>1?`<i>${x.photos.length} photos</i>`:''}</button>`).join('')}</div>`:`<div class="empty" style="margin:0">No spots dropped here yet.<br>Found a cool boulder, ledge or view? Snap it with the camera while you\u2019re here.</div>`})()}`}
+   ${isFind(s)?'':`<h4 class="spaced h4">Spots here</h4>${(()=>{const f=findsOf(id).filter(visible);return f.length?`<div class="fgrid">${f.map(x=>`<button class="ftile" data-spot="${x.id}"><img src="${x.img}" alt=""><b>${esc(x.name)}</b>${x.photos.length>1?`<i>${x.photos.length} photos</i>`:''}</button>`).join('')}</div>`:`<div class="empty" style="margin:0">No spots found here yet.<br>Go explore. Find a cool boulder, ledge or view and snap it with the camera to share it.</div>`})()}`}
    <h4 class="spaced h4">Reviews</h4>
    ${reviews.length?'':`<p class="desc" style="margin-top:0">No reviews yet. Members can review this ${noun(s)} once they visit.</p>`}${reviews.map(r=>`<div class="review"><span class="ini">${r[0]}</span><div><div class="who">${r[1]} <small>${r[4]}</small></div><span class="stars" style="margin-top:4px">${starRow(r[3],9)}</span><p>${r[2]}</p></div></div>`).join('')}
    <div class="legal">${isFind(s)?'Spots':'Places'} are general scenic locations. Follow your local laws.</div></div>`}
