@@ -580,6 +580,8 @@ body{background:#050806}
 .sheet-in{background:rgba(12,16,14,.94);border-color:rgba(255,255,255,.08);box-shadow:0 -8px 30px rgba(0,0,0,.5);color:#fff}
 .sheet .loc{color:#c9d4ce!important}
 .sheet .btn{background:transparent;color:#3fe08a;border-color:#3fe08a}
+
+.dhero .credit{position:absolute;z-index:3;right:12px;bottom:80px;padding:4px 9px;border-radius:999px;background:rgba(0,0,0,.45);color:rgba(255,255,255,.85);font-size:10px;font-weight:600;text-decoration:none;backdrop-filter:blur(4px)}
 </style>
 <style>html,body{width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior-x:none}body{position:relative}.app{overflow:hidden}.menu:not(.on){visibility:hidden}#world,#world.maplibregl-map{position:absolute!important;top:0;left:0;right:0;bottom:0;width:100%;height:100%;overflow:hidden}
 #s-map{position:relative;height:100vh;height:100dvh}.maplibregl-ctrl-attrib,.maplibregl-ctrl-logo{display:none!important}</style>
@@ -1236,7 +1238,16 @@ const spots=[
 ];
 const PHOTOS={golden:'assets/pine.jpg',lockett:'assets/cloud.jpg',christopher:'assets/forest.jpg',powell:'assets/coast.jpg'};
 spots.forEach(s=>{s.rating=null;s.count=0});
-spots.forEach(s=>{if(s.xy)[s.lat,s.lng]=toLL(...s.xy);s.img=PHOTOS[s.id]||scene(s.kind,s.seed||3);[s.x,s.y]=toXY(s.lat,s.lng)});
+/* free photos from Unsplash (Unsplash License: free to use, credit shown anyway) */
+const WEBPHOTOS={
+ camel:{url:'https://images.unsplash.com/photo-1437153225860-b850e2a4d0fa?auto=format&fit=crop&w=1200&q=70',by:'Drew',page:'https://unsplash.com/photos/photo-of-city-by-rock-formations-zTFTouPkkG0'},
+ hole:{url:'https://images.unsplash.com/photo-1573691256515-81744fea5e82?auto=format&fit=crop&w=1200&q=70',by:'Meritt Thomas',page:'https://unsplash.com/photos/rocky-cave-during-day-2MQOyphBFoE'},
+ cathedral:{url:'https://images.unsplash.com/photo-1583729476095-82e61108a043?auto=format&fit=crop&w=1200&q=70',by:'Kaileen Fitzpatrick',page:'https://unsplash.com/photos/brown-rocky-mountain-under-blue-sky-during-daytime-tfqrqGH7S9A'},
+ mather:{url:'https://images.unsplash.com/photo-1691929925627-8b6db69e2813?auto=format&fit=crop&w=1200&q=70',by:'henri buenen',page:'https://unsplash.com/photos/a-view-of-the-grand-canyon-from-the-rim-of-a-cliff-eTHI_qnk46Y'},
+ horseshoe:{url:'https://images.unsplash.com/photo-1483086451546-5a971a934123?auto=format&fit=crop&w=1200&q=70',by:'Des R\u00e9cits',page:'https://unsplash.com/photos/horseshoe-bend-during-daytime-szrq8mnr0eY'}
+};
+spots.forEach(s=>{if(s.xy)[s.lat,s.lng]=toLL(...s.xy);s.fallback=s.kind?scene(s.kind,s.seed||3):null;const w=WEBPHOTOS[s.id];if(w){s.img=w.url;s.credit=w}else s.img=PHOTOS[s.id]||s.fallback;[s.x,s.y]=toXY(s.lat,s.lng)});
+document.addEventListener('error',e=>{const t=e.target;if(t&&t.tagName==='IMG'&&!t.dataset.fb){const sp=spots.find(x=>x.img===t.getAttribute('src'));if(sp&&sp.fallback){t.dataset.fb='1';t.src=sp.fallback}}},true);
 const rotationIds=['lockett','christopher','powell','mather','horseshoe','cathedral','windy','gates','dobbins'];
 const members=[];
 let posts=[];
@@ -1275,7 +1286,7 @@ function renderStash(){const list=[...saved].map(byId);
    `<div class="empty"><div class="leafbig">${leafSvg(46,32)}</div>Your stash is empty.<br>Tap <b style="color:var(--cream)">Save to Stash</b> on any spot to keep it here.<div style="margin-top:16px"><button class="btn" data-go="map">Explore the map</button></div></div>`}
 function renderSpot(id){const s=byId(id),isSaved=saved.has(id);
   const reviews=[];
-  $('#s-spot').innerHTML=`<div class="dhero"><img src="${s.img}" alt="${esc(s.name)}">
+  $('#s-spot').innerHTML=`<div class="dhero"><img src="${s.img}" alt="${esc(s.name)}">${s.credit?`<a class="credit" href="${s.credit.page}" target="_blank" rel="noopener">Photo: ${esc(s.credit.by)} on Unsplash</a>`:''}
    <button class="iconbtn" data-act="back" aria-label="Back"><svg width="16" height="16"><use href="#i-back"/></svg></button>
    <button class="iconbtn save-top" data-save="${id}" aria-label="${isSaved?'Remove from Stash':'Save to Stash'}"><svg width="15" height="15"><use href="#i-bookmark${isSaved?'-f':''}"/></svg></button></div>
   <div class="dbody">
