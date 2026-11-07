@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Yellowtail&display=swap">
 <style>
 /* Layout: one phone-width column, dark lounge palette, gold hairlines; bottom tab bar */
-:root{
+:root{--lm-fill:rgba(10,8,16,.86);--lm-stroke:currentColor;
   --bg:#0b100d; --bg2:#101812; --panel:#121a15; --gold:#3fe08a; --gold-hi:#3fe08a; --haze:#c46cf5; --sun:#f6a821;
   --cream:#eef5f0; --muted:#93a39a; --dim:#6e7d75; --line:rgba(63,224,138,.4); --line-soft:rgba(255,255,255,.08);
   --serif:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
@@ -307,7 +307,7 @@ svg{display:block}
 .camera:hover span{transform:scale(1.05)}.camera:active span{transform:scale(.95)}
 .brandmark{position:absolute;z-index:5;top:calc(16px + env(safe-area-inset-top,0px));left:16px;display:flex;align-items:center;gap:6px;color:var(--gold);pointer-events:none;opacity:.8}
 .brandmark span{font-family:var(--serif);font-weight:500;font-size:15px;line-height:.86;background:linear-gradient(180deg,#34d488,#3fe08a);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-#s-map .attrib{bottom:calc(84px + env(safe-area-inset-bottom,0px));left:12px;right:12px;text-align:center;pointer-events:none}
+#s-map .attrib{white-space:normal;line-height:1.4;bottom:calc(84px + env(safe-area-inset-bottom,0px));left:12px;right:12px;text-align:center;pointer-events:none}
 .sheet{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
 .spark-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:2px 15px 0 18px}
 .spark{margin:0;font-size:15px;letter-spacing:.34em}
@@ -699,7 +699,17 @@ body{background:#050806}
 </style>
 <style>[hidden]{display:none!important}
 html,body{width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior-x:none}body{position:relative}.app{overflow:hidden}.menu:not(.on){visibility:hidden}#world,#world.maplibregl-map{position:absolute!important;top:0;left:0;right:0;bottom:0;width:100%;height:100%;overflow:hidden}
-#s-map{position:relative;height:100vh;height:100dvh}.maplibregl-ctrl-attrib,.maplibregl-ctrl-logo{display:none!important}</style>
+#s-map{position:relative;height:100vh;height:100dvh}.maplibregl-ctrl-attrib,.maplibregl-ctrl-logo{display:none!important}.lm{overflow:visible;display:block}
+.lm .lmb{fill:currentColor;fill-opacity:.22;stroke:currentColor;stroke-width:1.2}
+.lm .f{fill:var(--lm-fill);stroke:var(--lm-stroke);stroke-width:1.8;stroke-linejoin:round}
+.lm .l{fill:none;stroke:var(--lm-stroke);stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round;opacity:.8}
+.lm .w{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.lm .fr{stroke-width:2}
+.lm .o{fill:none;stroke:var(--lm-stroke);stroke-width:6.2;stroke-linecap:round;stroke-linejoin:round}
+.lm .i{fill:none;stroke:var(--lm-fill);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
+.pin .lm{transition:transform .25s cubic-bezier(.3,1.6,.5,1);transform-origin:50% 90%}
+.pin.sel .lm,.pin.near .lm{transform:scale(1.18)}
+</style>
 </head>
 <body>
 
@@ -1263,9 +1273,25 @@ function drawStreet(m,c){
 /* ================= neon pins ================= */
 const ICON={golden:'mountain',lockett:'cloud',christopher:'tree',powell:'eye',dobbins:'eye',hole:'mountain',camel:'mountain',saguaro:'mountain',estrella:'mountain',stargaze:'cloud',canyon:'palm',townlake:'palm',skyline:'leaf',row:'flame',encanto:'palm',copper:'leaf',civic:'tree',deck:'tree',heritage:'leaf',grand:'eye'};
 const PURPLE=new Set(['palm','mountain','eye','flame']);
+const LM_OF={camel:'peak',piestewa:'peak',northmtn:'peak',pinnacle:'peak',picacho:'peak',amountain:'peak',estrella:'ridge',whitetank:'ridge',dutchman:'ridge',usery:'ridge',cathedral:'butte',bellrock:'butte',thumbbutte:'butte',hole:'arch',devilsbridge:'arch',mather:'canyon',horseshoe:'canyon',sabino:'canyon',desertview:'tower',townlake:'lake',encanto:'lake',saguarolake:'lake',canyonlake:'lake',pleasant:'lake',fountain:'lake',powell:'lake',watson:'lake',sliderock:'lake',christopher:'lake',lockett:'pine',golden:'pine',dobbins:'vista',windy:'vista',gates:'vista',gateway:'cactus',spurcross:'cactus',hance:'palm'};
+const LM_ICON={mountain:'peak',eye:'vista',palm:'lake',tree:'pine',cloud:'pine',flame:'vista'};
+const LM={
+ peak:'<path class="f" d="M3.5 35 11 20l3 3.5L18.5 11l8 24Z"/><path class="l" d="m18.5 11-1.9 6.5 2.6 3M11 20l-1 4"/>',
+ ridge:'<path class="f" d="M2.5 35 7 25l3 2 4-9.5 3 4 4-7.5 6.5 21Z"/><path class="l" d="m14 17.5-1 5.5M21 14l-1 6"/>',
+ butte:'<path class="f" d="M5 35 7 25h2l1-9.5h2l1 5.5h2l1-11h2l1 9.5h2l1 6.5h2l1.5 9Z"/><path class="l" d="M7 30h16"/>',
+ arch:'<path class="f" fill-rule="evenodd" d="M3.5 35 4.6 24Q3.8 16.5 8.8 13.4 12 10.8 16.2 11.8q5.6-1.4 8.8 3.4 2.6 4 1.6 8.8l.9 11ZM14.2 14.6a4.6 4.4 0 1 0 .01 0Z"/><path class="l" d="M6.5 29q4-1.4 7.5-.4M18 31.5q3.5-1.6 6.6-.4"/>',
+ canyon:'<path class="f" d="M2.5 35V17h7l1.3 5.5 1.5 12.5Zm25 0V15h-7l-1.3 6-1.4 14Z"/><path class="w" d="M12.3 33.6q2.7-2.8 5.5 0"/>',
+ tower:'<path class="f" d="m19.4 35 1.6-6 4-.5 2 6.5Z"/><path class="f" d="m10.5 35 .8-21v-3.5h2v1.8h1v-1.8h1.4v1.8h1v-1.8h2V14l.8 21Z"/><path class="l" d="M14 19h2v3h-2ZM11.4 26h7.2"/>',
+ lake:'<path class="f" d="m7 31.2 5.5-10.4 3 3.6 3.8-6.6 5.7 13.4Z"/><path class="w" d="M6.2 34.2q2.2-1.5 4.4 0t4.4 0 4.4 0 4.4 0"/>',
+ pine:'<path class="f" d="m15 8 6 10h-3l5 8h-3.5l5 7h-19l5-7H7l5-8H9Z"/><path class="l" d="M15 33v2.5"/>',
+ vista:'<circle class="f" cx="15" cy="21" r="6"/><path class="f" d="M3 35v-8.5l6.2-3.2 5.6 2.7 6.4-4.2 5.8 3.8V35Z"/><path class="w" d="M15 12.4V10M8.6 15l-1.6-1.6m14.4 1.6 1.6-1.6"/>',
+ cactus:'<path class="o" d="M15 35V10m0 16h-4.5v-7m4.5 3.5h4.5V15"/><path class="i" d="M15 35V10m0 16h-4.5v-7m4.5 3.5h4.5V15"/>',
+ palm:'<path class="o" d="M15 35q-1-10 1-21"/><path class="i" d="M15 35q-1-10 1-21"/><path class="w fr" d="M16 14q-5-3-8.5 1m8.5-1q4.5-4 8.5-.5M16 14q-3-6-6.5-5.5M16 14q3.5-6 7-6m-7 6q5 .5 7 5m-7-5q-5 .5-7 5"/>'};
+const lmKind=p=>LM_OF[p.id]||LM_ICON[p.icon]||'peak';
+const lmSvg=(p,size,cls)=>`<svg class="lm ${cls||''}" width="${size}" height="${Math.round(size*4/3)}" viewBox="0 0 30 40" aria-hidden="true"><ellipse class="lmb" cx="15" cy="35.6" rx="11.5" ry="3.2"/>${LM[lmKind(p)]}</svg>`;
 function pinInner(p,size){const ic=p.icon||ICON[p.id]||'leaf';p._col=PURPLE.has(ic)?'p':'g';
   const icon=ic==='leaf'?'<svg x="6.5" y="7.5" width="17" height="13"><use href="#leaf"/></svg>':`<svg x="7.5" y="6.5" width="15" height="15"><use href="#ic-${ic}"/></svg>`;
-  return `<svg class="np" width="${size}" height="${Math.round(size*1.3)}" viewBox="0 0 30 39"><path d="M15 1.5C7.6 1.5 2.2 7 2.2 14.2c0 8.6 12.8 22.8 12.8 22.8s12.8-14.2 12.8-22.8C27.8 7 22.4 1.5 15 1.5Z" fill="rgba(10,14,12,.8)" stroke="currentColor" stroke-width="2.2"/>${icon}</svg>`+
+  return lmSvg(p,size,'np')+
    (p._lab&&p.name?`<span class="plabel"><b>${esc(p.name)}</b><small><svg width="12" height="9"><use href="#leaf"/></svg>${esc(p.tags?p.tags[0]:'Spot')}<em>${fmt(p.dist)}</em></small></span>`:'')}
 
 /* ================= map component ================= */
@@ -1521,17 +1547,21 @@ const ATTR='© <a href="https://openfreemap.org" target="_blank" rel="noopener">
 const lineW=(stops)=>['interpolate',['exponential',1.5],['zoom'],...stops];
 const cls=(list)=>['in',['get','class'],['literal',list]];
 const STYLE={version:8,glyphs:'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf',
- sources:{omt:{type:'vector',url:'https://tiles.openfreemap.org/planet'}},
- sky:{'sky-color':'#05080a','horizon-color':'#16241c','fog-color':'#0d1410','sky-horizon-blend':.7,'horizon-fog-blend':.6,'fog-ground-blend':.35,'atmosphere-blend':0},
- light:{anchor:'viewport',color:'#ffd9a0',intensity:.3,position:[1.3,200,35]},
+ sources:{omt:{type:'vector',url:'https://tiles.openfreemap.org/planet'},
+  dem:{type:'raster-dem',tiles:['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'],encoding:'terrarium',tileSize:256,maxzoom:15},
+  hs:{type:'raster-dem',tiles:['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'],encoding:'terrarium',tileSize:256,maxzoom:15}},
+ terrain:{source:'dem',exaggeration:1.2},
+ sky:{'sky-color':'#06040c','horizon-color':'#2a1638','fog-color':'#140e1a','sky-horizon-blend':.75,'horizon-fog-blend':.55,'fog-ground-blend':.4,'atmosphere-blend':0},
+ light:{anchor:'viewport',color:'#d8c8ff',intensity:.3,position:[1.3,200,35]},
  layers:[
-  {id:'bg',type:'background',paint:{'background-color':'#141b16'}},
-  {id:'landuse',type:'fill',source:'omt','source-layer':'landuse',paint:{'fill-color':['match',['get','class'],['residential','suburb','neighbourhood'],'#18211a',['commercial','retail','industrial'],'#1c2020','#151c17']}},
-  {id:'landcover',type:'fill',source:'omt','source-layer':'landcover',filter:cls(['grass','wood','scrub','farmland','sand']),paint:{'fill-color':['match',['get','class'],'sand','#24261e','#1c3020'],'fill-opacity':.7}},
-  {id:'park',type:'fill',source:'omt','source-layer':'park',paint:{'fill-color':'#1f3820','fill-opacity':.85}},
-  {id:'park-edge',type:'line',source:'omt','source-layer':'park',paint:{'line-color':'#2e5a32','line-width':1,'line-opacity':.6}},
-  {id:'water',type:'fill',source:'omt','source-layer':'water',paint:{'fill-color':'#0d2533'}},
-  {id:'waterway',type:'line',source:'omt','source-layer':'waterway',paint:{'line-color':'#123447','line-width':lineW([10,.5,16,3])}},
+  {id:'bg',type:'background',paint:{'background-color':'#16121b'}},
+  {id:'landuse',type:'fill',source:'omt','source-layer':'landuse',paint:{'fill-color':['match',['get','class'],['residential','suburb','neighbourhood'],'#1b1720',['commercial','retail','industrial'],'#1e1b21','#17131c']}},
+  {id:'landcover',type:'fill',source:'omt','source-layer':'landcover',filter:cls(['grass','wood','scrub','farmland','sand']),paint:{'fill-color':['match',['get','class'],'sand','#241c1b','wood','#172119','#1a1f1b'],'fill-opacity':.7}},
+  {id:'park',type:'fill',source:'omt','source-layer':'park',paint:{'fill-color':'#1e2a20','fill-opacity':.55}},
+  {id:'park-edge',type:'line',source:'omt','source-layer':'park',paint:{'line-color':'#3a5a3c','line-width':1,'line-opacity':.6}},
+  {id:'hill',type:'hillshade',source:'hs',paint:{'hillshade-shadow-color':'#040209','hillshade-highlight-color':'#8c76bd','hillshade-accent-color':'#2a1e40','hillshade-exaggeration':.62,'hillshade-illumination-direction':315}},
+  {id:'water',type:'fill',source:'omt','source-layer':'water',paint:{'fill-color':'#0b2130'}},
+  {id:'waterway',type:'line',source:'omt','source-layer':'waterway',paint:{'line-color':'#10334a','line-width':lineW([10,.5,16,3])}},
   {id:'path',type:'line',source:'omt','source-layer':'transportation',minzoom:14,filter:cls(['path','track']),paint:{'line-color':'#4a4f48','line-width':1,'line-dasharray':[1.5,1.5]}},
   {id:'minor',type:'line',source:'omt','source-layer':'transportation',filter:cls(['minor','service']),layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#2f3334','line-width':lineW([12,.4,15,2,18,9])}},
   {id:'mid',type:'line',source:'omt','source-layer':'transportation',filter:cls(['tertiary','secondary']),layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#3a3f40','line-width':lineW([9,.4,13,1.4,16,5,18,14])}},
@@ -1539,9 +1569,10 @@ const STYLE={version:8,glyphs:'https://tiles.openfreemap.org/fonts/{fontstack}/{
   {id:'mw-glow',type:'line',source:'omt','source-layer':'transportation',filter:cls(['motorway']),paint:{'line-color':'#c46cf5','line-width':lineW([6,3,12,8,16,26]),'line-blur':lineW([6,3,12,6,16,14]),'line-opacity':.28}},
   {id:'motorway',type:'line',source:'omt','source-layer':'transportation',filter:cls(['motorway']),layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#555b5c','line-width':lineW([6,.8,10,1.6,14,4,18,20])}},
   {id:'bld',type:'fill-extrusion',source:'omt','source-layer':'building',minzoom:13,paint:{
-    'fill-extrusion-color':['interpolate',['linear'],['coalesce',['get','render_height'],5],0,'#3a3f46',15,'#444a52',60,'#4f5660',150,'#5c6470'],
+    'fill-extrusion-color':['interpolate',['linear'],['coalesce',['get','render_height'],5],0,'#36323d',15,'#3f3a47',60,'#494453',150,'#554f61'],
     'fill-extrusion-height':['interpolate',['linear'],['zoom'],13,0,14.5,['coalesce',['get','render_height'],5]],
     'fill-extrusion-base':['coalesce',['get','render_min_height'],0],'fill-extrusion-opacity':.92,'fill-extrusion-vertical-gradient':true}},
+  {id:'peaks',type:'symbol',source:'omt','source-layer':'mountain_peak',minzoom:10,filter:['all',cls(['peak','volcano']),['has','name'],['has','ele']],layout:{'text-field':['format',['coalesce',['get','name_en'],['get','name']],{},'\n',{},['concat',['number-format',['coalesce',['get','ele_ft'],['*',['get','ele'],3.28084]],{'max-fraction-digits':0}],' ft'],{'font-scale':.8}],'text-font':['Noto Sans Italic'],'text-size':11.5,'text-letter-spacing':.04,'text-max-width':9,'symbol-sort-key':['-',0,['get','ele']]},paint:{'text-color':'#dccdff','text-halo-color':'#0a0710','text-halo-width':1.6}},
   {id:'roadname',type:'symbol',source:'omt','source-layer':'transportation_name',minzoom:14,layout:{'symbol-placement':'line','text-field':['coalesce',['get','name_en'],['get','name']],'text-font':['Noto Sans Regular'],'text-size':10.5,'text-letter-spacing':.06},paint:{'text-color':'#b9c6bf','text-halo-color':'#0b0f0d','text-halo-width':1.5}},
   {id:'place',type:'symbol',source:'omt','source-layer':'place',filter:cls(['city','town','suburb','neighbourhood','village','quarter']),layout:{'text-field':['upcase',['coalesce',['get','name_en'],['get','name']]],'text-font':['Noto Sans Bold'],'text-size':['match',['get','class'],'city',14,'town',12,10],'text-letter-spacing':.25,'text-max-width':8},paint:{'text-color':'#e8f0eb','text-opacity':.8,'text-halo-color':'#0b0f0d','text-halo-width':1.6}},
  ]};
@@ -1556,7 +1587,7 @@ function realWorld(el){return new Promise(res=>{
   const finish=ok=>{if(done)return;done=true;clearTimeout(t);if(ok)res(map);else{mapFail=1;try{map&&map.remove()}catch(e){}el.innerHTML='';res(null)}};
   const t=setTimeout(()=>finish(got),8000);
   try{map=new maplibregl.Map({container:el,style:STYLE,center:[U.lng,U.lat],zoom:16.4,minZoom:11,pitch:64,bearing:-20,maxPitch:75,attributionControl:false,antialias:true,fadeDuration:150});map.once('load',()=>{map.resize();map.jumpTo({center:[U.lng,U.lat],zoom:16.4,pitch:64});setTimeout(()=>map.resize(),400)})}catch(e){return finish(false)}
-  map.on('error',e=>{if(!got)finish(false)});
+  map.on('error',e=>{if(!got&&(!e.sourceId||e.sourceId==='omt'))finish(false)});
   map.on('data',e=>{if(e.sourceId==='omt'&&e.tile){got=true;finish(true)}});
 });}
 function adapterReal(map){
@@ -1580,7 +1611,7 @@ function adapterReal(map){
     recenter(){follow=true;map.easeTo({center:[U.lng,U.lat],zoom:Math.max(map.getZoom(),16.2),pitch:64,padding:pad(),duration:900})},
     fitRadius(){const c=circlePoly(U.lat,U.lng,radius).geometry.coordinates[0];let w=180,s=90,e=-180,n=-90;c.forEach(([x,y])=>{w=Math.min(w,x);e=Math.max(e,x);s=Math.min(s,y);n=Math.max(n,y)});
       follow=false;map.fitBounds([[w,s],[e,n]],{padding:pad(),pitch:map.getPitch()>10?45:0,bearing:map.getBearing(),duration:1000})},
-    zoom(f){map.easeTo({zoom:map.getZoom()+(f>1?1:-1),duration:400})},
+    zoom(f){const o={zoom:map.getZoom()+(f>1?1:-1),duration:400};if(follow){o.center=[U.lng,U.lat];o.padding=pad()}map.easeTo(o)},
     toggleTilt(){const flat=map.getPitch()>10;map.easeTo({pitch:flat?0:62,bearing:flat?0:-20,duration:700});return !flat},
     focus(s){follow=false;map.easeTo({center:[s.lng,s.lat],zoom:Math.max(map.getZoom(),15),padding:pad(),duration:900})},
     select(id){$$('#world .pin').forEach(p=>p.classList.toggle('sel',p.dataset.pin===id))},
@@ -1790,7 +1821,7 @@ document.body.classList.add('on-map');
 
 renderRadius();updateDistances();renderFeature();renderRotation();renderAll();renderNear();renderCircle();
 (async()=>{const el=$('#world');let api=null;
-  if(window.maplibregl){const map=await realWorld(el);if(map){api=adapterReal(map);$('#attrib').textContent='\u00a9 OpenFreeMap \u00a9 OpenMapTiles \u00a9 OpenStreetMap contributors'}}
+  if(window.maplibregl){const map=await realWorld(el);if(map){api=adapterReal(map);$('#attrib').textContent='\u00a9 OpenFreeMap \u00a9 OpenMapTiles \u00a9 OpenStreetMap contributors \u00b7 Terrain: Mapzen, USGS'}}
   if(!api){api=adapterDrawn(el)}
   world=api;world.update();nearCheck();
 })();
