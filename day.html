@@ -508,6 +508,68 @@ body.on-map .camera .ic-leaf{display:none}body.on-map .camera .ic-cam{display:bl
 .photo.cam.has{display:flex;justify-content:center;aspect-ratio:auto;height:auto;max-height:none;padding:0;border:0;background:transparent}
 .photo.cam.has .camhint,.photo.cam.has>span{display:none!important}
 .photo.cam.has img{position:static;display:block;width:auto;max-width:100%;height:auto;max-height:68vh;object-fit:contain;border-radius:16px;box-shadow:0 10px 26px rgba(0,0,0,.35)}
+
+/* ===== first-run intro ===== */
+.intro{position:fixed;inset:0;z-index:95;display:flex;flex-direction:column;background:radial-gradient(120% 70% at 50% 0%,color-mix(in srgb,var(--gold) 14%,var(--bg)),var(--bg) 60%);color:var(--cream);padding:calc(12px + env(safe-area-inset-top,0px)) 0 calc(18px + env(safe-area-inset-bottom,0px));max-width:430px;margin:0 auto;touch-action:pan-y}
+.iskip{position:absolute;z-index:3;top:calc(14px + env(safe-area-inset-top,0px));right:16px;min-height:44px;padding:0 14px;font-size:15px;font-weight:600;color:var(--muted)}
+.iskip[hidden]{display:none}
+.ivp{flex:1;overflow:hidden;cursor:grab;user-select:none;-webkit-user-select:none}
+.ivp:active{cursor:grabbing}
+.itrack{display:flex;width:300%;height:100%;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.itrack.drag{transition:none}
+.islide{width:33.3333%;flex:none;display:flex;flex-direction:column;padding:56px 26px 0;min-width:0}
+.islide h2{margin:26px 0 10px;font-family:var(--sans);font-weight:800;font-size:31px;line-height:1.05;letter-spacing:-.02em;color:var(--cream);text-wrap:balance}
+.islide p{margin:0;font-size:16px;line-height:1.5;color:var(--muted);max-width:34ch}
+.ivis{position:relative;height:min(40vh,300px);border-radius:28px;overflow:hidden;background:color-mix(in srgb,var(--cream) 6%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--cream) 10%,transparent)}
+.imap{position:absolute;inset:0;width:100%;height:100%;color:color-mix(in srgb,var(--cream) 9%,transparent)}
+.imap-bg{fill:color-mix(in srgb,var(--cream) 4%,var(--bg))}.imap-road{fill:none;stroke:color-mix(in srgb,var(--cream) 22%,transparent);stroke-width:9;stroke-linecap:round}.imap-road.thin{stroke-width:5}
+.imap-park{fill:color-mix(in srgb,var(--gold) 26%,transparent)}.imap-water{fill:rgba(80,180,220,.3)}
+.ipin{position:absolute;width:38px;height:50px;transform:translate(-50%,-100%) scale(0);transform-origin:50% 100%;color:var(--gold);filter:drop-shadow(0 0 8px color-mix(in srgb,currentColor 70%,transparent))}
+.ipin.pp{color:#c46cf5}
+.ipin svg{width:100%;height:100%;display:block}.ipin path{fill:currentColor;stroke:#fff;stroke-width:2}.ipin svg svg{color:#fff}
+.islide.on .ipin.p1{animation:ipop .55s .15s cubic-bezier(.2,1.4,.4,1) forwards}
+.islide.on .ipin.p2{animation:ipop .55s .45s cubic-bezier(.2,1.4,.4,1) forwards}
+.islide.on .ipin.p3{animation:ipop .55s .75s cubic-bezier(.2,1.4,.4,1) forwards}
+.islide.on .ipin.p4{animation:ipop .55s 1.05s cubic-bezier(.2,1.4,.4,1) forwards}
+.islide.on .ipin.goal{animation:ipop .55s .1s cubic-bezier(.2,1.4,.4,1) forwards,ibob 2.4s 1s ease-in-out infinite}
+@keyframes ipop{to{transform:translate(-50%,-100%) scale(1)}}
+@keyframes ibob{0%,100%{transform:translate(-50%,-100%) scale(1)}50%{transform:translate(-50%,-112%) scale(1)}}
+.ipath{position:absolute;inset:0;width:100%;height:100%}
+.idots{fill:none;stroke:var(--gold);stroke-width:3;stroke-linecap:round;stroke-dasharray:1 10;opacity:.75}
+.iwalker{position:absolute;left:10%;top:86%;width:0;height:0}
+.islide.on .iwalker{animation:iwalk 3.6s .3s ease-in-out infinite}
+@keyframes iwalk{0%{left:10%;top:86%}50%{left:52%;top:54%}100%{left:80%;top:28%;opacity:.0}}
+.iring{position:absolute;left:-30px;top:-12px;width:60px;height:24px;border-radius:50%;border:2.5px solid #c46cf5;box-shadow:0 0 12px rgba(196,108,245,.8)}
+.ifig{position:absolute;left:-17px;bottom:-2px;width:34px;height:58px}
+.ifig svg{width:100%;height:100%}
+.islide.on .ifig svg{animation:istep .4s ease-in-out infinite}
+@keyframes istep{50%{transform:translateY(-3px)}}
+.v3{display:grid;place-items:center}
+.icam{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:grid;place-items:center;width:92px;height:92px;border-radius:50%;color:var(--gold);background:color-mix(in srgb,var(--bg) 80%,#000);border:3px solid var(--gold);box-shadow:0 0 0 7px color-mix(in srgb,var(--gold) 14%,transparent),0 0 30px color-mix(in srgb,var(--gold) 55%,transparent)}
+.iflash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+.ibub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(0);display:flex;flex-direction:column;align-items:center}
+.ibub-in{width:84px;height:84px;border-radius:50%;border:4px solid var(--gold);background:linear-gradient(160deg,#f0a25a,#b4532f 55%,#3a1c14);box-shadow:0 0 24px color-mix(in srgb,var(--gold) 60%,transparent)}
+.ibub-t{width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:13px solid var(--gold);margin-top:-2px}
+.islide.on .icam{animation:icam 3.2s .2s ease-in-out infinite}
+.islide.on .iflash{animation:iflash 3.2s .2s ease-out infinite}
+.islide.on .ibub{animation:ibub 3.2s .2s cubic-bezier(.2,1.3,.4,1) infinite}
+@keyframes icam{0%,30%{transform:translate(-50%,-50%) scale(1);opacity:1}36%{transform:translate(-50%,-50%) scale(.86)}44%,100%{transform:translate(-50%,-50%) scale(.4);opacity:0}}
+@keyframes iflash{0%,34%{opacity:0}38%{opacity:.85}52%,100%{opacity:0}}
+@keyframes ibub{0%,42%{transform:translate(-50%,-50%) scale(0)}58%{transform:translate(-50%,-62%) scale(1.08)}66%,92%{transform:translate(-50%,-58%) scale(1)}100%{transform:translate(-50%,-58%) scale(0)}}
+.iloc{margin-top:18px;padding:14px 16px;border-radius:18px;background:color-mix(in srgb,var(--cream) 6%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--gold) 30%,transparent)}
+.iloc b{display:flex;align-items:center;gap:8px;font-size:15px;color:var(--cream)}.iloc b svg{color:var(--gold)}
+.iloc ul{margin:8px 0 0;padding-left:20px;display:grid;gap:4px;font-size:15px;line-height:1.4;color:var(--muted)}
+.ifoot{display:grid;justify-items:center;gap:12px;padding:14px 26px 0}
+.idots-nav{display:flex;gap:4px}
+.idots-nav button{width:44px;height:44px;display:grid;place-items:center}
+.idots-nav button::after{content:"";width:8px;height:8px;border-radius:999px;background:color-mix(in srgb,var(--cream) 28%,transparent);transition:width .3s,background .3s}
+.idots-nav button[aria-selected="true"]::after{width:26px;background:var(--gold)}
+.inext{width:100%;max-width:360px;height:52px;justify-content:center;font-size:12px}
+.inot{min-height:44px;padding:0 16px;font-size:15px;font-weight:600;color:var(--muted)}
+.inot[hidden]{display:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.intro button:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:12px}
+@media (max-height:700px){.islide{padding-top:44px}.ivis{height:30vh}.islide h2{font-size:27px;margin-top:18px}.iloc{margin-top:12px}}
 </style>
 <style>[hidden]{display:none!important}
 html,body{width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior-x:none}body{position:relative}.app{overflow:hidden}.menu:not(.on){visibility:hidden}#world,#world.maplibregl-map{position:absolute!important;top:0;left:0;right:0;bottom:0;width:100%;height:100%;overflow:hidden}
@@ -638,6 +700,7 @@ html,body{width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior-x:none
     <div class="setlist">
       <button class="setrow" data-go="profile"><span class="ic"><svg width="18" height="18"><use href="#i-user"/></svg></span>Profile<svg class="chev" width="14" height="14"><use href="#i-arrow"/></svg></button>
       <button class="setrow" data-go="rules"><span class="ic"><svg width="18" height="18"><use href="#i-book"/></svg></span>Community Guidelines<svg class="chev" width="14" height="14"><use href="#i-arrow"/></svg></button>
+      <button class="setrow" data-act="replayintro"><span class="ic"><svg width="18" height="18"><use href="#i-plane"/></svg></span>Replay intro<svg class="chev" width="14" height="14"><use href="#i-arrow"/></svg></button>
       <button class="setrow out" data-act="logout"><span class="ic"><svg width="18" height="18"><use href="#i-out"/></svg></span>Log out</button>
     </div>
     <p class="setfoot">Higher Places is a prototype for Arizona. Members 21+ only.</p>
@@ -707,6 +770,56 @@ html,body{width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior-x:none
     <p>Higher Places is a members-only community for adults. Confirm your age to enter.</p>
     <div class="row"><button class="btn solid" id="yes21">I'm 21+</button><button class="btn" id="no21">Not yet</button></div>
     <div class="no" id="nomsg" role="alert"></div>
+  </div>
+</div>
+
+<div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="Welcome to Higher Places" hidden>
+  <button class="iskip" id="iskip" type="button">Skip</button>
+  <div class="ivp" id="ivp" aria-roledescription="carousel">
+    <div class="itrack" id="itrack">
+      <section class="islide" role="group" aria-roledescription="slide" aria-label="Step 1 of 3">
+        <div class="ivis v1" aria-hidden="true">
+          <svg class="imap" viewBox="0 0 300 220"><defs><pattern id="igrid" width="22" height="22" patternUnits="userSpaceOnUse"><path d="M22 0H0V22" fill="none" stroke="currentColor" stroke-width="1"/></pattern></defs>
+            <rect width="300" height="220" rx="26" class="imap-bg"/><rect width="300" height="220" rx="26" fill="url(#igrid)" class="imap-grid"/>
+            <path d="M-10 150 C60 120 120 170 190 130 S280 90 320 110" class="imap-road"/><path d="M80 -10 C90 60 70 120 110 230" class="imap-road thin"/>
+            <ellipse cx="225" cy="62" rx="44" ry="22" class="imap-park"/><ellipse cx="62" cy="182" rx="38" ry="16" class="imap-water"/></svg>
+          <span class="ipin p1" style="left:22%;top:30%"><svg viewBox="0 0 30 40"><path d="M15 1.5C7.5 1.5 2 7 2 14.2c0 9.3 13 24.3 13 24.3s13-15 13-24.3C28 7 22.5 1.5 15 1.5Z"/><svg x="6" y="6" width="18" height="14"><use href="#leaf"/></svg></svg></span>
+          <span class="ipin p2 pp" style="left:70%;top:22%"><svg viewBox="0 0 30 40"><path d="M15 1.5C7.5 1.5 2 7 2 14.2c0 9.3 13 24.3 13 24.3s13-15 13-24.3C28 7 22.5 1.5 15 1.5Z"/><svg x="6" y="6" width="18" height="14"><use href="#leaf"/></svg></svg></span>
+          <span class="ipin p3" style="left:52%;top:52%"><svg viewBox="0 0 30 40"><path d="M15 1.5C7.5 1.5 2 7 2 14.2c0 9.3 13 24.3 13 24.3s13-15 13-24.3C28 7 22.5 1.5 15 1.5Z"/><svg x="6" y="6" width="18" height="14"><use href="#leaf"/></svg></svg></span>
+          <span class="ipin p4 pp" style="left:84%;top:62%"><svg viewBox="0 0 30 40"><path d="M15 1.5C7.5 1.5 2 7 2 14.2c0 9.3 13 24.3 13 24.3s13-15 13-24.3C28 7 22.5 1.5 15 1.5Z"/><svg x="6" y="6" width="18" height="14"><use href="#leaf"/></svg></svg></span>
+        </div>
+        <h2>Find your place</h2>
+        <p>Places are Arizona’s landmarks: mountains, overlooks, lakes and red rocks. They’re your starting point.</p>
+      </section>
+      <section class="islide" role="group" aria-roledescription="slide" aria-label="Step 2 of 3">
+        <div class="ivis v2" aria-hidden="true">
+          <svg class="ipath" viewBox="0 0 300 220"><path d="M30 190 C80 170 110 120 160 118 S230 90 250 52" class="idots"/></svg>
+          <span class="ipin goal pp" style="left:83%;top:24%"><svg viewBox="0 0 30 40"><path d="M15 1.5C7.5 1.5 2 7 2 14.2c0 9.3 13 24.3 13 24.3s13-15 13-24.3C28 7 22.5 1.5 15 1.5Z"/><svg x="6" y="6" width="18" height="14"><use href="#leaf"/></svg></svg></span>
+          <div class="iwalker"><span class="iring"></span><span class="ifig" id="ifig"></span></div>
+        </div>
+        <h2>Explore it yourself</h2>
+        <p>Head out and look around. The best finds aren’t on any map yet: a hidden ledge, a perfect boulder, a view nobody talks about.</p>
+      </section>
+      <section class="islide" role="group" aria-roledescription="slide" aria-label="Step 3 of 3">
+        <div class="ivis v3" aria-hidden="true">
+          <span class="icam"><svg width="34" height="34"><use href="#i-camera"/></svg></span>
+          <span class="iflash"></span>
+          <span class="ibub"><span class="ibub-in"></span><span class="ibub-t"></span></span>
+        </div>
+        <h2>Snap a spot</h2>
+        <p>Found something special? Tap the camera, take a photo, and your spot gets pinned exactly where you’re standing.</p>
+        <div class="iloc">
+          <b><svg width="15" height="15"><use href="#i-target"/></svg>Why we need your location</b>
+          <ul><li>To show places and spots near you</li><li>To pin your spot exactly where you took the photo</li><li>Only while you’re using the app. You can turn it off anytime in your phone’s settings.</li></ul>
+        </div>
+      </section>
+    </div>
+  </div>
+  <div class="ifoot">
+    <div class="idots-nav" id="idots" role="tablist" aria-label="Intro steps"><button type="button" role="tab" aria-label="Step 1"></button><button type="button" role="tab" aria-label="Step 2"></button><button type="button" role="tab" aria-label="Step 3"></button></div>
+    <button class="btn solid inext" id="inext" type="button">Next</button>
+    <button class="inot" id="inot" type="button" hidden>Not now</button>
+    <p class="sr" id="ilive" aria-live="polite"></p>
   </div>
 </div>
 
@@ -1364,12 +1477,12 @@ const panel=()=>{};
 /* ================= location ================= */
 function setNote(t){const n=$('#mapnote');if(n)n.textContent=t}
 let watchId=null;
-function locFail(){setNote('Showing Phoenix — location unavailable')}
+function locFail(){setNote('Showing Phoenix — location unavailable');locNote()}
 function locate(){
   if(!navigator.geolocation)return locFail();setNote('Finding you…');
   try{if(watchId!=null)navigator.geolocation.clearWatch(watchId);
     watchId=navigator.geolocation.watchPosition(p=>{const ll=[p.coords.latitude,p.coords.longitude];
-      if(miles([LAT0,LNG0],ll)>120){setNote('Showing Phoenix — you’re outside the sample area');navigator.geolocation.clearWatch(watchId);watchId=null;return}
+      if(!(ll[0]>31.2&&ll[0]<37.1&&ll[1]>-115&&ll[1]<-108.9)){setNote('Showing Phoenix — you’re outside Arizona');toast('You’re outside Arizona, so the map starts in Phoenix.');navigator.geolocation.clearWatch(watchId);watchId=null;return}
       const first=!U.real,moved=miles([U.lat,U.lng],ll);U.lat=ll[0];U.lng=ll[1];[U.x,U.y]=toXY(U.lat,U.lng);U.real=true;
       setNote('● Live · near '+nearestArea(U.x,U.y));
       if(first||moved>.05){updateDistances();renderFeature();renderRotation();renderNear();renderAll();world&&world.update()}
@@ -1461,6 +1574,7 @@ document.addEventListener('click',e=>{
   else if(d.act==='recenter'){closeSheet();if(!U.real&&watchId==null)locate();world&&world.recenter()}
   else if(d.act==='walk')toggleWalk();
   else if(d.act==='home'){history=[];go('map',{push:false})}
+  else if(d.act==='replayintro'){history=[];go('map',{push:false});showIntro()}
   else if(d.act==='delask'){$('#delbox').innerHTML=`<div class="delconfirm" role="alertdialog" aria-label="Delete spot"><b>Delete this spot?</b><p>It\u2019ll be removed from the map, Community and everyone\u2019s stash. This can\u2019t be undone.</p><div class="row"><button class="delbtn solid" data-act="deldo" data-id="${d.id}">Delete</button><button class="btn" data-act="delno" data-id="${d.id}">Cancel</button></div></div>`}
   else if(d.act==='delno'){$('#delbox').innerHTML=`<button class="delbtn" data-act="delask" data-id="${d.id}"><svg width="15" height="15"><use href="#i-trash"/></svg>Delete this spot</button>`}
   else if(d.act==='deldo'){const k=spots.findIndex(x=>x.id===d.id&&x.mine);if(k<0)return;const nm=spots[k].name;spots.splice(k,1);saved.delete(d.id);posts=posts.filter(p=>p.s!==d.id);closeSheet();refreshAll();history=[];go('map',{push:false});toast(nm+' was deleted')}
@@ -1471,8 +1585,35 @@ document.addEventListener('click',e=>{
   else if(d.act==='logout'){menu(false);saved.clear();history=[];go('map',{push:false});$('#gate').classList.remove('out');$('#nomsg').textContent=''}
 });
 addEventListener('keydown',e=>{if(e.key==='Escape'){menu(false);closeSheet();panel(false)}});
-$('#yes21').onclick=()=>{$('#gate').classList.add('out');locate()};
+$('#yes21').onclick=()=>{$('#gate').classList.add('out');if(introDone())locate();else showIntro()};
 $('#no21').onclick=()=>$('#nomsg').textContent='Come back when you’re 21. See you then.';
+
+
+/* ================= first-run intro ================= */
+const INTRO_KEY='hp_intro_done_v1';
+const introDone=()=>{try{return localStorage.getItem(INTRO_KEY)==='1'}catch(e){return false}};
+const markIntro=()=>{try{localStorage.setItem(INTRO_KEY,'1')}catch(e){}};
+let iStep=0;
+function introGo(n){iStep=Math.max(0,Math.min(2,n));const t=$('#itrack');t.style.transform=`translateX(${-iStep*100/3}%)`;
+  $$('#itrack .islide').forEach((s,k)=>{s.classList.toggle('on',k===iStep);s.setAttribute('aria-hidden',k!==iStep)});
+  $$('#idots button').forEach((b,k)=>b.setAttribute('aria-selected',k===iStep));
+  $('#inext').textContent=iStep===2?'Allow location':'Next';$('#inot').hidden=iStep!==2;$('#iskip').hidden=iStep===2;
+  $('#ilive').textContent=`Step ${iStep+1} of 3`}
+function showIntro(){$('#ifig').innerHTML=FIG.replace(/hdg/g,'hdgi');$('#intro').hidden=false;introGo(0);setTimeout(()=>$('#inext').focus(),50)}
+function closeIntro(){$('#intro').hidden=true;markIntro()}
+function locNote(){toast('Turn on location anytime to see what’s near you.')}
+$('#inext').onclick=()=>{if(iStep<2)return introGo(iStep+1);closeIntro();
+  if(!navigator.geolocation)return locNote();locate()};
+$('#inot').onclick=()=>{closeIntro();locNote()};
+$('#iskip').onclick=()=>{closeIntro();locate()};
+$$('#idots button').forEach((b,k)=>b.onclick=()=>introGo(k));
+document.addEventListener('keydown',e=>{if($('#intro').hidden)return;if(e.key==='ArrowRight')introGo(iStep+1);if(e.key==='ArrowLeft')introGo(iStep-1)});
+(()=>{const vp=$('#ivp'),t=$('#itrack');let x0=null,dx=0,id=null;
+  vp.addEventListener('pointerdown',e=>{x0=e.clientX;dx=0;id=e.pointerId;vp.setPointerCapture(id);t.classList.add('drag')});
+  vp.addEventListener('pointermove',e=>{if(x0==null||e.pointerId!==id)return;dx=e.clientX-x0;if((iStep===0&&dx>0)||(iStep===2&&dx<0))dx*=.35;
+    t.style.transform=`translateX(calc(${-iStep*100/3}% + ${dx/3}px))`});
+  const up=e=>{if(x0==null)return;t.classList.remove('drag');const w=vp.clientWidth;if(Math.abs(dx)>w*.18)introGo(iStep+(dx<0?1:-1));else introGo(iStep);x0=null};
+  vp.addEventListener('pointerup',up);vp.addEventListener('pointercancel',up)})();
 
 /* ================= boot ================= */
 window.HP={spots,renderSpot,go,zoom:f=>world&&world.zoom(f),moveTo:(lat,lng)=>{U.lat=lat;U.lng=lng;[U.x,U.y]=toXY(lat,lng);refreshAll()}};
