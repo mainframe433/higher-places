@@ -602,19 +602,6 @@ html,body{width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior-x:none
 .pin .lm{transition:transform .25s cubic-bezier(.3,1.6,.5,1);transform-origin:50% 90%}
 .pin.sel .lm,.pin.near .lm{transform:scale(1.18)}
 #world.maplibregl-map{background:#f7e3c8}
-.meedge{position:absolute;left:0;top:0;z-index:9;width:60px;height:60px;padding:0;border:0;background:none;opacity:0;pointer-events:none;transition:opacity .25s;-webkit-tap-highlight-color:transparent;cursor:pointer}
-.meedge.on{opacity:1;pointer-events:auto}
-.meedge b{position:absolute;inset:8px;border-radius:50%;overflow:hidden;border:2px solid var(--gold-hi);background:#e6f6ec;box-shadow:0 0 0 3px rgba(255,255,255,.88),0 0 18px 4px rgba(31,178,107,.55);transform:scale(.4);transition:transform .4s cubic-bezier(.3,1.6,.5,1)}
-.meedge.on b{transform:scale(1);animation:mepulse 2.2s ease-in-out infinite}
-.meedge:active b{transform:scale(.9)}
-.meedge .mearrow{position:absolute;left:50%;top:50%;width:0;height:0}
-.meedge .mearrow::before{content:"";position:absolute;left:-7px;top:-41px;border:7px solid transparent;border-top:0;border-bottom:11px solid var(--gold-hi);filter:drop-shadow(0 0 5px rgba(31,178,107,.85))}
-.meedge em{position:absolute;left:50%;top:calc(100% - 2px);transform:translateX(-50%);font:700 11px/1 var(--sans);font-style:normal;letter-spacing:.02em;color:#fff;background:rgba(12,16,14,.86);border:1px solid rgba(255,255,255,.12);padding:4px 8px;border-radius:99px;white-space:nowrap;pointer-events:none}
-@keyframes mepulse{50%{box-shadow:0 0 0 3px rgba(255,255,255,.88),0 0 28px 9px rgba(31,178,107,.75)}}
-.hpsmoke{position:absolute;inset:0;z-index:8;pointer-events:none;overflow:hidden}
-.hpsmoke i{position:absolute;border-radius:50%;background:radial-gradient(circle at 34% 44%,#fff 0 15%,rgba(250,247,242,.97) 27%,transparent 41%),radial-gradient(circle at 64% 38%,#fff 0 13%,rgba(250,247,242,.97) 25%,transparent 39%),radial-gradient(circle at 50% 50%,rgba(250,247,242,.97) 0 22%,rgba(214,200,182,.93) 34%,transparent 48%),radial-gradient(circle at 52% 64%,rgba(214,200,182,.93) 0 16%,rgba(180,162,140,.6) 30%,transparent 46%);will-change:transform,opacity}
-.hpsmoke i:nth-child(5n+2){background:radial-gradient(circle at 34% 44%,#fff 0 15%,rgba(244,251,247,.97) 27%,transparent 41%),radial-gradient(circle at 64% 38%,#fff 0 13%,rgba(244,251,247,.97) 25%,transparent 39%),radial-gradient(circle at 50% 50%,rgba(244,251,247,.97) 0 22%,rgba(190,218,202,.92) 34%,transparent 48%),radial-gradient(circle at 52% 64%,rgba(190,218,202,.92) 0 16%,rgba(150,184,166,.6) 30%,transparent 46%)}
-@media (prefers-reduced-motion:reduce){.meedge.on b{animation:none}}
 </style>
 </head>
 <body>
@@ -1474,25 +1461,6 @@ function pinEl(s,size,where){const w=document.createElement('div');w.className='
   w.innerHTML=`<button class="pin" data-pin="${s.id}" data-where="${where}" aria-label="${esc(s.name||'Pin')}">${isFind(s)?bubbleInner(s):lmSvg(s,size)+(s._n?`<span class="pcount">${s._n}</span>`:'')}</button>`;if(isFind(s)){w.className='mk mkf';w.firstChild.classList.add('find')}return w}
 const hoodSvg='<svg width="100%" height="100%" viewBox="0 0 40 40"><use href="#hood"/></svg>';
 
-/* fat smoke transition: clouds billow in over the map, hide the flight, then blow apart as you land */
-function smokeOut(dur){const host=$('#s-map');if(!host)return;const W=host.clientWidth,H=host.clientHeight,T=dur+520;
-  const box=document.createElement('div');box.className='hpsmoke';host.appendChild(box);
-  const cols=4,rows=6;
-  for(let i=0;i<cols*rows;i++){const p=document.createElement('i'),sz=Math.round((.85+Math.random()*.4)*W);
-    const gx=((i%cols)+.5)/cols*W+(Math.random()-.5)*W*.16,gy=(Math.floor(i/cols)+.5)/rows*H+(Math.random()-.5)*H*.08,ox=gx-W/2,oy=gy-H/2,r=(Math.random()-.5)*140,o=.94+Math.random()*.06;
-    p.style.cssText=`width:${sz}px;height:${sz}px;left:${gx}px;top:${gy}px`;box.appendChild(p);
-    p.animate([{opacity:0,transform:`translate(-50%,-50%) translate(${ox*.4}px,${oy*.35+70}px) scale(.22) rotate(0deg)`},
-      {opacity:o,transform:`translate(-50%,-50%) scale(1) rotate(${r*.4}deg)`,offset:.3},
-      {opacity:o,transform:`translate(-50%,-50%) translate(${ox*.06}px,${oy*.06-14}px) scale(1.14) rotate(${r*.6}deg)`,offset:.62},
-      {opacity:0,transform:`translate(-50%,-50%) translate(${ox*1.05}px,${oy*1.05-50}px) scale(2) rotate(${r}deg)`}],
-      {duration:T,delay:Math.random()*160,easing:'cubic-bezier(.35,.05,.25,1)',fill:'both'})}
-  setTimeout(()=>box.remove(),T+400)}
-function landPuff(pt,me){const host=$('#s-map');if(!host||!pt)return;const box=document.createElement('div');box.className='hpsmoke puff';host.appendChild(box);
-  for(let i=0;i<10;i++){const p=document.createElement('i'),a=i/10*Math.PI*2+Math.random()*.4,d=50+Math.random()*40,sz=46+Math.random()*34;
-    p.style.cssText=`width:${sz}px;height:${sz}px;left:${pt.x}px;top:${pt.y}px`;box.appendChild(p);
-    p.animate([{opacity:.95,transform:'translate(-50%,-50%) scale(.3)'},{opacity:0,transform:`translate(-50%,-50%) translate(${Math.cos(a)*d}px,${Math.sin(a)*d*.45-16}px) scale(1.5)`}],{duration:900,easing:'cubic-bezier(.2,.7,.3,1)',fill:'both'})}
-  const b=me&&me.querySelector('b');if(b)b.animate([{transform:'scale(.55)'},{transform:'scale(1.16)',offset:.55},{transform:'scale(1)'}],{duration:620,easing:'cubic-bezier(.3,1.4,.5,1)'});
-  setTimeout(()=>box.remove(),1100)}
 let mapFail=null;
 function realWorld(el){return new Promise(res=>{
   let map=null,done=false,got=false;
@@ -1513,37 +1481,10 @@ function adapterReal(map){
   if(map.isStyleLoaded())addRadius();else map.once('load',addRadius);
   let pins=[],follow=true;
   map.on('dragstart',()=>{follow=false});let snapT,snapN=0,snapAt=0;const snap=()=>{clearTimeout(snapT);snapT=setTimeout(()=>{if(!follow||map.isMoving())return;const c=map.getCenter();if(Math.abs(c.lat-U.lat)+Math.abs(c.lng-U.lng)<2e-5)return;const now=Date.now();if(now-snapAt>1500)snapN=0;if(++snapN>3)return;snapAt=now;map.jumpTo({center:[U.lng,U.lat],padding:pad()})},120)};map.on('moveend',snap);map.on('data',e=>{if(e.sourceId==='dem')snap()});
-  let idle=null;
+  let idle=null;map.on('dragend',()=>{clearTimeout(idle);idle=setTimeout(()=>{if(!follow&&!$('#sheet').classList.contains('on'))api.recenter()},9000)});
   const pad=()=>({top:240,bottom:90,left:30,right:30});
-
-  /* back-to-me: edge marker that points to you when you're off screen; tap = smoke + flight home */
-  const el=map.getContainer();
-  const edge=document.createElement('button');edge.type='button';edge.className='meedge';edge.id='meedge';edge.setAttribute('aria-label','Back to you');
-  edge.innerHTML='<i class="mearrow"></i><b>'+hoodSvg+'</b><em></em>';el.parentElement.appendChild(edge);
-  let edgeOn=false,edgeRaf=0,flying=false;
-  const brg=(a,b)=>{const t=Math.PI/180,dl=(b[1]-a[1])*t,y=Math.sin(dl)*Math.cos(b[0]*t),x=Math.cos(a[0]*t)*Math.sin(b[0]*t)-Math.sin(a[0]*t)*Math.cos(b[0]*t)*Math.cos(dl);return Math.atan2(y,x)/t};
-  const placeEdge=()=>{edgeRaf=0;const W=el.clientWidth,H=el.clientHeight;if(!W||!H)return;
-    const L=40,Rr=W-40,T=170,B=H-180,c=map.getCenter(),cc=[c.lat,c.lng],uu=[U.lat,U.lng],d=miles(cc,uu),a=(brg(cc,uu)-map.getBearing())*Math.PI/180;
-    const lim=map.unproject([W/2,Math.cos(a)>0?T:B]),p=map.project([U.lng,U.lat]);
-    const inView=d<=miles(cc,[lim.lat,lim.lng])*1.02&&p.x>L-24&&p.x<Rr+24&&p.y>T-60&&p.y<B+60;
-    const show=!inView&&!flying;if(show!==edgeOn){edgeOn=show;edge.classList.toggle('on',show)}if(!show)return;
-    const vx=Math.sin(a),vy=-Math.cos(a),cx=(L+Rr)/2,cy=(T+B)/2;
-    const k=Math.min(vx>1e-6?(Rr-cx)/vx:vx<-1e-6?(L-cx)/vx:1e9,vy>1e-6?(B-cy)/vy:vy<-1e-6?(T-cy)/vy:1e9);
-    edge.style.transform=`translate(${(cx+vx*k).toFixed(1)}px,${(cy+vy*k).toFixed(1)}px) translate(-50%,-50%)`;
-    edge.firstChild.style.transform=`rotate(${(a*180/Math.PI).toFixed(1)}deg)`;
-    edge.lastChild.textContent=fmt(d)};
-  const queueEdge=()=>{if(!edgeRaf)edgeRaf=requestAnimationFrame(placeEdge)};
-  map.on('move',queueEdge);map.on('resize',queueEdge);map.on('load',queueEdge);
-  edge.addEventListener('click',e=>{e.stopPropagation();api.home()});
-  const goHome=()=>{if(flying)return;follow=true;flying=true;edgeOn=false;edge.classList.remove('on');
-    const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,c=map.getCenter(),far=miles([c.lat,c.lng],[U.lat,U.lng]);
-    const dur=reduce?450:Math.round(Math.min(2700,1500+Math.sqrt(far)*260));
-    if(!reduce)smokeOut(dur);
-    let done=false;const land=()=>{if(done)return;done=true;flying=false;queueEdge();if(!reduce)landPuff(map.project([U.lng,U.lat]),me)};
-    map.flyTo({center:[U.lng,U.lat],zoom:15.8,pitch:74,bearing:-20,padding:pad(),duration:dur,curve:1.5,essential:true});
-    map.once('moveend',land);setTimeout(land,dur+900)};
   const showFinds=()=>{const on=map.getZoom()>=15;$$('#world .mkf').forEach(w=>w.style.display=on?'':'none')};map.on('zoom',showFinds);
-  const api={kind:'real',map,home(){goHome()},
+  const api={kind:'real',map,
     update(){countFinds();pins.forEach(p=>p.remove());pins=spots.filter(visible).map(s=>{const w=pinEl(s,30,'big');w.firstChild.classList.toggle('out',s.dist>radius);return new maplibregl.Marker({element:w,anchor:'bottom'}).setLngLat([s.lng,s.lat]).addTo(map)});
       showFinds();api.moveUser();const src=map.getSource('radius');if(src)src.setData(circlePoly(U.lat,U.lng,radius))},
     moveUser(instant){ringM.setLngLat([U.lng,U.lat]);meM.setLngLat([U.lng,U.lat]);if(follow){if(instant)map.jumpTo({center:[U.lng,U.lat],padding:pad()});else map.easeTo({center:[U.lng,U.lat],padding:pad(),duration:600})}},
