@@ -678,6 +678,24 @@ body{background:#050806}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .intro button:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:12px}
 @media (max-height:700px){.islide{padding-top:44px}.ivis{height:30vh}.islide h2{font-size:27px;margin-top:18px}.iloc{margin-top:12px}}
+
+/* ===== photo viewer ===== */
+.sheetimg{flex:none;position:relative;display:block;border-radius:10px;overflow:hidden;cursor:zoom-in}
+.sheetimg img{display:block}
+.sheetimg::after{content:"";position:absolute;right:5px;bottom:5px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.55) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7'/%3E%3C/svg%3E") center/12px no-repeat}
+.dhero img[data-act]{cursor:zoom-in}
+.dhero::after{pointer-events:none}
+.lbox{position:fixed;inset:0;z-index:92;display:flex;flex-direction:column;background:rgba(0,0,0,.97);backdrop-filter:blur(6px);touch-action:none;animation:lbin .22s ease}
+@keyframes lbin{from{opacity:0}to{opacity:1}}
+.lb-stage{flex:1;display:grid;place-items:center;padding:calc(56px + env(safe-area-inset-top,0px)) 10px 10px;overflow:hidden}
+.lb-stage img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;transition:transform .25s ease;user-select:none;-webkit-user-drag:none}
+.lb-stage img.zoom{transform:scale(2);cursor:zoom-out}
+.lb-x{position:absolute;z-index:2;top:calc(10px + env(safe-area-inset-top,0px));right:12px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;font-size:26px;line-height:1}
+.lb-nav{position:absolute;z-index:2;top:50%;width:44px;height:44px;margin-top:-22px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.12);color:#fff}
+.lb-nav.prev{left:10px}.lb-nav.next{right:10px}.lb-nav[hidden]{display:none}
+.lb-cap{display:grid;gap:3px;padding:12px 20px calc(18px + env(safe-area-inset-bottom,0px));color:#fff;text-align:center}
+.lb-cap b{font:800 16px/1.2 var(--sans)}.lb-cap span{font-size:12.5px;color:rgba(255,255,255,.7)}
+.lb-cap a{color:inherit}
 </style>
 <style>[hidden]{display:none!important}
 html,body{width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior-x:none}body{position:relative}.app{overflow:hidden}.menu:not(.on){visibility:hidden}#world,#world.maplibregl-map{position:absolute!important;top:0;left:0;right:0;bottom:0;width:100%;height:100%;overflow:hidden}
@@ -887,6 +905,13 @@ html,body{width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior-x:none
   </div>
 </div>
 
+<div class="lbox" id="lbox" role="dialog" aria-modal="true" aria-label="Photo" hidden>
+  <button class="lb-x" id="lbx" type="button" aria-label="Close photo">×</button>
+  <div class="lb-stage" id="lbstage"><img id="lbimg" alt=""></div>
+  <button class="lb-nav prev" id="lbprev" type="button" aria-label="Previous photo"><svg width="20" height="20"><use href="#i-back"/></svg></button>
+  <button class="lb-nav next" id="lbnext" type="button" aria-label="Next photo"><svg width="20" height="20"><use href="#i-arrow"/></svg></button>
+  <div class="lb-cap"><b id="lbname"></b><span id="lbmeta"></span></div>
+</div>
 <div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="Welcome to Higher Places" hidden>
   <button class="iskip" id="iskip" type="button">Skip</button>
   <div class="ivp" id="ivp" aria-roledescription="carousel">
@@ -1458,7 +1483,7 @@ function renderStash(){const list=[...saved].map(byId);
    `<div class="empty"><div class="leafbig">${leafSvg(46,32)}</div>Your stash is empty.<br>Tap <b style="color:var(--cream)">Save to Stash</b> on any place or spot to keep it here.<div style="margin-top:16px"><button class="btn" data-go="map">Explore the map</button></div></div>`}
 function renderSpot(id){const s=byId(id),isSaved=saved.has(id);
   const reviews=[];
-  $('#s-spot').innerHTML=`<div class="dhero"><img src="${s.img}" alt="${esc(s.name)}">${s.credit?`<a class="credit" href="${s.credit.page}" target="_blank" rel="noopener">Photo: ${esc(s.credit.by)} on Unsplash</a>`:''}
+  $('#s-spot').innerHTML=`<div class="dhero"><img src="${s.img}" alt="${esc(s.name)}" data-act="zoomimg" data-id="${id}" role="button" tabindex="0" aria-label="View bigger photo">${s.credit?`<a class="credit" href="${s.credit.page}" target="_blank" rel="noopener">Photo: ${esc(s.credit.by)} on Unsplash</a>`:''}
    <button class="iconbtn" data-act="back" aria-label="Back"><svg width="16" height="16"><use href="#i-back"/></svg></button>
    <button class="iconbtn save-top" data-save="${id}" aria-label="${isSaved?'Remove from Stash':'Save to Stash'}"><svg width="15" height="15"><use href="#i-bookmark${isSaved?'-f':''}"/></svg></button></div>
   <div class="dbody">
@@ -1475,7 +1500,7 @@ function renderSpot(id){const s=byId(id),isSaved=saved.has(id);
    <div class="actions"><button class="btn ${isSaved?'':'solid'}" data-save="${id}"><svg width="13" height="13"><use href="#i-bookmark${isSaved?'-f':''}"/></svg>${isSaved?'Saved to Stash':'Save to Stash'}</button>
      <button class="btn" data-mapto="${id}"><svg width="12" height="13"><use href="#i-mappin"/></svg>Show on map</button></div>
    ${s.mine?`<div class="delbox" id="delbox"><button class="delbtn" data-act="delask" data-id="${id}"><svg width="15" height="15"><use href="#i-trash"/></svg>Delete this spot</button></div>`:''}
-   ${isFind(s)&&s.photos.length>1?`<h4 class="spaced h4">${s.photos.length} photos of this spot</h4><div class="pstrip">${s.photos.map(ph=>`<img src="${ph.src}" alt="">`).join('')}</div>`:''}
+   ${isFind(s)&&s.photos.length>1?`<h4 class="spaced h4">${s.photos.length} photos of this spot</h4><div class="pstrip">${s.photos.map((ph,k)=>`<img src="${ph.src}" alt="Photo ${k+1}" data-act="zoomimg" data-id="${s.id}" data-i="${k}" role="button" tabindex="0" style="cursor:zoom-in">`).join('')}</div>`:''}
    ${isFind(s)?'':`<h4 class="spaced h4">Spots here</h4>${(()=>{const f=findsOf(id).filter(visible);return f.length?`<div class="fgrid">${f.map(x=>`<button class="ftile" data-spot="${x.id}"><img src="${x.img}" alt=""><b>${esc(x.name)}</b>${x.photos.length>1?`<i>${x.photos.length} photos</i>`:''}</button>`).join('')}</div>`:`<div class="empty" style="margin:0">No spots found here yet.<br>Go explore. Find a cool boulder, ledge or view and snap it with the camera to share it.</div>`})()}`}
    <h4 class="spaced h4">Reviews</h4>
    ${reviews.length?'':`<p class="desc" style="margin-top:0">No reviews yet. Members can review this ${noun(s)} once they visit.</p>`}${reviews.map(r=>`<div class="review"><span class="ini">${r[0]}</span><div><div class="who">${r[1]} <small>${r[4]}</small></div><span class="stars" style="margin-top:4px">${starRow(r[3],9)}</span><p>${r[2]}</p></div></div>`).join('')}
@@ -1590,7 +1615,7 @@ function renderNear(){const list=sorted().filter(s=>s.dist<=radius);
   $('#nearlist').innerHTML=list.length?list.map(ncard).join(''):`<p class="mapnote" style="padding:0 2px">Nothing this close yet. Try a bigger radius.</p>`}
 
 function openSheet(id){const s=byId(id);world&&world.select(id);
-  $('#sheet').innerHTML=`<div class="sheet-in"><button class="x" data-act="closesheet" aria-label="Close">×</button><img src="${s.img}" alt=""><div class="info"><b>${esc(s.name)}</b><div class="loc" style="font-size:10.5px;color:#b7c4bc"><svg width="9" height="10"><use href="#i-pin"/></svg>${esc(s.area)} · ${fmt(s.dist)}</div><div style="display:flex;align-items:center;gap:6px;font-size:10.5px">${s.tags.map(esc).join(' \u00b7 ')}</div><button class="btn" data-spot="${id}">View ${noun(s)} <svg width="11" height="11"><use href="#i-arrow"/></svg></button></div></div>`;
+  $('#sheet').innerHTML=`<div class="sheet-in"><button class="x" data-act="closesheet" aria-label="Close">×</button><button class="sheetimg" data-act="zoomimg" data-id="${id}" aria-label="View bigger photo of ${esc(s.name)}"><img src="${s.img}" alt=""></button><div class="info"><b>${esc(s.name)}</b><div class="loc" style="font-size:10.5px;color:#b7c4bc"><svg width="9" height="10"><use href="#i-pin"/></svg>${esc(s.area)} · ${fmt(s.dist)}</div><div style="display:flex;align-items:center;gap:6px;font-size:10.5px">${s.tags.map(esc).join(' \u00b7 ')}</div><button class="btn" data-spot="${id}">View ${noun(s)} <svg width="11" height="11"><use href="#i-arrow"/></svg></button></div></div>`;
   $('#sheet').classList.add('on')}
 function closeSheet(){$('#sheet').classList.remove('on');world&&world.select(null)}
 const panel=()=>{};
@@ -1694,6 +1719,7 @@ document.addEventListener('click',e=>{
   else if(d.act==='zout')world&&world.zoom(1/1.6);
   else if(d.act==='recenter'){closeSheet();if(!U.real&&watchId==null)locate();world&&world.recenter()}
   else if(d.act==='walk')toggleWalk();
+  else if(d.act==='zoomimg'){openLight(d.id,+(d.i||0));return}
   else if(d.act==='home'){history=[];go('map',{push:false})}
   else if(d.act==='replayintro'){history=[];go('map',{push:false});showIntro()}
   else if(d.act==='delask'){$('#delbox').innerHTML=`<div class="delconfirm" role="alertdialog" aria-label="Delete spot"><b>Delete this spot?</b><p>It\u2019ll be removed from the map, Community and everyone\u2019s stash. This can\u2019t be undone.</p><div class="row"><button class="delbtn solid" data-act="deldo" data-id="${d.id}">Delete</button><button class="btn" data-act="delno" data-id="${d.id}">Cancel</button></div></div>`}
@@ -1705,10 +1731,32 @@ document.addEventListener('click',e=>{
   else if(d.act==='rules'){menu(false);toast('Respect the spot. Pack it out. 21+ only.')}
   else if(d.act==='logout'){menu(false);saved.clear();history=[];go('map',{push:false});$('#gate').classList.remove('out');$('#nomsg').textContent=''}
 });
-addEventListener('keydown',e=>{if(e.key==='Escape'){menu(false);closeSheet();panel(false)}});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#lbox').hidden)return;if(e.key==='Escape'){menu(false);closeSheet();panel(false)}});
 $('#yes21').onclick=()=>{$('#gate').classList.add('out');if(introDone())locate();else showIntro()};
 $('#no21').onclick=()=>$('#nomsg').textContent='Come back when you’re 21. See you then.';
 
+
+
+/* ================= photo viewer ================= */
+let lb={id:null,i:0,list:[]};
+function photoList(s){if(isFind(s))return s.photos.map((p,k)=>({src:p.src,by:p.by==='You'?'Your photo':p.by}));
+  return[{src:s.img,by:s.credit?`Photo: ${s.credit.by} on Unsplash`:''}]}
+function lbShow(){const s=byId(lb.id),ph=lb.list[lb.i],im=$('#lbimg');im.classList.remove('zoom');im.src=ph.src;im.alt=s.name;
+  $('#lbname').textContent=s.name;const n=lb.list.length;
+  $('#lbmeta').innerHTML=[esc(s.area||''),n>1?`${lb.i+1} / ${n}`:'',ph.by&&s.credit&&!isFind(s)?`<a href="${s.credit.page}" target="_blank" rel="noopener">${esc(ph.by)}</a>`:esc(ph.by||'')].filter(Boolean).join(' · ');
+  $('#lbprev').hidden=$('#lbnext').hidden=n<2}
+function openLight(id,i=0){const s=byId(id);if(!s)return;lb={id,i,list:photoList(s)};$('#lbox').hidden=false;lbShow();$('#lbx').focus()}
+function closeLight(){$('#lbox').hidden=true}
+const lbStep=d=>{if(lb.list.length<2)return;lb.i=(lb.i+d+lb.list.length)%lb.list.length;lbShow()};
+$('#lbx').onclick=closeLight;$('#lbprev').onclick=()=>lbStep(-1);$('#lbnext').onclick=()=>lbStep(1);
+$('#lbimg').addEventListener('dblclick',e=>e.target.classList.toggle('zoom'));
+let lbSwiped=false;
+$('#lbstage').addEventListener('click',e=>{if(lbSwiped){lbSwiped=false;return}if(e.target===e.currentTarget)closeLight()});
+document.addEventListener('keydown',e=>{if($('#lbox').hidden)return;if(e.key==='Escape')closeLight();if(e.key==='ArrowRight')lbStep(1);if(e.key==='ArrowLeft')lbStep(-1)});
+(()=>{let x0=null,y0=0;const st=$('#lbstage');
+  st.addEventListener('pointerdown',e=>{x0=e.clientX;y0=e.clientY});
+  st.addEventListener('pointerup',e=>{if(x0==null)return;const dx=e.clientX-x0,dy=e.clientY-y0;x0=null;lbSwiped=Math.hypot(dx,dy)>10;
+    if(Math.abs(dy)>110&&Math.abs(dy)>Math.abs(dx))return closeLight();if(Math.abs(dx)>50)lbStep(dx<0?1:-1)})})();
 
 /* ================= first-run intro ================= */
 const INTRO_KEY='hp_intro_done_v1';
@@ -1737,7 +1785,7 @@ document.addEventListener('keydown',e=>{if($('#intro').hidden)return;if(e.key===
   vp.addEventListener('pointerup',up);vp.addEventListener('pointercancel',up)})();
 
 /* ================= boot ================= */
-window.HP={spots,renderSpot,go,zoom:f=>world&&world.zoom(f),moveTo:(lat,lng)=>{U.lat=lat;U.lng=lng;[U.x,U.y]=toXY(lat,lng);refreshAll()}};
+window.HP={spots,renderSpot,go,openSheet,zoom:f=>world&&world.zoom(f),moveTo:(lat,lng)=>{U.lat=lat;U.lng=lng;[U.x,U.y]=toXY(lat,lng);refreshAll()}};
 document.body.classList.add('on-map');
 
 renderRadius();updateDistances();renderFeature();renderRotation();renderAll();renderNear();renderCircle();
