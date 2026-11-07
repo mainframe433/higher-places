@@ -710,6 +710,7 @@ html,body{width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior-x:none
 .pin .lm{transition:transform .25s cubic-bezier(.3,1.6,.5,1);transform-origin:50% 90%}
 .pin.sel .lm,.pin.near .lm{transform:scale(1.18)}
 #world.maplibregl-map{background:#24162f}
+html,body{margin:0}#world,#world.maplibregl-map{bottom:calc(77px + env(safe-area-inset-bottom,0px))!important;height:auto!important}#s-map{background:#0c100e}
 </style>
 </head>
 <body>
@@ -1603,7 +1604,7 @@ function adapterReal(map){
   let pins=[],follow=true;
   map.on('dragstart',()=>{follow=false});let snapT,snapN=0,snapAt=0;const snap=()=>{clearTimeout(snapT);snapT=setTimeout(()=>{if(!follow||map.isMoving())return;const c=map.getCenter();if(Math.abs(c.lat-U.lat)+Math.abs(c.lng-U.lng)<2e-5)return;const now=Date.now();if(now-snapAt>1500)snapN=0;if(++snapN>3)return;snapAt=now;map.jumpTo({center:[U.lng,U.lat],padding:pad()})},120)};map.on('moveend',snap);map.on('data',e=>{if(e.sourceId==='dem')snap()});
   let idle=null;map.on('dragend',()=>{clearTimeout(idle);idle=setTimeout(()=>{if(!follow&&!$('#sheet').classList.contains('on'))api.recenter()},9000)});
-  const pad=()=>({top:240,bottom:90,left:30,right:30});
+  const pad=()=>({top:240,bottom:40,left:30,right:30});
   const showFinds=()=>{const on=map.getZoom()>=15;$$('#world .mkf').forEach(w=>w.style.display=on?'':'none')};map.on('zoom',showFinds);
   const api={kind:'real',map,
     update(){countFinds();pins.forEach(p=>p.remove());pins=spots.filter(visible).map(s=>{const w=pinEl(s,30,'big');w.firstChild.classList.toggle('out',s.dist>radius);return new maplibregl.Marker({element:w,anchor:'bottom'}).setLngLat([s.lng,s.lat]).addTo(map)});
