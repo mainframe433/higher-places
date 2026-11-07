@@ -603,6 +603,8 @@ html,body{width:100%;max-width:100%;overflow-x:hidden;overscroll-behavior-x:none
 .pin.sel .lm,.pin.near .lm{transform:scale(1.18)}
 #world.maplibregl-map{background:#f7e3c8}
 html,body{margin:0}#world,#world.maplibregl-map{bottom:calc(77px + env(safe-area-inset-bottom,0px))!important;height:auto!important}#s-map{background:#ffffff}
+.lm .rim{stroke:currentColor;stroke-width:.9}
+.mk:not(.mkf){width:36px;height:48px}
 </style>
 </head>
 <body>
@@ -1442,22 +1444,21 @@ const STYLE={version:8,glyphs:'https://tiles.openfreemap.org/fonts/{fontstack}/{
   {id:'place',type:'symbol',source:'omt','source-layer':'place',filter:cls(['city','town','suburb','neighbourhood','village','quarter']),layout:{'text-field':['upcase',['coalesce',['get','name_en'],['get','name']]],'text-font':['Noto Sans Bold'],'text-size':['match',['get','class'],'city',14,'town',12,10],'text-letter-spacing':.25,'text-max-width':8},paint:{'text-color':'#2c4a40','text-opacity':.85,'text-halo-color':'#ffffff','text-halo-width':1.6}},
  ]};
 function circlePoly(lat,lng,mi){const pts=[];for(let i=0;i<=72;i++){const a=i/72*2*Math.PI;pts.push([lng+Math.sin(a)*mi/(Math.cos(lat*Math.PI/180)*69.17),lat+Math.cos(a)*mi/69])}return{type:'Feature',properties:{},geometry:{type:'Polygon',coordinates:[pts]}}}
-const LM_OF={camel:'peak',piestewa:'peak',northmtn:'peak',pinnacle:'peak',picacho:'peak',amountain:'peak',estrella:'ridge',whitetank:'ridge',dutchman:'ridge',usery:'ridge',cathedral:'butte',bellrock:'butte',thumbbutte:'butte',hole:'arch',devilsbridge:'arch',mather:'canyon',horseshoe:'canyon',sabino:'canyon',desertview:'tower',townlake:'lake',encanto:'lake',saguarolake:'lake',canyonlake:'lake',pleasant:'lake',fountain:'lake',powell:'lake',watson:'lake',sliderock:'lake',christopher:'lake',lockett:'pine',golden:'pine',dobbins:'vista',windy:'vista',gates:'vista',gateway:'cactus',spurcross:'cactus',hance:'palm'};
-const LM_ICON={mountain:'peak',eye:'vista',palm:'lake',tree:'pine',cloud:'pine',flame:'vista'};
+const LM_OF={camel:'mountain',piestewa:'mountain',northmtn:'mountain',pinnacle:'mountain',picacho:'mountain',amountain:'mountain',estrella:'mountain',whitetank:'mountain',dutchman:'mountain',usery:'mountain',cathedral:'mountain',bellrock:'mountain',thumbbutte:'mountain',hole:'mountain',devilsbridge:'mountain',airportmesa:'mountain',dobbins:'mountain',windy:'mountain',gates:'mountain',
+ mather:'canyon',horseshoe:'canyon',sabino:'canyon',desertview:'canyon',
+ townlake:'water',encanto:'water',fountain:'water',saguarolake:'water',canyonlake:'water',pleasant:'water',powell:'water',watson:'water',havasu:'water',sliderock:'water',christopher:'water',
+ lockett:'forest',golden:'forest',
+ gateway:'desert',spurcross:'desert',hance:'desert'};
+const LM_ICON={mountain:'mountain',eye:'mountain',flame:'mountain',palm:'water',tree:'forest',cloud:'forest'};
+const LM_BASE='<path d="M3 33v2.6a12 3.6 0 0 0 24 0V33Z" fill="#5a3a26"/><ellipse class="rim" cx="15" cy="33" rx="12" ry="3.6" fill="#d6a06a"/>';
 const LM={
- peak:'<path class="f" d="M3.5 35 11 20l3 3.5L18.5 11l8 24Z"/><path class="l" d="m18.5 11-1.9 6.5 2.6 3M11 20l-1 4"/>',
- ridge:'<path class="f" d="M2.5 35 7 25l3 2 4-9.5 3 4 4-7.5 6.5 21Z"/><path class="l" d="m14 17.5-1 5.5M21 14l-1 6"/>',
- butte:'<path class="f" d="M5 35 7 25h2l1-9.5h2l1 5.5h2l1-11h2l1 9.5h2l1 6.5h2l1.5 9Z"/><path class="l" d="M7 30h16"/>',
- arch:'<path class="f" fill-rule="evenodd" d="M3.5 35 4.6 24Q3.8 16.5 8.8 13.4 12 10.8 16.2 11.8q5.6-1.4 8.8 3.4 2.6 4 1.6 8.8l.9 11ZM14.2 14.6a4.6 4.4 0 1 0 .01 0Z"/><path class="l" d="M6.5 29q4-1.4 7.5-.4M18 31.5q3.5-1.6 6.6-.4"/>',
- canyon:'<path class="f" d="M2.5 35V17h7l1.3 5.5 1.5 12.5Zm25 0V15h-7l-1.3 6-1.4 14Z"/><path class="w" d="M12.3 33.6q2.7-2.8 5.5 0"/>',
- tower:'<path class="f" d="m19.4 35 1.6-6 4-.5 2 6.5Z"/><path class="f" d="m10.5 35 .8-21v-3.5h2v1.8h1v-1.8h1.4v1.8h1v-1.8h2V14l.8 21Z"/><path class="l" d="M14 19h2v3h-2ZM11.4 26h7.2"/>',
- lake:'<path class="f" d="m7 31.2 5.5-10.4 3 3.6 3.8-6.6 5.7 13.4Z"/><path class="w" d="M6.2 34.2q2.2-1.5 4.4 0t4.4 0 4.4 0 4.4 0"/>',
- pine:'<path class="f" d="m15 8 6 10h-3l5 8h-3.5l5 7h-19l5-7H7l5-8H9Z"/><path class="l" d="M15 33v2.5"/>',
- vista:'<circle class="f" cx="15" cy="21" r="6"/><path class="f" d="M3 35v-8.5l6.2-3.2 5.6 2.7 6.4-4.2 5.8 3.8V35Z"/><path class="w" d="M15 12.4V10M8.6 15l-1.6-1.6m14.4 1.6 1.6-1.6"/>',
- cactus:'<path class="o" d="M15 35V10m0 16h-4.5v-7m4.5 3.5h4.5V15"/><path class="i" d="M15 35V10m0 16h-4.5v-7m4.5 3.5h4.5V15"/>',
- palm:'<path class="o" d="M15 35q-1-10 1-21"/><path class="i" d="M15 35q-1-10 1-21"/><path class="w fr" d="M16 14q-5-3-8.5 1m8.5-1q4.5-4 8.5-.5M16 14q-3-6-6.5-5.5M16 14q3.5-6 7-6m-7 6q5 .5 7 5m-7-5q-5 .5-7 5"/>'};
-const lmKind=p=>LM_OF[p.id]||LM_ICON[p.icon]||'peak';
-const lmSvg=(p,size,cls)=>`<svg class="lm ${cls||''}" width="${size}" height="${Math.round(size*4/3)}" viewBox="0 0 30 40" aria-hidden="true"><ellipse class="lmb" cx="15" cy="35.6" rx="11.5" ry="3.2"/>${LM[lmKind(p)]}</svg>`;
+ mountain:LM_BASE+'<path d="M4.5 33.6 11.5 19l2.5 2.5L18.5 12l7 21.6Z" fill="#c2603e"/><path d="m18.5 12 7 21.6h-8l2.1-11.4Z" fill="#7f3624"/><path d="m11.5 19 2.5 2.5-1.5 4.3Z" fill="#8f3e28"/><path d="m18.5 12-2.3 6.6m-4.7.4-1.3 3.4" stroke="#ec9a70" stroke-width=".9" stroke-linecap="round" fill="none"/>',
+ canyon:'<path d="M3 26v7.6a12 3.6 0 0 0 24 0V26Z" fill="#8a4a2c"/><path d="M3 30q12 3.6 24 0" stroke="#6a361f" stroke-width=".8" fill="none"/><ellipse class="rim" cx="15" cy="26" rx="12" ry="3.6" fill="#d98c58"/><path d="M7.4 27.6q0-4.8 7.6-4.8t7.6 4.8" stroke="#4fc2e8" stroke-width="1.9" fill="none" stroke-linecap="round"/><ellipse cx="15" cy="26.2" rx="4.4" ry="1.4" fill="#eba872"/>',
+ water:'<path d="M3 33v2.6a12 3.6 0 0 0 24 0V33Z" fill="#245a74"/><ellipse class="rim" cx="15" cy="33" rx="12" ry="3.6" fill="#3f9cc4"/><path d="M6.5 34q1-10 5.6-10t5.4 10Z" fill="#cfa77a"/><path d="M12.1 24q4.5 0 5.4 10h-3.7q1.3-6-1.7-10Z" fill="#8f6a46"/><path d="M17 33.6q.8-6.6 4-6.6t3.6 6.6Z" fill="#d8b085"/><path d="M21 27q3 0 3.6 6.6h-2.4q.6-4-1.2-6.6Z" fill="#94704b"/><path d="M5.5 35.2q2-1 4 0m9.5.8q2.4-1.1 4.8 0" stroke="#c9eefa" stroke-width=".8" fill="none" stroke-linecap="round"/>',
+ forest:'<path d="M3 33v2.6a12 3.6 0 0 0 24 0V33Z" fill="#4a3624"/><ellipse class="rim" cx="15" cy="33" rx="12" ry="3.6" fill="#7d9a52"/><path d="m8 21 3 5.2H9.6l2.4 4.4H10l2.4 3.6H3.6L6 30.6H4l2.4-4.4H5Z" fill="#3f8f52"/><path d="m8 21 3 5.2H9.6l2.4 4.4H10l2.4 3.6H8Z" fill="#276b3a"/><path d="m17 9 5.4 9.6h-2.6l4.6 7.8h-3l4 7.4H9.6l4-7.4h-3l4.6-7.8H12.6Z" fill="#46a05c"/><path d="m17 9 5.4 9.6h-2.6l4.6 7.8h-3l4 7.4H17Z" fill="#2a7340"/>',
+ desert:LM_BASE+'<path d="M13.6 25.5H10.4V20" stroke="#3f8a4c" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M16.4 22.5H19.8V16.5" stroke="#2f6f3e" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><rect x="12.8" y="11" width="4.4" height="23.4" rx="2.2" fill="#4f9a5a"/><path d="M15 11.2a2.2 2.2 0 0 1 2.2 2.2v21H15Z" fill="#2f6f3e"/><path d="M14 14v19" stroke="#6cba76" stroke-width=".6" fill="none"/><path d="M20.2 34.4q.8-3.2 3.2-3.2t2.6 3.2Z" fill="#b8865a"/><path d="M23.4 31.2q2.6 0 2.6 3.2h-1.8q.4-2-.8-3.2Z" fill="#7d5434"/>'};
+const lmKind=p=>LM_OF[p.id]||LM_ICON[p.icon]||'mountain';
+const lmSvg=(p,size,cls)=>`<svg class="lm ${cls||''}" width="${size}" height="${Math.round(size*4/3)}" viewBox="0 0 30 40" aria-hidden="true"><ellipse cx="15" cy="38.3" rx="11.5" ry="1.9" fill="#000" opacity=".42"/>${LM[lmKind(p)]}</svg>`;
 function pinEl(s,size,where){const w=document.createElement('div');w.className='mk';
   w.innerHTML=`<button class="pin" data-pin="${s.id}" data-where="${where}" aria-label="${esc(s.name||'Pin')}">${isFind(s)?bubbleInner(s):lmSvg(s,size)+(s._n?`<span class="pcount">${s._n}</span>`:'')}</button>`;if(isFind(s)){w.className='mk mkf';w.firstChild.classList.add('find')}return w}
 const hoodSvg='<svg width="100%" height="100%" viewBox="0 0 40 40"><use href="#hood"/></svg>';
@@ -1486,7 +1487,7 @@ function adapterReal(map){
   const pad=()=>({top:240,bottom:40,left:30,right:30});
   const showFinds=()=>{const on=map.getZoom()>=15;$$('#world .mkf').forEach(w=>w.style.display=on?'':'none')};map.on('zoom',showFinds);
   const api={kind:'real',map,
-    update(){countFinds();pins.forEach(p=>p.remove());pins=spots.filter(visible).map(s=>{const w=pinEl(s,30,'big');w.firstChild.classList.toggle('out',s.dist>radius);return new maplibregl.Marker({element:w,anchor:'bottom'}).setLngLat([s.lng,s.lat]).addTo(map)});
+    update(){countFinds();pins.forEach(p=>p.remove());pins=spots.filter(visible).map(s=>{const w=pinEl(s,36,'big');w.firstChild.classList.toggle('out',s.dist>radius);return new maplibregl.Marker({element:w,anchor:'bottom'}).setLngLat([s.lng,s.lat]).addTo(map)});
       showFinds();api.moveUser();const src=map.getSource('radius');if(src)src.setData(circlePoly(U.lat,U.lng,radius))},
     moveUser(instant){ringM.setLngLat([U.lng,U.lat]);meM.setLngLat([U.lng,U.lat]);if(follow){if(instant)map.jumpTo({center:[U.lng,U.lat],padding:pad()});else map.easeTo({center:[U.lng,U.lat],padding:pad(),duration:600})}},
     recenter(){follow=true;map.easeTo({center:[U.lng,U.lat],zoom:Math.max(map.getZoom(),15.6),pitch:74,padding:pad(),duration:900})},
