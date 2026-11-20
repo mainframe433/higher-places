@@ -1210,6 +1210,21 @@ html.m2 body.on-map .m2info{top:calc(env(safe-area-inset-top,0px) + 100px);botto
 html.m2 body.on-map #s-map .attrib{top:calc(env(safe-area-inset-top,0px) + 98px);bottom:auto}
 html.m2 body.on-map .m2note.on~.m2info{opacity:0;pointer-events:none}
 html.m2 body.on-map .m5near.open~.m2info,html.m2 body.on-map .m5near.open~.attrib{opacity:0;pointer-events:none}
+
+/* ======================= heading beam + locate button ======================= */
+html.m2 .me3d{position:relative}
+html.m2 .me3d b{position:relative;z-index:1}
+html.m2 .m6beam{position:absolute;z-index:0;left:50%;top:23px;width:180px;height:180px;margin:-90px 0 0 -90px;pointer-events:none;opacity:0;transition:opacity .5s}
+html.m2 .m6beam.on{opacity:1}
+html.m2 .m6beam svg{display:block}
+html.m2 .m6row{flex:none;display:flex;justify-content:flex-end;padding:0 16px 10px;pointer-events:none}
+html.m2 .m6loc{pointer-events:auto;width:48px;height:48px;display:grid;place-items:center;border:0;border-radius:50%;background:var(--surface);color:var(--ink-2);cursor:pointer;
+  box-shadow:0 0 0 1px var(--line),0 10px 22px -10px rgba(var(--shadow),.7);transition:transform .15s,color .2s,background-color .2s}
+html.m2 .m6loc:active{transform:scale(.92)}
+html.m2 .m6loc[data-st=follow],html.m2 .m6loc[data-st=heading]{color:var(--accent)}
+html.m2 .m6loc[data-st=heading]{background:var(--accent);color:var(--accent-ink)}
+html.m2 .m6loc:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+html.m2 .m5near.open .m6row{visibility:hidden}
 </style>
 </head>
 <body>
@@ -1279,6 +1294,7 @@ html.m2 body.on-map .m5near.open~.m2info,html.m2 body.on-map .m5near.open~.attri
       </div>
     </header>
     <section class="m5near" id="m5near" aria-label="Near you">
+      <div class="m6row"><button type="button" class="m6loc" id="m6loc" data-st="" aria-label="Show where you are"></button></div>
       <div class="m2cats" id="m2cats" role="radiogroup" aria-label="Show places by type"></div>
       <div class="m5sheet">
         <div class="m5top"><button type="button" class="m5grab" id="m5grab" aria-expanded="false" aria-controls="nearlist" aria-label="Show all places near you"><i></i></button>
@@ -2103,28 +2119,28 @@ function realWorld(el){return new Promise(res=>{
 });}
 function adapterReal(map){
   const ring=document.createElement('div');ring.className='ring3d';ring.innerHTML='<i></i><i></i>';
-  const me=document.createElement('div');me.className='me3d';me.innerHTML='<b>'+hoodSvg+'</b>';
+  const me=document.createElement('div');me.className='me3d';me.innerHTML='<span class="m6beam" aria-hidden="true"><svg viewBox="-90 -90 180 180" width="180" height="180"><defs><radialGradient id="m6g" cx="0" cy="0" r="88" gradientUnits="userSpaceOnUse"><stop offset=".2" style="stop-color:var(--accent);stop-opacity:.85"/><stop offset=".55" style="stop-color:var(--accent);stop-opacity:.38"/><stop offset="1" style="stop-color:var(--accent);stop-opacity:0"/></radialGradient></defs><path class="m6w" fill="url(#m6g)"/></svg></span><b>'+hoodSvg+'</b>';const beam=me.querySelector('.m6beam');let beamA=0,beamH=null;
   const ringM=new maplibregl.Marker({element:ring,pitchAlignment:'map',rotationAlignment:'map'}).setLngLat([U.lng,U.lat]).addTo(map);
   const meM=new maplibregl.Marker({element:me,anchor:'bottom'}).setLngLat([U.lng,U.lat]).addTo(map);
   const addRadius=()=>{if(map.getSource('radius'))return;map.addSource('radius',{type:'geojson',data:circlePoly(U.lat,U.lng,radius)});
     map.addLayer({id:'rad-fill',type:'fill',source:'radius',paint:{'fill-color':THEMES[M2T].rad,'fill-opacity':.05}},'bld');
     map.addLayer({id:'rad-line',type:'line',source:'radius',paint:{'line-color':THEMES[M2T].rad,'line-width':1.4,'line-dasharray':[2,2.5],'line-opacity':.7}},'bld')};
   if(map.isStyleLoaded())addRadius();else map.once('load',addRadius);map.on('styledata',()=>{try{if(map.isStyleLoaded()&&!map.getSource('radius'))addRadius()}catch(e){}});map.on('move',m2Queue);map.on('moveend',m2Queue);
-  let pins=[],follow=true;
+  let pins=[],follow=true;m6Bind(map);const aimBeam=()=>{if(beamH==null)return;const r=beamH*Math.PI/180,p0=map.project([U.lng,U.lat]),p1=map.project([U.lng+.0004*Math.sin(r)/Math.cos(U.lat*Math.PI/180),U.lat+.0004*Math.cos(r)]);beam.style.transform=`rotate(${Math.atan2(p1.x-p0.x,p0.y-p1.y)*180/Math.PI}deg)`};map.on('move',aimBeam);
   map.on('dragstart',()=>{follow=false});let snapT,snapN=0,snapAt=0;const snap=()=>{clearTimeout(snapT);snapT=setTimeout(()=>{if(!follow||map.isMoving())return;const c=map.getCenter();if(Math.abs(c.lat-U.lat)+Math.abs(c.lng-U.lng)<2e-5)return;const now=Date.now();if(now-snapAt>1500)snapN=0;if(++snapN>3)return;snapAt=now;map.jumpTo({center:[U.lng,U.lat],padding:pad()})},120)};map.on('moveend',snap);map.on('data',e=>{if(e.sourceId==='dem')snap()});
   let idle=null;map.on('dragend',()=>{clearTimeout(idle);idle=setTimeout(()=>{if(!follow&&!$('#sheet').classList.contains('on'))api.recenter()},9000)});
   const pad=()=>({top:240,bottom:40,left:30,right:30});
   const showFinds=()=>{const on=map.getZoom()>=15;$$('#world .mkf').forEach(w=>w.style.display=on?'':'none')};map.on('zoom',showFinds);
-  const api={kind:'real',map,pins:()=>pins,restyle(st){map.setStyle(st);const fix=()=>{try{map.setSky(st.sky);if(map.setLight)map.setLight(st.light);if(map.isStyleLoaded()&&!map.getSource('radius'))addRadius()}catch(e){}m2Queue()};fix();map.once('idle',fix)},
+  const api={kind:'real',map,pins:()=>pins,isFollow:()=>follow,heading(h,acc,up){beamH=h;aimBeam();beam.classList.add('on');const a=Math.round(acc);if(a!==beamA){beamA=a;const R=86,x=R*Math.sin(a*Math.PI/180),y=-R*Math.cos(a*Math.PI/180);beam.querySelector('.m6w').setAttribute('d',`M0 0L${-x} ${y}A${R} ${R} 0 0 1 ${x} ${y}Z`)}if(up&&follow&&!map.isMoving()&&Math.abs(((map.getBearing()-h+540)%360)-180)>.8)map.jumpTo({bearing:h})},restyle(st){map.setStyle(st);const fix=()=>{try{map.setSky(st.sky);if(map.setLight)map.setLight(st.light);if(map.isStyleLoaded()&&!map.getSource('radius'))addRadius()}catch(e){}m2Queue()};fix();map.once('idle',fix)},
     update(){countFinds();pins.forEach(p=>p.remove());pins=spots.filter(visible).map(s=>{const w=pinEl(s,36,'big');w.firstChild.classList.toggle('out',s.dist>radius);const mk=new maplibregl.Marker({element:w,anchor:'bottom'}).setLngLat([s.lng,s.lat]).addTo(map);mk._s=s;return mk});
       showFinds();api.moveUser();m2Queue();const src=map.getSource('radius');if(src)src.setData(circlePoly(U.lat,U.lng,radius))},
-    moveUser(instant){ringM.setLngLat([U.lng,U.lat]);meM.setLngLat([U.lng,U.lat]);if(follow){if(instant)map.jumpTo({center:[U.lng,U.lat],padding:pad()});else map.easeTo({center:[U.lng,U.lat],padding:pad(),duration:600})}},
-    recenter(){follow=true;map.easeTo({center:[U.lng,U.lat],zoom:Math.max(map.getZoom(),15.6),pitch:74,padding:pad(),duration:900})},
+    moveUser(instant){ringM.setLngLat([U.lng,U.lat]);meM.setLngLat([U.lng,U.lat]);m6Moved();if(follow){if(instant)map.jumpTo(Object.assign({center:[U.lng,U.lat],padding:pad()},m6B()));else map.easeTo(Object.assign({center:[U.lng,U.lat],padding:pad(),duration:600},m6B()))}},
+    recenter(){follow=true;map.easeTo({center:[U.lng,U.lat],zoom:Math.max(map.getZoom(),15.6),pitch:74,padding:pad(),duration:900});setTimeout(m6Btn,20)},
     fitRadius(){const c=circlePoly(U.lat,U.lng,radius).geometry.coordinates[0];let w=180,s=90,e=-180,n=-90;c.forEach(([x,y])=>{w=Math.min(w,x);e=Math.max(e,x);s=Math.min(s,y);n=Math.max(n,y)});
       follow=false;map.fitBounds([[w,s],[e,n]],{padding:pad(),pitch:map.getPitch()>10?60:0,bearing:map.getBearing(),duration:1000})},
     zoom(f){const o={zoom:map.getZoom()+(f>1?1:-1),duration:400};if(follow){o.center=[U.lng,U.lat];o.padding=pad()}map.easeTo(o)},
     toggleTilt(){const flat=map.getPitch()>10;map.easeTo({pitch:flat?0:74,bearing:flat?0:-20,duration:700});return !flat},
-    focus(s){follow=false;map.easeTo({center:[s.lng,s.lat],zoom:Math.min(14.8,Math.max(map.getZoom(),13.5)),pitch:Math.min(map.getPitch(),64),padding:pad(),offset:m5Off(pad()),duration:900});m5Settle(s)},
+    focus(s){follow=false;map.easeTo({center:[s.lng,s.lat],zoom:Math.min(14.8,Math.max(map.getZoom(),13.5)),pitch:Math.min(map.getPitch(),64),padding:pad(),offset:m5Off(pad()),duration:900});m5Settle(s);m6Up=false;m6Btn()},
     select(id){$$('#world .pin').forEach(p=>p.classList.toggle('sel',p.dataset.pin===id))},
     resize(){map.resize()}};
   return api}
@@ -2624,11 +2640,61 @@ function m5Want(){const w=world.map.getContainer(),cr=w.getBoundingClientRect(),
   if(card)cover=card.getBoundingClientRect().top-cr.top;else if(near&&!document.body.classList.contains('m2card-on'))cover=near.getBoundingClientRect().top-cr.top;
   return Math.max(top+90,Math.min(H-60,cover-56))}
 /* terrain lifts summit pins above where the camera math puts them: nudge once the move ends */
-function m5Settle(s,n=0){const map=world&&world.map;if(!map)return;clearTimeout(m5Settle._t);map.once('moveend',()=>{m5Settle._t=setTimeout(()=>{
-  if(map.isMoving())return;const mk=world.pins().find(m=>m._s.id===s.id);if(!mk)return;const cr=map.getContainer().getBoundingClientRect(),q=mk.getElement().getBoundingClientRect();
-  const d=Math.round(q.bottom-cr.top-m5Want());if(Math.abs(d)>24&&n<2){m5Settle(s,n+1);map.panBy([0,d],{duration:450})}},120)})}
+function m5Settle(s,n=0){const map=world&&world.map;if(!map)return;const tok=m5Settle.tok=(m5Settle.tok||0)+1,t0=Date.now();
+  const check=()=>{if(tok!==m5Settle.tok||m2Sel!==s.id)return;if((map.isEasing?map.isEasing():map.isMoving())&&Date.now()-t0<6000)return void setTimeout(check,150);
+    const mk=world.pins().find(m=>m._s.id===s.id);if(!mk)return;const cr=map.getContainer().getBoundingClientRect(),q=mk.getElement().getBoundingClientRect();
+    const d=Math.round(q.bottom-cr.top-m5Want());if(Math.abs(d)>24&&n<3){map.panBy([0,d],{duration:450});setTimeout(()=>m5Settle(s,n+1),60)}};
+  setTimeout(check,250)}
 
-window.HP={_map:()=>world&&world.map,_lay:()=>m2Layout(),m2:()=>({theme:M2T,cat:m2Cat,sel:m2Sel}),setTheme:m2SetTheme,setCat:m2SetCat,spots,renderSpot,go,openSheet,zoom:f=>world&&world.zoom(f),moveTo:(lat,lng)=>{U.lat=lat;U.lng=lng;[U.x,U.y]=toXY(lat,lng);refreshAll()}};
+/* ======================= which way you're facing ======================= */
+/* Heading comes from the phone's compass. Without one (desktop, permission refused), it falls back to the direction you are moving. */
+let m6H=null,m6Shown=null,m6Src=null,m6Acc=25,m6Raf=0,m6Asked=false,m6Up=false,m6Last=null,m6CompassAt=0;
+const m6Norm=a=>((a%360)+360)%360;
+function m6Set(h,src,acc){if(src==='course'&&Date.now()-m6CompassAt<4000)return;
+  if(src==='compass')m6CompassAt=Date.now();m6H=m6Norm(h);m6Src=src;if(acc!=null&&acc>0)m6Acc=Math.min(60,Math.max(12,acc));else if(src==='course')m6Acc=22;
+  if(!m6Raf)m6Raf=requestAnimationFrame(m6Tick)}
+let m6T=0;
+function m6Tick(now){m6Raf=0;if(m6H==null)return;now=now||performance.now();const dt=Math.min(1000,m6T?now-m6T:16);m6T=now;
+  if(m6Shown==null)m6Shown=m6H;else{const d=((m6H-m6Shown+540)%360)-180,k=1-Math.exp(-dt/110);m6Shown=Math.abs(d)<.3?m6H:m6Norm(m6Shown+d*k);if(m6Shown!==m6H)m6Raf=requestAnimationFrame(m6Tick);else m6T=0}
+  if(world&&world.heading)world.heading(m6Shown,m6Acc,m6Up)}
+function m6Orient(e){let h=null,acc=null;
+  if(typeof e.webkitCompassHeading==='number'&&!isNaN(e.webkitCompassHeading)){h=e.webkitCompassHeading;acc=e.webkitCompassAccuracy}
+  else if(e.type==='deviceorientationabsolute'&&e.alpha!=null){h=360-e.alpha;m6Orient.abs=Date.now()}
+  else if(e.absolute&&e.alpha!=null&&Date.now()-(m6Orient.abs||0)>2000)h=360-e.alpha;else return;
+  const so=(screen.orientation&&screen.orientation.angle)||window.orientation||0;m6Set(h+so,'compass',acc)}
+function m6Listen(){if(m6Listen.on)return;m6Listen.on=true;
+  window.addEventListener('deviceorientationabsolute',m6Orient,true);window.addEventListener('deviceorientation',m6Orient,true)}
+/* iPhone only hands out the compass after a tap, so ask on the first tap on the map */
+const m6NeedsAsk=!!(window.DeviceOrientationEvent&&typeof DeviceOrientationEvent.requestPermission==='function');
+function m6Ask(){if(m6Asked)return;m6Asked=true;if(!m6NeedsAsk||Date.now()-m6CompassAt<3000)return;
+  try{DeviceOrientationEvent.requestPermission().then(s=>{if(s==='granted')m6Listen()}).catch(()=>{})}catch(e){}}
+m6Listen();if(m6NeedsAsk){const once=()=>{m6Ask();$('#s-map').removeEventListener('click',once,true)};$('#s-map').addEventListener('click',once,true)}
+/* direction of travel, from your last few positions */
+function m6Moved(){if(m6Last){const m=miles(m6Last,[U.lat,U.lng])*1609;if(m<4)return;
+    const la1=m6Last[0]*Math.PI/180,la2=U.lat*Math.PI/180,dl=(U.lng-m6Last[1])*Math.PI/180;
+    m6Set(Math.atan2(Math.sin(dl)*Math.cos(la2),Math.cos(la1)*Math.sin(la2)-Math.sin(la1)*Math.cos(la2)*Math.cos(dl))*180/Math.PI,'course')}
+  m6Last=[U.lat,U.lng]}
+const m6B=()=>m6Up&&m6Shown!=null?{bearing:m6Shown}:{};
+
+/* the locate button: show me, then turn the map with me, then stop turning */
+function m6State(){return !(world&&world.isFollow&&world.isFollow())?'free':m6Up?'heading':'follow'}
+const M6IC={free:'<path d="M20 4 4 11.2l7 1.8 1.8 7Z"/>',follow:'<path d="M20 4 4 11.2l7 1.8 1.8 7Z" fill="currentColor"/>',heading:'<path d="M12 3.2 18.6 20 12 16.4 5.4 20Z" fill="currentColor"/>'};
+const M6LB={free:'Show where you are',follow:'Turn the map with you',heading:'Stop turning the map'};
+function m6Btn(){const b=$('#m6loc');if(!b)return;const st=m6State();if(b.dataset.st===st)return;b.dataset.st=st;
+  b.innerHTML=`<svg class="ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true">${M6IC[st]}</svg>`;b.setAttribute('aria-label',M6LB[st])}
+function m6Locate(){const map=world&&world.map,st=m6State();m6Ask();
+  if(st==='free'){closeSheet();if(!U.real&&watchId==null)locate();m6Up=false;world&&world.recenter()}
+  else if(st==='follow'){m6Up=true;if(m6H==null)toast('Turn on motion access or start moving to point the map');else if(map)map.easeTo({bearing:m6Shown,duration:500})}
+  else m6Up=false;
+  m6Btn()}
+function m6Bind(map){
+  map.on('dragstart',()=>{m6Up=false;m6Btn()});
+  map.on('rotatestart',e=>{if(e&&e.originalEvent){m6Up=false;m6Btn()}});
+  map.on('movestart',m6Btn);map.on('moveend',()=>{m6Btn();if(m6Up&&m6Shown!=null&&world&&world.heading)setTimeout(()=>world.heading(m6Shown,m6Acc,m6Up),30)})}
+document.addEventListener('click',e=>{if(e.target.closest('#m6loc'))m6Locate()});
+m6Btn();
+
+window.HP={_m6:()=>({h:m6H,shown:m6Shown,up:m6Up,src:m6Src}),_map:()=>world&&world.map,_lay:()=>m2Layout(),m2:()=>({theme:M2T,cat:m2Cat,sel:m2Sel}),setTheme:m2SetTheme,setCat:m2SetCat,spots,renderSpot,go,openSheet,zoom:f=>world&&world.zoom(f),moveTo:(lat,lng)=>{U.lat=lat;U.lng=lng;[U.x,U.y]=toXY(lat,lng);refreshAll()}};
 document.body.classList.add('on-map');
 
 renderRadius();updateDistances();renderFeature();renderRotation();renderAll();renderNear();renderCircle();
