@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Higher Places Photos</title>
+<meta name="theme-color" content="#FAFBF8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;500;600;700;800&display=swap">
+<style>
+/* One column of landmarks; each has a strip of Wikimedia Commons photos with the best one pre-chosen. Copper & patina. */
+:root{--bg:#FAFBF8;--panel:#EDF1EB;--ink:#17231F;--ink-2:#58665F;--line:rgba(23,35,31,.13);--accent:#2E7A68;--accent-ink:#fff;--copper:#A5532A;
+  --sans:'Overpass',system-ui,-apple-system,'Segoe UI',sans-serif;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#14211E;--panel:#1D2D29;--ink:#E6EEEA;--ink-2:#9AAEA6;--line:rgba(230,238,234,.14);--accent:#6CC1AB;--accent-ink:#0B1916;--copper:#E39461;color-scheme:dark}}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.5 var(--sans);padding:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))}
+.wrap{max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 24px) 0 130px}
+h1{margin:0;font:800 30px/1.1 var(--sans);letter-spacing:-.02em}
+.lede{margin:10px 0 0;color:var(--ink-2);max-width:58ch}
+section{margin-top:30px}
+h2{margin:0 0 2px;font:800 20px/1.2 var(--sans);letter-spacing:-.01em}
+.row{padding:14px 0 16px;border-top:1px solid var(--line)}
+.top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.name{font:700 17.5px/1.25 var(--sans)}
+.area{font-size:14.5px;color:var(--ink-2)}
+.state{margin-left:auto;font:600 13px/1 var(--sans);color:var(--ink-2)}
+.state.mine{color:var(--accent)}
+.strip{display:flex;gap:8px;overflow-x:auto;margin:10px -16px 0;padding:4px 16px 6px;scroll-snap-type:x proximity;scroll-padding-inline:16px;scrollbar-width:none}
+.strip::-webkit-scrollbar{display:none}
+.ph{flex:none;position:relative;width:148px;aspect-ratio:4/3;padding:0;border:0;border-radius:12px;overflow:hidden;background:var(--panel);cursor:pointer;scroll-snap-align:start}
+.ph img{display:block;width:100%;height:100%;object-fit:cover}
+.ph[aria-pressed=true]{outline:3px solid var(--accent);outline-offset:2px}
+.ph[aria-pressed=true]::after{content:"";position:absolute;right:6px;top:6px;width:24px;height:24px;border-radius:50%;background:var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center/15px no-repeat;box-shadow:0 0 0 2px var(--bg)}
+.ph:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.credit{margin:6px 0 0;font-size:13px;color:var(--ink-2);min-height:1.4em}
+.credit a{color:inherit}
+.empty{margin:10px 0 0;font-size:14.5px;color:var(--ink-2)}
+.skel{flex:none;width:148px;aspect-ratio:4/3;border-radius:12px;background:var(--panel)}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--bg);border-top:1px solid var(--line);
+  padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.bar .in{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.tally{flex:1;font:600 15px/1.3 var(--sans)}
+.tally em{font-style:normal;color:var(--copper);font-variant-numeric:tabular-nums}
+.copy{height:46px;padding:3px 18px 0;border:0;border-radius:13px;background:var(--accent);color:var(--accent-ink);font:700 15.5px/1 var(--sans);cursor:pointer}
+.copy:disabled{opacity:.45}
+#out{display:block;width:100%;max-width:720px;margin:10px auto 0;min-height:110px;padding:10px 12px;border-radius:11px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font:500 12.5px/1.4 var(--sans)}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Pick the photos</h1>
+  <p class="lede">Photos of each landmark from Wikimedia Commons. The best one is already chosen. Tap a different photo to swap it, then tap Copy picks and paste them to Claude.</p>
+  <div id="list"></div>
+</div>
+<div class="bar"><div class="in"><div class="tally" id="tally">Loading photos…</div><button class="copy" id="copy" type="button" disabled>Copy picks</button></div>
+  <textarea id="out" readonly hidden aria-label="Your picks"></textarea></div>
+<script>
+const REGIONS=[
+ ['Phoenix area',[['dobbins','Dobbins Lookout','South Mountain Park, Phoenix','Dobbins Lookout South Mountain Phoenix'],['hole','Hole-in-the-Rock','Papago Park, Phoenix','Hole-in-the-Rock Papago Park'],['camel','Camelback Mountain','Echo Canyon, Phoenix','Camelback Mountain'],['piestewa','Piestewa Peak','Phoenix Mountains Preserve','Piestewa Peak'],['northmtn','North Mountain','North Mountain Park, Phoenix','North Mountain Phoenix Arizona'],['townlake','Tempe Town Lake','Tempe Beach Park, Tempe','Tempe Town Lake'],['encanto','Encanto Park','Encanto, Phoenix','Encanto Park Phoenix'],['hance','Hance Park','Midtown Phoenix','Margaret T. Hance Park'],['pinnacle','Pinnacle Peak Park','North Scottsdale','Pinnacle Peak Scottsdale'],['gateway','Gateway Loop','McDowell Sonoran Preserve','McDowell Sonoran Preserve'],['usery','Wind Cave Trail','Usery Mountain Park, Mesa','Usery Mountain'],['dutchman','Lost Dutchman State Park','Superstition Mountains','Lost Dutchman State Park Superstition'],['saguarolake','Saguaro Lake','Tonto National Forest','Saguaro Lake Arizona'],['canyonlake','Canyon Lake','Apache Trail','Canyon Lake Arizona'],['pleasant','Lake Pleasant','Lake Pleasant Regional Park','Lake Pleasant Arizona'],['estrella','Estrella Mountain Park','Goodyear','Estrella Mountain'],['whitetank','White Tank Mountains','White Tank Mountain Regional Park','White Tank Mountains'],['spurcross','Spur Cross Ranch','Cave Creek','Spur Cross Ranch Cave Creek'],['fountain','Fountain Park','Fountain Hills','Fountain Hills fountain']]],
+ ['Tucson and the south',[['gates','Gates Pass Overlook','Tucson Mountain Park','Gates Pass Tucson'],['windy','Windy Point Vista','Mount Lemmon, Tucson','Windy Point Mount Lemmon'],['sabino','Sabino Canyon','Coronado National Forest','Sabino Canyon'],['amountain','Sentinel Peak','"A" Mountain, Tucson','Sentinel Peak Tucson'],['picacho','Picacho Peak State Park','Picacho','Picacho Peak']]],
+ ['Sedona and Oak Creek',[['airportmesa','Airport Mesa Overlook','Sedona','Airport Mesa Sedona'],['cathedral','Cathedral Rock','Sedona','Cathedral Rock Sedona'],['bellrock','Bell Rock','Village of Oak Creek','Bell Rock Sedona'],['devilsbridge','Devil’s Bridge','Sedona','Devils Bridge Sedona'],['sliderock','Slide Rock State Park','Oak Creek Canyon','Slide Rock State Park']]],
+ ['Grand Canyon and the north',[['lockett','Lockett Meadow','Flagstaff','Lockett Meadow'],['mather','Mather Point','Grand Canyon South Rim','Mather Point Grand Canyon'],['desertview','Desert View Watchtower','Grand Canyon South Rim','Desert View Watchtower'],['horseshoe','Horseshoe Bend','Page','Horseshoe Bend Arizona'],['powell','Lake Powell','Wahweap, Page','Lake Powell Wahweap']]],
+ ['Rim country and Prescott',[['golden','Rim Lakes Vista','Mogollon Rim','Mogollon Rim'],['christopher','Christopher Creek','Near Payson','Christopher Creek Arizona'],['watson','Watson Lake','Prescott','Watson Lake Prescott'],['thumbbutte','Thumb Butte','Prescott','Thumb Butte Prescott']]],
+ ['West',[['havasu','London Bridge','Lake Havasu City','London Bridge Lake Havasu City']]]];
+const ALL=REGIONS.flatMap(r=>r[1]);
+const API='https://commons.wikimedia.org/w/api.php';
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const txt=h=>{const d=document.createElement('div');d.innerHTML=h||'';return (d.textContent||'').replace(/\s+/g,' ').trim()};
+const BAD=/\b(map|diagram|logo|sign|plaque|svg|chart|locator|seal|flag|poster|drawing|postcard|aerial view of the|scan|ticket)\b/i;
+const store={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
+const DATA={},CHOICE={};
+
+function score(c){let s=0;const w=c.w,h=c.h,r=w/h;
+  if(r>=1.25&&r<=2.1)s+=30;else if(r>2.1)s+=8;else s-=25;
+  s+=Math.min(30,Math.log2(Math.max(w,1)/800)*10);
+  if(/featured/i.test(c.assess))s+=40;else if(/quality|valued/i.test(c.assess))s+=22;
+  if(BAD.test(c.title))s-=80;
+  if(/(19[0-5]\d|18\d\d)/.test(c.date||''))s-=30;
+  return s}
+async function fetchFor(q){
+  const u=`${API}?action=query&format=json&origin=*&generator=search&gsrnamespace=6&gsrlimit=30&gsrsearch=${encodeURIComponent(q+' filetype:bitmap')}&prop=imageinfo&iiprop=url|size|mime|extmetadata&iiurlwidth=480`;
+  const j=await fetch(u).then(r=>r.json());const pages=Object.values((j.query&&j.query.pages)||{});
+  return pages.map(p=>{const ii=(p.imageinfo||[])[0]||{},m=ii.extmetadata||{};return{
+    title:p.title,mime:ii.mime,w:ii.width||0,h:ii.height||1,thumb:ii.thumburl,url:ii.url,page:ii.descriptionurl,
+    artist:txt(m.Artist&&m.Artist.value)||'Unknown',license:txt(m.LicenseShortName&&m.LicenseShortName.value)||'',licenseUrl:(m.LicenseUrl&&m.LicenseUrl.value)||'',
+    assess:(m.Assessments&&m.Assessments.value)||'',date:txt(m.DateTimeOriginal&&m.DateTimeOriginal.value)||''}})
+   .filter(c=>/jpeg|png|webp/.test(c.mime||'')&&c.thumb&&c.w>=1000)
+   .map(c=>(c.s=score(c),c)).sort((a,b)=>b.s-a.s).slice(0,10)}
+const big=c=>c.w>=1600?c.thumb.replace(/\/\d+px-/,'/1600px-'):c.url;
+
+document.getElementById('list').innerHTML=REGIONS.map(([reg,items])=>`<section><h2>${esc(reg)}</h2>${items.map(([id,name,area])=>`
+  <div class="row" id="row-${id}"><div class="top"><span class="name">${esc(name)}</span><span class="area">${esc(area)}</span><span class="state" id="st-${id}"></span></div>
+  <div class="strip" id="strip-${id}" role="group" aria-label="Photos of ${esc(name)}">${'<span class="skel"></span>'.repeat(3)}</div>
+  <p class="credit" id="cr-${id}"></p></div>`).join('')}</section>`).join('');
+
+function renderRow(id,name){const list=DATA[id]||[],strip=document.getElementById('strip-'+id);
+  if(!list.length){strip.outerHTML=`<p class="empty" id="strip-${id}">No usable photos found on Commons. Claude will keep the current picture.</p>`;document.getElementById('st-'+id).textContent='';return}
+  const pick=CHOICE[id];
+  strip.innerHTML=list.map((c,i)=>`<button type="button" class="ph" data-id="${id}" data-i="${i}" aria-pressed="${c.title===pick}" aria-label="${esc(c.title.replace(/^File:/,''))}"><img src="${esc(c.thumb)}" alt="" loading="lazy"></button>`).join('');
+  const c=list.find(x=>x.title===pick);const st=document.getElementById('st-'+id);
+  st.textContent=store.get('cp_'+id)?'Your pick':'Best match';st.classList.toggle('mine',!!store.get('cp_'+id));
+  document.getElementById('cr-'+id).innerHTML=c?`${esc(c.artist)}${c.license?', '+esc(c.license):''}, <a href="${esc(c.page)}" target="_blank" rel="noopener">view on Commons</a>`:''}
+function tally(){const n=ALL.filter(([id])=>CHOICE[id]).length,done=ALL.filter(([id])=>id in DATA).length;
+  document.getElementById('tally').innerHTML=done<ALL.length?`Loading photos… ${done} of ${ALL.length}`:`<em>${n}</em> of ${ALL.length} landmarks have a photo`;
+  document.getElementById('copy').disabled=!n}
+document.getElementById('list').addEventListener('click',e=>{const b=e.target.closest('.ph');if(!b)return;const id=b.dataset.id,c=DATA[id][+b.dataset.i];
+  CHOICE[id]=c.title;store.set('cp_'+id,c.title);renderRow(id)});
+document.getElementById('copy').addEventListener('click',()=>{
+  const rows=ALL.filter(([id])=>CHOICE[id]).map(([id])=>{const c=DATA[id].find(x=>x.title===CHOICE[id]);return [id,c.title.replace(/^File:/,''),big(c),c.artist,c.license,c.page].join(' | ')});
+  const text='Higher Places Commons picks (id | file | image | author | license | page):\n'+rows.join('\n');
+  const out=document.getElementById('out'),btn=document.getElementById('copy');out.value=text;
+  const ok=()=>{btn.textContent='Copied';setTimeout(()=>btn.textContent='Copy picks',1800)},fb=()=>{out.hidden=false;out.focus();out.select();btn.textContent='Copy the text below'};
+  try{navigator.clipboard.writeText(text).then(ok,fb)}catch(e){fb()}});
+(async()=>{tally();let i=0;const queue=ALL.slice();
+  async function worker(){while(queue.length){const [id,name,area,q]=queue.shift();
+    try{DATA[id]=await fetchFor(q)}catch(e){DATA[id]=[]}
+    const saved=store.get('cp_'+id);CHOICE[id]=(DATA[id].find(c=>c.title===saved)||DATA[id][0]||{}).title;renderRow(id,name);tally()}}
+  await Promise.all([worker(),worker(),worker(),worker()])})();
+</script>
+</body>
+</html>
