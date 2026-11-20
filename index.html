@@ -1167,6 +1167,49 @@ html.m2 body.on-map .nav-in{background:var(--surface);border-top-color:var(--lin
 html.m2 body.on-map .camera span{border-color:var(--surface);box-shadow:0 0 0 1px var(--line),0 10px 24px -8px rgba(var(--shadow),.8),0 0 0 7px color-mix(in srgb,var(--accent) 16%,transparent)}
 html.m2 body.on-map .m2info{background:var(--surface);color:var(--ink-2);border-color:var(--line)}
 html.m2 body.on-map #s-map .attrib{background:var(--surface)}
+
+/* ======================= Near you panel + type filter, on the map ======================= */
+html.m2 body.on-map .m2top{padding-bottom:12px}
+html.m2 .m5near{position:absolute;z-index:5;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 92px);bottom:calc(77px + env(safe-area-inset-bottom,0px));
+  display:flex;flex-direction:column;pointer-events:none;transform:translateY(calc(100% - var(--m5peek,206px)));
+  transition:transform .34s cubic-bezier(.2,.8,.2,1),opacity .2s,visibility 0s}
+html.m2 .m5near.open{transform:none}
+html.m2 body.m2card-on .m5near{transform:translateY(100%);opacity:0;visibility:hidden;transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .2s,visibility 0s .3s}
+html.m2 .m5near>.m2cats{pointer-events:auto;flex:none;padding:0 16px 10px}
+html.m2 body.on-map .m5near .m2chip{background:var(--surface);box-shadow:0 0 0 1px var(--line),0 8px 18px -10px rgba(var(--shadow),.65)}
+html.m2 body.on-map .m5near .m2chip[aria-checked=true]{background:var(--accent);box-shadow:0 8px 18px -10px rgba(var(--shadow),.65)}
+html.m2 .m5sheet{pointer-events:auto;flex:1;min-height:0;display:flex;flex-direction:column;background:var(--surface);color:var(--ink);border-radius:28px 28px 0 0;
+  box-shadow:0 0 0 1px var(--line),0 -18px 36px -22px rgba(var(--shadow),.7)}
+html.m2 .m5top{flex:none;padding:0 20px 8px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+html.m2 .m5grab{display:block;width:100%;height:24px;margin:0;padding:0;border:0;background:none;cursor:pointer;border-radius:12px}
+html.m2 .m5grab i{display:block;width:38px;height:5px;margin:9px auto 0;border-radius:3px;background:var(--ink-2);opacity:.35}
+html.m2 .m5hd h3{margin:0;font:800 20px/1.1 var(--sans);letter-spacing:-.016em;color:var(--ink)}
+html.m2 .m5hd p{margin:4px 0 0;font:500 14px/1.3 var(--sans);color:var(--ink-2)}
+html.m2 .m5near .seg{flex:none;margin:2px 16px 6px;padding:0 3px;max-height:0;overflow:hidden;opacity:0;transition:max-height .3s,opacity .2s,padding .3s}
+html.m2 .m5near.open .seg{max-height:60px;opacity:1;padding:3px}
+html.m2 .m5list{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 10px calc(16px + env(safe-area-inset-bottom,0px))}
+html.m2 .m5near:not(.open) .m5list{overflow:hidden}
+html.m2 .m5near:not(.open) .m5list>:nth-child(n+2){visibility:hidden}
+html.m2 .m5row{display:grid;grid-template-columns:56px 1fr auto;align-items:center;gap:12px;width:100%;padding:8px 10px 8px 8px;border:0;border-radius:18px;background:none;text-align:left;color:var(--ink);cursor:pointer;transition:background-color .15s}
+html.m2 .m5row:active{background:var(--surface-2)}
+html.m2 .m5row img{display:block;width:56px;height:56px;border-radius:16px;object-fit:cover;background:var(--surface-2)}
+html.m2 .m5t{min-width:0;display:flex;flex-direction:column;gap:4px}
+html.m2 .m5t b{font:700 16px/1.2 var(--sans);letter-spacing:-.008em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html.m2 .m5t>span{display:flex;gap:8px;min-width:0;font:500 13.5px/1.2 var(--sans);color:var(--ink-2);white-space:nowrap;overflow:hidden}
+html.m2 .m5t em{flex:none;font-style:normal;font-weight:700;color:var(--accent)}
+html.m2 .m5t>span>span{overflow:hidden;text-overflow:ellipsis}
+html.m2 .m5d{padding:6px 10px 4px;border-radius:999px;background:var(--surface-2);font:700 13.5px/1 var(--sans);color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+html.m2 .m5empty{margin:4px 10px 12px;font:500 14.5px/1.4 var(--sans);color:var(--ink-2)}
+html.m2 :is(.m5grab,.m5row):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){html.m2 .m5near,html.m2 .m5near .seg{transition:none}}
+
+/* things that used to sit above the bottom bar move under the header */
+html.m2 body.on-map .m2note{top:calc(env(safe-area-inset-top,0px) + 100px);bottom:auto;transform:translateY(-6px)}
+html.m2 body.on-map .m2note.on{transform:none}
+html.m2 body.on-map .m2info{top:calc(env(safe-area-inset-top,0px) + 100px);bottom:auto}
+html.m2 body.on-map #s-map .attrib{top:calc(env(safe-area-inset-top,0px) + 98px);bottom:auto}
+html.m2 body.on-map .m2note.on~.m2info{opacity:0;pointer-events:none}
+html.m2 body.on-map .m5near.open~.m2info,html.m2 body.on-map .m5near.open~.attrib{opacity:0;pointer-events:none}
 </style>
 </head>
 <body>
@@ -1234,8 +1277,16 @@ html.m2 body.on-map #s-map .attrib{background:var(--surface)}
         <div class="m4ttl0"><div class="m2brand"><svg width="24" height="18" aria-hidden="true"><use href="#leaf"/></svg><span>Higher Places</span></div><p class="m4where" id="m4where"></p></div>
         <button class="m2icon" id="m2theme" type="button"></button>
       </div>
-      <div class="m2cats" id="m2cats" role="radiogroup" aria-label="Show places by type"></div>
     </header>
+    <section class="m5near" id="m5near" aria-label="Near you">
+      <div class="m2cats" id="m2cats" role="radiogroup" aria-label="Show places by type"></div>
+      <div class="m5sheet">
+        <div class="m5top"><button type="button" class="m5grab" id="m5grab" aria-expanded="false" aria-controls="nearlist" aria-label="Show all places near you"><i></i></button>
+          <div class="m5hd"><h3>Near you</h3><p id="nearcount"></p></div></div>
+        <div class="seg" id="radius" role="group" aria-label="How far to look"></div>
+        <div class="m5list" id="nearlist"></div>
+      </div>
+    </section>
     <div class="m2note" id="m2note" role="status" aria-live="polite"></div>
     <button class="m2info" id="m2info" type="button" aria-label="Map credits" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v6M12 7.6v.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
     <div class="attrib" id="attrib"></div>
@@ -1290,11 +1341,6 @@ html.m2 body.on-map #s-map .attrib{background:var(--surface)}
       <div><span class="eyebrow"><svg width="12" height="12"><use href="#i-camera"/></svg>Just dropped</span><h3>Fresh finds</h3><p>Little spots members found inside the big places.</p></div>
     </div>
     <div class="fgrid" id="freshfinds" style="padding:16px 18px 0"></div>
-    <div class="sect">
-      <div><span class="eyebrow"><svg width="12" height="12"><use href="#i-pin"/></svg>Around you</span><h3>Near you</h3><p id="nearcount"></p></div>
-    </div>
-    <div class="seg" id="radius" role="group" aria-label="Search radius"></div>
-    <div class="ncards" id="nearlist"></div>
     <div class="sect">
       <div><span class="eyebrow"><svg width="12" height="12"><use href="#i-people"/></svg>The community</span><h3>The Circle</h3><p>Spots and posts from members.</p></div>
     </div>
@@ -2078,7 +2124,7 @@ function adapterReal(map){
       follow=false;map.fitBounds([[w,s],[e,n]],{padding:pad(),pitch:map.getPitch()>10?60:0,bearing:map.getBearing(),duration:1000})},
     zoom(f){const o={zoom:map.getZoom()+(f>1?1:-1),duration:400};if(follow){o.center=[U.lng,U.lat];o.padding=pad()}map.easeTo(o)},
     toggleTilt(){const flat=map.getPitch()>10;map.easeTo({pitch:flat?0:74,bearing:flat?0:-20,duration:700});return !flat},
-    focus(s){follow=false;map.easeTo({center:[s.lng,s.lat],zoom:Math.max(map.getZoom(),15),padding:pad(),duration:900})},
+    focus(s){follow=false;map.easeTo({center:[s.lng,s.lat],zoom:Math.min(14.8,Math.max(map.getZoom(),13.5)),pitch:Math.min(map.getPitch(),64),padding:pad(),offset:m5Off(pad()),duration:900});m5Settle(s)},
     select(id){$$('#world .pin').forEach(p=>p.classList.toggle('sel',p.dataset.pin===id))},
     resize(){map.resize()}};
   return api}
@@ -2106,10 +2152,6 @@ let world=null;
 function renderFresh(){const f=spots.filter(x=>isFind(x)&&visible(x)).sort((a,b)=>b.created-a.created).slice(0,9);
   $('#freshfinds').innerHTML=f.length?f.map(x=>`<button class="ftile" data-spot="${x.id}"><img src="${x.img}" alt=""><b>${esc(x.name)}</b><i>${esc(x.area)}</i></button>`).join(''):`<div class="empty" style="margin:0;grid-column:1/-1">No finds yet. Snap the first one with the camera.</div>`}
 function refreshAll(){updateDistances();countFinds();renderFresh();renderFeature();renderRotation();renderAll();renderNear();renderCircle();world&&world.update()}
-function renderNear(){const list=sorted().filter(s=>s.dist<=radius);
-  const pc=list.filter(x=>!isFind(x)).length,fc=list.length-pc,parts=[];if(pc)parts.push(pc+' place'+(pc===1?'':'s'));if(fc)parts.push(fc+' spot'+(fc===1?'':'s'));$('#nearcount').textContent=parts.length?`${parts.join(' and ')} within ${radius} miles of you`:`Nothing within ${radius} miles of you yet`;
-  $('#nearlist').innerHTML=list.length?list.map(ncard).join(''):`<p class="mapnote" style="padding:0 2px">Nothing this close yet. Try a bigger radius.</p>`}
-
 function openSheet(id){m2Open(id)}
 function closeSheet(){$('#sheet').classList.remove('on');document.body.classList.remove('m2card-on');world&&world.select(null);m2Sel=null;m2Queue()}
 const panel=()=>{};
@@ -2365,13 +2407,13 @@ const M2NONE={mountain:'No mountains in view.',canyon:'No canyons in view.',wate
 const kindOf=s=>isFind(s)?(byId(s.place)?lmKind(byId(s.place)):null):lmKind(s);
 function m2RenderCats(){const ps=places();$('#m2cats').innerHTML=M2CATS.map(([k,l])=>{const n=k==='all'?ps.length:ps.filter(p=>lmKind(p)===k).length;if(!n)return'';
   return `<button type="button" class="m2chip${k==='all'?' all':''}" role="radio" aria-checked="${m2Cat===k}" data-cat="${k}">${k==='all'?'':m2ico('c_'+k,17)}<span>${l}</span><em>${n}</em></button>`}).join('')}
-function m2SetCat(k){if(!M2CATS.some(c=>c[0]===k))k='all';m2Cat=m2Cat===k&&k!=='all'?'all':k;m2RenderCats();m2Layout();m2Note('');
+function m2SetCat(k){if(!M2CATS.some(c=>c[0]===k))k='all';m2Cat=m2Cat===k&&k!=='all'?'all':k;m2RenderCats();m2Layout();m2Note('');renderNear();
   const sel=m2Sel&&byId(m2Sel);if(sel&&m2Cat!=='all'&&kindOf(sel)!==m2Cat)closeSheet();
   if(m2Cat!=='all')setTimeout(m2CheckEmpty,60)}
 function m2CheckEmpty(){const map=world&&world.map;if(!map||m2Cat==='all')return;const c=map.getContainer(),W=c.clientWidth,H=c.clientHeight;
   const list=places().filter(p=>lmKind(p)===m2Cat);
   const cr=c.getBoundingClientRect(),ids=new Set(list.map(p=>p.id));
-  const seen=world.pins().some(mk=>{if(!ids.has(mk._s.id))return false;const q=mk.getElement().getBoundingClientRect(),x=q.left+q.width/2-cr.left,y=q.bottom-cr.top;return q.width>0&&!mk.getElement().classList.contains('m2hid')&&x>8&&x<W-8&&y>m4Top(cr)+20&&y<H-8});if(seen)return;
+  const seen=world.pins().some(mk=>{if(!ids.has(mk._s.id))return false;const q=mk.getElement().getBoundingClientRect(),x=q.left+q.width/2-cr.left,y=q.bottom-cr.top;return q.width>0&&!mk.getElement().classList.contains('m2hid')&&x>8&&x<W-8&&y>m4Top(cr)+20&&y<Math.min(H-8,($('#m5near')?$('#m5near').getBoundingClientRect().top-cr.top:H))});if(seen)return;
   const near=list.slice().sort((a,b)=>a.dist-b.dist)[0];if(!near)return;
   m2Note(`<span>${M2NONE[m2Cat]} Closest is <b>${esc(near.name)}</b>, ${fmt(near.dist)} away.</span><button type="button" data-m2go="${near.id}">Show it</button>`)}
 function m2Note(h){const n=$('#m2note');clearTimeout(m2Note._t);if(!h){n.classList.remove('on');return}n.innerHTML=h;n.classList.add('on');m2Note._t=setTimeout(()=>n.classList.remove('on'),8000)}
@@ -2532,6 +2574,59 @@ function m3Spot(id){const s=byId(id),isSaved=saved.has(id),find=isFind(s),k=kind
   const dio=$('#m2dio');if(dio)dio.innerHTML=['mountain','canyon','water','forest','desert'].map((k,i)=>`<svg width="${i===0?40:34}" height="${i===0?53:45}" viewBox="0 0 30 40" aria-hidden="true"><ellipse cx="15" cy="38.3" rx="11.5" ry="1.9" fill="#000" opacity=".18"/>${LM[k]}</svg>`).join('');
   const K={p1:'mountain',p2:'water',p3:'canyon',p4:'desert',goal:'mountain'};
   $$('.ipin').forEach(el=>{const c=Object.keys(K).find(x=>el.classList.contains(x));el.innerHTML=`<svg viewBox="0 0 30 40"><ellipse cx="15" cy="38.3" rx="11.5" ry="1.9" style="fill:#000;opacity:.22"/>${solid(LM[K[c]||'mountain'])}</svg>`})})();
+
+/* ======================= Near you: a pull-up panel on the map ======================= */
+let m5Open=false;
+function m5List(){return sorted().filter(s=>s.dist<=radius&&(m2Cat==='all'||kindOf(s)===m2Cat))}
+function m5Row(s){const k=kindOf(s),find=isFind(s),par=find&&s.place?byId(s.place):null;
+  const where=par?'on '+par.name:(s.area||'').split(',')[0];
+  return `<button type="button" class="m5row" data-m5="${s.id}"><img src="${s.img}" alt="" loading="lazy"><span class="m5t"><b>${esc(s.name)}</b><span><em>${find?'Spot':k?M2ONE[k]:''}</em>${where?`<span>${esc(where)}</span>`:''}</span></span><span class="m5d">${fmt(s.dist)}</span></button>`}
+function renderNear(){const list=m5List(),c=$('#nearcount'),l=$('#nearlist');if(!c||!l)return;
+  const pc=list.filter(x=>!isFind(x)).length,fc=list.length-pc,parts=[];
+  if(pc)parts.push(pc+' place'+(pc===1?'':'s'));if(fc)parts.push(fc+' spot'+(fc===1?'':'s'));
+  const what=m2Cat==='all'?'':' ('+M2CATS.find(x=>x[0]===m2Cat)[1].toLowerCase()+')';
+  c.textContent=parts.length?`${parts.join(' and ')} within ${radius} mi${what}`:`Nothing within ${radius} mi${what}`;
+  l.innerHTML=list.length?list.map(m5Row).join(''):`<p class="m5empty">Nothing this close yet. ${radius<50?'Try a bigger distance.':'Try another type.'}</p>`;
+  m5Peek()}
+/* how much of the panel shows when it is down: the header and the closest place */
+function m5Peek(){const sec=$('#m5near');if(!sec||m5Open||!sec.offsetHeight)return;
+  const first=sec.querySelector('.m5row,.m5empty'),r0=sec.getBoundingClientRect();if(!first)return;
+  const peek=Math.round(first.getBoundingClientRect().bottom-r0.top+12-(m5Drag.y||0));
+  if(peek>60&&peek<sec.offsetHeight)sec.style.setProperty('--m5peek',peek+'px')}
+function m5Set(open){m5Open=!!open;const sec=$('#m5near');if(!sec)return;sec.classList.toggle('open',m5Open);sec.style.transform='';
+  $('#m5grab').setAttribute('aria-expanded',m5Open);$('#m5grab').setAttribute('aria-label',m5Open?'Show less':'Show all places near you');
+  if(!m5Open){const l=$('#nearlist');if(l)l.scrollTop=0}m2Queue()}
+const m5Drag={y:0};
+(()=>{const sec=$('#m5near');if(!sec)return;let y0=null,base=0,dy=0,moved=false,t0=0;
+  const closedY=()=>sec.offsetHeight-parseFloat(getComputedStyle(sec).getPropertyValue('--m5peek')||206);
+  sec.querySelector('.m5top').addEventListener('pointerdown',e=>{y0=e.clientY;t0=performance.now();base=m5Open?0:closedY();dy=0;moved=false;sec.style.transition='none'});
+  window.addEventListener('pointermove',e=>{if(y0==null)return;dy=e.clientY-y0;if(Math.abs(dy)>5)moved=true;if(!moved)return;
+    const y=Math.max(0,Math.min(closedY(),base+dy));m5Drag.y=y;sec.style.transform=`translateY(${y}px)`});
+  const end=()=>{if(y0==null)return;y0=null;sec.style.transition='';const v=dy/Math.max(1,performance.now()-t0);m5Drag.y=0;
+    if(!moved){m5Set(!m5Open);return}
+    m5Set(Math.abs(v)>.45?v<0:(base+dy)<closedY()/2)};
+  window.addEventListener('pointerup',end);window.addEventListener('pointercancel',end);
+  sec.querySelector('.m5top').addEventListener('click',e=>{if(e.target.closest('#m5grab')&&e.detail===0)m5Set(!m5Open)});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&m5Open&&document.body.classList.contains('on-map'))m5Set(false)});
+  window.addEventListener('resize',()=>setTimeout(m5Peek,60))})();
+document.addEventListener('click',e=>{const b=e.target.closest('[data-m5]');if(!b)return;const s=byId(b.dataset.m5);if(!s)return;
+  m5Set(false);openSheet(s.id);requestAnimationFrame(()=>requestAnimationFrame(()=>{if(world&&world.focus)world.focus(s)}))});
+
+/* land focused places just above whatever covers the bottom of the map (card or panel), below the header.
+   A one-off offset, because map padding would stick and tip the pitched camera toward the sky. */
+function m5Off(p){const w=world&&world.map?world.map.getContainer():null;if(!w)return[0,0];
+  const cr=w.getBoundingClientRect(),H=cr.height,top=m4Top(cr);
+  const card=$('#sheet.on .m2card.cur'),near=$('#m5near');let cover=H-60;
+  if(card)cover=card.getBoundingClientRect().top-cr.top;else if(near&&!document.body.classList.contains('m2card-on'))cover=near.getBoundingClientRect().top-cr.top;
+  const want=m5Want(),base=p.top+(H-p.top-p.bottom)/2;return[0,Math.round(want-base)]}
+function m5Want(){const w=world.map.getContainer(),cr=w.getBoundingClientRect(),H=cr.height,top=m4Top(cr);
+  const card=$('#sheet.on .m2card.cur'),near=$('#m5near');let cover=H-60;
+  if(card)cover=card.getBoundingClientRect().top-cr.top;else if(near&&!document.body.classList.contains('m2card-on'))cover=near.getBoundingClientRect().top-cr.top;
+  return Math.max(top+90,Math.min(H-60,cover-56))}
+/* terrain lifts summit pins above where the camera math puts them: nudge once the move ends */
+function m5Settle(s,n=0){const map=world&&world.map;if(!map)return;clearTimeout(m5Settle._t);map.once('moveend',()=>{m5Settle._t=setTimeout(()=>{
+  if(map.isMoving())return;const mk=world.pins().find(m=>m._s.id===s.id);if(!mk)return;const cr=map.getContainer().getBoundingClientRect(),q=mk.getElement().getBoundingClientRect();
+  const d=Math.round(q.bottom-cr.top-m5Want());if(Math.abs(d)>24&&n<2){m5Settle(s,n+1);map.panBy([0,d],{duration:450})}},120)})}
 
 window.HP={_map:()=>world&&world.map,_lay:()=>m2Layout(),m2:()=>({theme:M2T,cat:m2Cat,sel:m2Sel}),setTheme:m2SetTheme,setCat:m2SetCat,spots,renderSpot,go,openSheet,zoom:f=>world&&world.zoom(f),moveTo:(lat,lng)=>{U.lat=lat;U.lng=lng;[U.x,U.y]=toXY(lat,lng);refreshAll()}};
 document.body.classList.add('on-map');
