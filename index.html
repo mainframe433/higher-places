@@ -2120,7 +2120,7 @@ function realWorld(el){return new Promise(res=>{
   let map=null,done=false,got=false;
   const finish=ok=>{if(done)return;done=true;clearTimeout(t);if(ok)res(map);else{mapFail=1;try{map&&map.remove()}catch(e){}el.innerHTML='';res(null)}};
   const t=setTimeout(()=>finish(got),8000);
-  try{map=new maplibregl.Map({container:el,style:themedStyle(M2T),center:[U.lng,U.lat],zoom:16.8,minZoom:11,pitch:74,bearing:0,maxPitch:80,attributionControl:false,antialias:true,fadeDuration:150});map.once('load',()=>{map.resize();map.jumpTo({center:[U.lng,U.lat],zoom:16.8,pitch:74});setTimeout(()=>map.resize(),400)})}catch(e){return finish(false)}
+  try{map=new maplibregl.Map({container:el,style:themedStyle(M2T),center:[U.lng,U.lat],zoom:15.8,minZoom:11,pitch:74,bearing:0,maxPitch:80,attributionControl:false,antialias:true,fadeDuration:150});map.once('load',()=>{map.resize();map.jumpTo({center:[U.lng,U.lat],zoom:15.8,pitch:74});setTimeout(()=>map.resize(),400)})}catch(e){return finish(false)}
   map.on('error',e=>{if(!got&&(!e.sourceId||e.sourceId==='omt'))finish(false)});
   map.on('data',e=>{if(e.sourceId==='omt'&&e.tile){got=true;finish(true)}});
 });}
@@ -2142,7 +2142,7 @@ function adapterReal(map){
     update(){countFinds();pins.forEach(p=>p.remove());pins=spots.filter(visible).map(s=>{const w=pinEl(s,36,'big');w.firstChild.classList.toggle('out',s.dist>radius);const mk=new maplibregl.Marker({element:w,anchor:'bottom'}).setLngLat([s.lng,s.lat]).addTo(map);mk._s=s;return mk});
       showFinds();api.moveUser();m2Queue();const src=map.getSource('radius');if(src)src.setData(circlePoly(U.lat,U.lng,radius))},
     moveUser(instant){ringM.setLngLat([U.lng,U.lat]);meM.setLngLat([U.lng,U.lat]);m6Moved();if(follow){if(instant)map.jumpTo(Object.assign({center:[U.lng,U.lat],padding:pad()},m6B()));else map.easeTo(Object.assign({center:[U.lng,U.lat],padding:pad(),duration:600},m6B()))}},
-    recenter(){follow=true;map.easeTo({center:[U.lng,U.lat],zoom:Math.max(map.getZoom(),16.8),pitch:74,bearing:m6Up&&m6Shown!=null?m6Shown:0,padding:pad(),duration:900});setTimeout(m6Btn,20)},
+    recenter(){follow=true;map.easeTo({center:[U.lng,U.lat],zoom:Math.max(map.getZoom(),15.6),pitch:74,bearing:m6Up&&m6Shown!=null?m6Shown:0,padding:pad(),duration:900});setTimeout(m6Btn,20)},
     fitRadius(){const c=circlePoly(U.lat,U.lng,radius).geometry.coordinates[0];let w=180,s=90,e=-180,n=-90;c.forEach(([x,y])=>{w=Math.min(w,x);e=Math.max(e,x);s=Math.min(s,y);n=Math.max(n,y)});
       follow=false;map.fitBounds([[w,s],[e,n]],{padding:pad(),pitch:map.getPitch()>10?60:0,bearing:map.getBearing(),duration:1000})},
     zoom(f){const o={zoom:map.getZoom()+(f>1?1:-1),duration:400};if(follow){o.center=[U.lng,U.lat];o.padding=pad()}map.easeTo(o)},
@@ -2660,34 +2660,18 @@ function m5CardTop(card){const sh=$('#sheet');let ty=0;try{ty=new DOMMatrix(getC
 /* Heading comes from the phone's compass. Without one (desktop, permission refused), it falls back to the direction you are moving. */
 let m6H=null,m6Shown=null,m6Src=null,m6Acc=25,m6Raf=0,m6Asked=false,m6Up=false,m6Last=null,m6CompassAt=0;
 const m6Norm=a=>((a%360)+360)%360;
-function m6Set(h,src,acc){if(src==='course'&&Date.now()-m6CompassAt<4000)return;if(src==='compass'&&m6H!=null&&Math.abs(((m6Norm(h)-m6H+540)%360)-180)<.6){m6CompassAt=Date.now();return}
+function m6Set(h,src,acc){if(src==='course'&&Date.now()-m6CompassAt<4000)return;
   if(src==='compass')m6CompassAt=Date.now();m6H=m6Norm(h);m6Src=src;if(acc!=null&&acc>0)m6Acc=Math.min(60,Math.max(12,acc));else if(src==='course')m6Acc=22;
   if(!m6Raf)m6Raf=requestAnimationFrame(m6Tick)}
 let m6T=0;
 function m6Tick(now){m6Raf=0;if(m6H==null)return;now=now||performance.now();const dt=Math.min(1000,m6T?now-m6T:16);m6T=now;
-  if(m6Shown==null)m6Shown=m6H;else{const d=((m6H-m6Shown+540)%360)-180,k=1-Math.exp(-dt/(Math.abs(d)>20?55:95));m6Shown=Math.abs(d)<.3?m6H:m6Norm(m6Shown+d*k);if(m6Shown!==m6H)m6Raf=requestAnimationFrame(m6Tick);else m6T=0}
+  if(m6Shown==null)m6Shown=m6H;else{const d=((m6H-m6Shown+540)%360)-180,k=1-Math.exp(-dt/110);m6Shown=Math.abs(d)<.3?m6H:m6Norm(m6Shown+d*k);if(m6Shown!==m6H)m6Raf=requestAnimationFrame(m6Tick);else m6T=0}
   if(world&&world.heading)world.heading(m6Shown,m6Acc,m6Up)}
-/* Android reports magnetic north; the map is true north. Declination across the US, 2025 World Magnetic Model,
-   by longitude (degrees, east positive). Arizona sits near +9.6 (Phoenix). Outside the US we leave the reading as is. */
-const M6DEC=[[-125,14.3],[-122.4,12.8],[-117,11],[-112,9.6],[-108,8.6],[-105,7.8],[-100,5.5],[-97,3.3],[-93,1.6],[-88,0],[-84,-5.5],[-80,-8.5],[-77,-11],[-74,-12.7],[-70,-14.8],[-67,-16]];
-function m6Dec(lat,lng){if(!(lat>24&&lat<50&&lng>-125&&lng<-67))return 0;
-  for(let i=1;i<M6DEC.length;i++)if(lng<=M6DEC[i][0]){const [a,da]=M6DEC[i-1],[b,db]=M6DEC[i];return da+(db-da)*(lng-a)/(b-a)}return 0}
-/* Heading from the full orientation, so it holds up whether the phone is flat or upright:
-   the top edge of the screen counts when flat, the back camera when upright, blended in between. */
-function m6Tilt(a,b,g){const r=Math.PI/180,cZ=Math.cos(a*r),sZ=Math.sin(a*r),cX=Math.cos(b*r),sX=Math.sin(b*r),cY=Math.cos(g*r),sY=Math.sin(g*r);
-  const tE=-sZ*cX,tN=cZ*cX,bE=-(cZ*sY+sZ*sX*cY),bN=-(sZ*sY-cZ*sX*cY),tl=Math.hypot(tE,tN),bl=Math.hypot(bE,bN);
-  const w=Math.min(1,Math.max(0,(Math.abs(b)-55)/30));let E=0,N=0;
-  if(tl>.05&&w<1){E+=(1-w)*tE/tl;N+=(1-w)*tN/tl}if(bl>.05&&w>0){E+=w*bE/bl;N+=w*bN/bl}
-  if(Math.hypot(E,N)<.2)return null;return Math.atan2(E,N)/r}
-function m6Orient(e){let h=null,acc=null,mag=false;
-  if(typeof e.webkitCompassHeading==='number'&&!isNaN(e.webkitCompassHeading)&&e.webkitCompassHeading>=0){
-    h=e.webkitCompassHeading;acc=e.webkitCompassAccuracy;if(acc!=null&&acc<0)acc=45}     // iPhone: already true north and tilt-corrected
-  else if(e.alpha!=null&&(e.type==='deviceorientationabsolute'||(e.absolute&&Date.now()-(m6Orient.abs||0)>2000))){
-    if(e.type==='deviceorientationabsolute')m6Orient.abs=Date.now();
-    h=e.beta!=null&&e.gamma!=null?m6Tilt(e.alpha,e.beta,e.gamma):360-e.alpha;if(h==null)return;mag=true}
-  else return;
-  const so=(screen.orientation&&screen.orientation.angle)||window.orientation||0;
-  m6Set(h+so+(mag?m6Dec(U.lat,U.lng):0),'compass',acc)}
+function m6Orient(e){let h=null,acc=null;
+  if(typeof e.webkitCompassHeading==='number'&&!isNaN(e.webkitCompassHeading)){h=e.webkitCompassHeading;acc=e.webkitCompassAccuracy}
+  else if(e.type==='deviceorientationabsolute'&&e.alpha!=null){h=360-e.alpha;m6Orient.abs=Date.now()}
+  else if(e.absolute&&e.alpha!=null&&Date.now()-(m6Orient.abs||0)>2000)h=360-e.alpha;else return;
+  const so=(screen.orientation&&screen.orientation.angle)||window.orientation||0;m6Set(h+so,'compass',acc)}
 function m6Listen(){if(m6Listen.on)return;m6Listen.on=true;
   window.addEventListener('deviceorientationabsolute',m6Orient,true);window.addEventListener('deviceorientation',m6Orient,true)}
 /* iPhone only hands out the compass after a tap, so ask on the first tap on the map */
