@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <meta name="theme-color" content="#FAFBF8">
-<script>try{var q=new URLSearchParams(location.search).get("theme");if(q==="light"||q==="dark")localStorage.setItem("hp_m2_theme",q);var t=localStorage.getItem("hp_m2_theme");if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t;document.querySelector("meta[name=theme-color]").content=t==="dark"?"#141416":"#FFFFFF"}catch(e){}</script>
+<script>try{var q=new URLSearchParams(location.search).get("theme");if(q==="light"||q==="dark")localStorage.setItem("hp_m2_theme",q);var t=localStorage.getItem("hp_m2_theme");if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t;document.querySelector("meta[name=theme-color]").content=t==="dark"?"#121826":"#FFFFFF"}catch(e){}</script>
 <title>Higher Places</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
@@ -1084,12 +1084,12 @@ html.m2 :is(.btn,.chip,.iconbtn,.setrow,.lcard,.ncard,.scard,.ftile,.seg button,
 /* ======================= MAP: architectural model, cannabis purple =======================
    The map reads like a white study model: charcoal (or pale) ground, bright extruded blocks, hairline roads.
    One accent: the purple of a ripe Purple Kush bud, lavender on dark, plum on light. Used for icons and the selected state only. */
-html.m2 body.on-map{--surface:#FFFFFF;--surface-2:#F1F0F3;--ink:#17161A;--ink-2:#67646E;--line:rgba(23,22,26,.1);
-  --accent:#6B3A9E;--accent-ink:#FFFFFF;--copper:#6B3A9E;--shadow:20,18,26;--scrim:255,255,255;--mapbg:#CFD0CC;--dot:23,22,26;
+html.m2 body.on-map{--surface:#FFFFFF;--surface-2:#EEF0F5;--ink:#17161A;--ink-2:#67646E;--line:rgba(23,22,26,.1);
+  --accent:#6B3A9E;--accent-ink:#FFFFFF;--copper:#6B3A9E;--shadow:20,18,26;--scrim:255,255,255;--mapbg:#E4E7EC;--dot:23,22,26;
   --pinbg:#17161A;--pinedge:rgba(255,255,255,.95);--pinic:#C9A6F2;--hood-bg:#EFE6F9;--hood:#6B3A9E;--hood-face:#1E1428}
-html.m2[data-theme=dark] body.on-map{--surface:#141416;--surface-2:#222226;--ink:#F3F1F6;--ink-2:#9E9BA6;--line:rgba(255,255,255,.08);
-  --accent:#B184E6;--accent-ink:#170D22;--copper:#B184E6;--shadow:0,0,0;--scrim:20,20,22;--mapbg:#2B2C30;--dot:255,255,255;
-  --pinbg:#121214;--pinedge:rgba(255,255,255,.16);--pinic:#C39BF0;--hood-bg:#2A1F36;--hood:#B184E6;--hood-face:#120C18}
+html.m2[data-theme=dark] body.on-map{--surface:#121826;--surface-2:#1E2638;--ink:#F1F2F8;--ink-2:#9BA2B8;--line:rgba(200,210,255,.09);
+  --accent:#B184E6;--accent-ink:#170D22;--copper:#B184E6;--shadow:0,0,0;--scrim:18,24,38;--mapbg:#1D2638;--dot:255,255,255;
+  --pinbg:#0F1422;--pinedge:rgba(255,255,255,.16);--pinic:#C39BF0;--hood-bg:#2A1F36;--hood:#B184E6;--hood-face:#120C18}
 html.m2 body.on-map #s-map{background:var(--mapbg)}
 
 /* header: a solid panel with a rounded lower edge, like a sheet pulled down over the map */
@@ -2120,7 +2120,7 @@ function realWorld(el){return new Promise(res=>{
   let map=null,done=false,got=false;
   const finish=ok=>{if(done)return;done=true;clearTimeout(t);if(ok)res(map);else{mapFail=1;try{map&&map.remove()}catch(e){}el.innerHTML='';res(null)}};
   const t=setTimeout(()=>finish(got),8000);
-  try{map=new maplibregl.Map({container:el,style:themedStyle(M2T),center:[U.lng,U.lat],zoom:16.8,minZoom:11,pitch:64,bearing:0,maxPitch:80,attributionControl:false,antialias:true,fadeDuration:150});map.once('load',()=>{map.resize();map.jumpTo({center:[U.lng,U.lat],zoom:16.8,pitch:64});setTimeout(()=>map.resize(),400)})}catch(e){return finish(false)}
+  try{map=new maplibregl.Map({container:el,style:themedStyle(M2T),center:[U.lng,U.lat],zoom:16.8,minZoom:11,pitch:48,bearing:0,maxPitch:80,attributionControl:false,antialias:true,fadeDuration:150});map.once('load',()=>{map.resize();map.jumpTo({center:[U.lng,U.lat],zoom:16.8,pitch:48});setTimeout(()=>map.resize(),400)})}catch(e){return finish(false)}
   map.on('error',e=>{if(!got&&(!e.sourceId||e.sourceId==='omt'))finish(false)});
   map.on('data',e=>{if(e.sourceId==='omt'&&e.tile){got=true;finish(true)}});
 });}
@@ -2142,11 +2142,11 @@ function adapterReal(map){
     update(){countFinds();pins.forEach(p=>p.remove());pins=spots.filter(visible).map(s=>{const w=pinEl(s,36,'big');w.firstChild.classList.toggle('out',s.dist>radius);const mk=new maplibregl.Marker({element:w,anchor:'bottom'}).setLngLat([s.lng,s.lat]).addTo(map);mk._s=s;return mk});
       showFinds();api.moveUser();m2Queue();const src=map.getSource('radius');if(src)src.setData(circlePoly(U.lat,U.lng,radius))},
     moveUser(instant){ringM.setLngLat([U.lng,U.lat]);meM.setLngLat([U.lng,U.lat]);m6Moved();if(follow){if(instant)map.jumpTo(Object.assign({center:[U.lng,U.lat],padding:pad()},m6B()));else map.easeTo(Object.assign({center:[U.lng,U.lat],padding:pad(),duration:600},m6B()))}},
-    recenter(){follow=true;map.easeTo({center:[U.lng,U.lat],zoom:Math.max(map.getZoom(),16.8),pitch:64,bearing:m6Up&&m6Shown!=null?m6Shown:0,padding:pad(),duration:900});setTimeout(m6Btn,20)},
+    recenter(){follow=true;map.easeTo({center:[U.lng,U.lat],zoom:Math.max(map.getZoom(),16.8),pitch:48,bearing:m6Up&&m6Shown!=null?m6Shown:0,padding:pad(),duration:900});setTimeout(m6Btn,20)},
     fitRadius(){const c=circlePoly(U.lat,U.lng,radius).geometry.coordinates[0];let w=180,s=90,e=-180,n=-90;c.forEach(([x,y])=>{w=Math.min(w,x);e=Math.max(e,x);s=Math.min(s,y);n=Math.max(n,y)});
       follow=false;map.fitBounds([[w,s],[e,n]],{padding:pad(),pitch:map.getPitch()>10?60:0,bearing:map.getBearing(),duration:1000})},
     zoom(f){const o={zoom:map.getZoom()+(f>1?1:-1),duration:400};if(follow){o.center=[U.lng,U.lat];o.padding=pad()}map.easeTo(o)},
-    toggleTilt(){const flat=map.getPitch()>10;map.easeTo({pitch:flat?0:64,bearing:0,duration:700});return !flat},
+    toggleTilt(){const flat=map.getPitch()>10;map.easeTo({pitch:flat?0:48,bearing:0,duration:700});return !flat},
     focus(s){follow=false;map.easeTo({center:[s.lng,s.lat],zoom:Math.min(14.8,Math.max(map.getZoom(),13.5)),pitch:Math.min(map.getPitch(),64),padding:pad(),offset:m5Off(pad()),duration:900});m5Settle(s);m6Up=false;m6Btn()},
     select(id){$$('#world .pin').forEach(p=>p.classList.toggle('sel',p.dataset.pin===id))},
     resize(){map.resize()}};
@@ -2348,56 +2348,64 @@ document.addEventListener('keydown',e=>{if($('#intro').hidden)return;if(e.key===
 var M2T=(document.documentElement.dataset.theme==='dark')?'dark':'light';
 var m2Cat='all',m2Sel=null,m2Raf=0;
 const M4W={minor:[12,.3,15,.9,18,3.5],mid:[9,.4,13,1,16,2.4,18,6],primary:[7,.5,12,1.2,16,3,18,8],motorway:[6,.7,10,1.3,14,2.6,18,10]};
+/* Night city (after Snap Map): the map is a quiet backdrop so spots and people stand out.
+   Low, dark buildings with a lavender edge, faint roads, murky parks. Day is the same idea in pale tones. */
+const M5H=['interpolate',['linear'],['zoom'],13.5,0,15,['*',.42,['coalesce',['get','render_height'],5]]];
+const M5B=['interpolate',['linear'],['zoom'],13.5,0,15,['*',.42,['coalesce',['get','render_min_height'],0]]];
 const THEMES={
- light:{rad:'#6B3A9E',casing:null,meta:'#FFFFFF',
-  sky:{'sky-color':'#C7CAD0','horizon-color':'#EEEEEC','fog-color':'#E3E4E1','sky-horizon-blend':.8,'horizon-fog-blend':.7,'fog-ground-blend':.55,'atmosphere-blend':0},
-  light:{anchor:'map',color:'#FFFFFF',intensity:.38,position:[1.4,210,38]},
+ light:{rad:'#6B3A9E',casing:null,meta:'#FFFFFF',edge:{color:'#A9AECB',opacity:.75},
+  sky:{'sky-color':'#C9D3E3','horizon-color':'#EEF1F5','fog-color':'#E4E8EE','sky-horizon-blend':.8,'horizon-fog-blend':.7,'fog-ground-blend':.6,'atmosphere-blend':0},
+  light:{anchor:'map',color:'#FFFFFF',intensity:.3,position:[1.3,200,40]},
   layers:{
-   bg:{paint:{'background-color':'#CFD0CC'}},
-   landuse:{paint:{'fill-color':['match',['get','class'],['residential','suburb','neighbourhood'],'#CDCECA',['commercial','retail','industrial'],'#CACBC7','#CFD0CC']}},
-   landcover:{paint:{'fill-color':['match',['get','class'],'sand','#D3D1CB','wood','#C4C8C1','#CACCC6'],'fill-opacity':.75}},
-   park:{paint:{'fill-color':'#C4C7C1','fill-opacity':.8}},
-   'park-edge':{paint:{'line-color':'#BEC1BB','line-opacity':.7}},
-   hill:{paint:{'hillshade-shadow-color':'#55575D','hillshade-highlight-color':'#FFFFFF','hillshade-accent-color':'#8C8E94','hillshade-exaggeration':.72}},
-   water:{paint:{'fill-color':'#BCBFC4'}},
-   waterway:{paint:{'line-color':'#AEB1B7'}},
-   path:{paint:{'line-color':'#A3A5A9'}},
-   minor:{paint:{'line-color':'#F4F4F2','line-width':M4W.minor}},
-   mid:{paint:{'line-color':'#FBFBFA','line-width':M4W.mid}},
+   bg:{paint:{'background-color':'#E4E7EC'}},
+   landuse:{paint:{'fill-color':['match',['get','class'],['residential','suburb','neighbourhood'],'#E2E5EA',['commercial','retail','industrial'],'#DFE2E9','#E4E7EC']}},
+   landcover:{paint:{'fill-color':['match',['get','class'],'sand','#E6E3DC','wood','#D3E0D4','#D8E3D6'],'fill-opacity':.8}},
+   park:{paint:{'fill-color':'#D2E2D3','fill-opacity':.9}},
+   'park-edge':{paint:{'line-opacity':0}},
+   hill:{paint:{'hillshade-shadow-color':'#8A93A8','hillshade-highlight-color':'#FFFFFF','hillshade-accent-color':'#B5BCCB','hillshade-exaggeration':.45}},
+   water:{paint:{'fill-color':'#B8CCE4'}},
+   waterway:{paint:{'line-color':'#A9BFDB'}},
+   path:{paint:{'line-color':'#C9CEDA'}},
+   minor:{paint:{'line-color':'#F7F8FA','line-width':M4W.minor}},
+   mid:{paint:{'line-color':'#FFFFFF','line-width':M4W.mid}},
    primary:{paint:{'line-color':'#FFFFFF','line-width':M4W.primary}},
    'mw-glow':{paint:{'line-opacity':0}},
    motorway:{paint:{'line-color':'#FFFFFF','line-width':M4W.motorway}},
-   bld:{paint:{'fill-extrusion-color':['interpolate',['linear'],['coalesce',['get','render_height'],5],0,'#ECEBE8',40,'#F4F3F1',150,'#FBFBFA'],'fill-extrusion-opacity':1}},
-   peaks:{paint:{'text-color':'#34353A','text-halo-color':'#F1F1EF'}},
-   roadname:{paint:{'text-color':'#6E7075','text-halo-color':'#F4F4F2'},layout:{'text-letter-spacing':.02}},
-   place:{paint:{'text-color':'#26272B','text-opacity':.85,'text-halo-color':'#ECECEA'},layout:{'text-field':['coalesce',['get','name_en'],['get','name']],'text-letter-spacing':.01}}}},
- dark:{rad:'#B184E6',casing:null,meta:'#141416',
-  sky:{'sky-color':'#0E0F12','horizon-color':'#3A3B41','fog-color':'#2B2C31','sky-horizon-blend':.8,'horizon-fog-blend':.7,'fog-ground-blend':.55,'atmosphere-blend':0},
-  light:{anchor:'map',color:'#FFFFFF',intensity:.5,position:[1.4,210,38]},
+   bld:{paint:{'fill-extrusion-color':['interpolate',['linear'],['coalesce',['get','render_height'],5],0,'#D6DAE5',40,'#DDE0EA',150,'#E4E7F0'],'fill-extrusion-opacity':.95,'fill-extrusion-height':M5H,'fill-extrusion-base':M5B}},
+   peaks:{paint:{'text-color':'#2E3550','text-halo-color':'#F3F5F8'}},
+   roadname:{paint:{'text-color':'#7C849B','text-halo-color':'#F3F5F8'},layout:{'text-letter-spacing':.02}},
+   place:{paint:{'text-color':'#232A42','text-opacity':.85,'text-halo-color':'#EEF1F5'},layout:{'text-field':['coalesce',['get','name_en'],['get','name']],'text-letter-spacing':.01}}}},
+ dark:{rad:'#B184E6',casing:null,meta:'#121826',edge:{color:'#C3C6EC',opacity:.7},
+  sky:{'sky-color':'#0C1120','horizon-color':'#26304A','fog-color':'#1C2538','sky-horizon-blend':.8,'horizon-fog-blend':.7,'fog-ground-blend':.6,'atmosphere-blend':0},
+  light:{anchor:'map',color:'#B9C2E6',intensity:.18,position:[1.3,200,40]},
   layers:{
-   bg:{paint:{'background-color':'#2B2C30'}},
-   landuse:{paint:{'fill-color':['match',['get','class'],['residential','suburb','neighbourhood'],'#2A2B2F',['commercial','retail','industrial'],'#2D2E32','#2B2C30']}},
-   landcover:{paint:{'fill-color':['match',['get','class'],'sand','#302F2E','wood','#292C2B','#2C2E2D'],'fill-opacity':.6}},
-   park:{paint:{'fill-color':'#2E302F','fill-opacity':.8}},
-   'park-edge':{paint:{'line-color':'#3B3E3D','line-opacity':.6}},
-   hill:{paint:{'hillshade-shadow-color':'#0A0B0D','hillshade-highlight-color':'#9C9EA5','hillshade-accent-color':'#3A3B41','hillshade-exaggeration':.82}},
-   water:{paint:{'fill-color':'#36373C'}},
-   waterway:{paint:{'line-color':'#414248'}},
-   path:{paint:{'line-color':'#5A5C61'}},
-   minor:{paint:{'line-color':'#6F7176','line-width':M4W.minor}},
-   mid:{paint:{'line-color':'#A9AAAE','line-width':M4W.mid}},
-   primary:{paint:{'line-color':'#D4D5D7','line-width':M4W.primary}},
+   bg:{paint:{'background-color':'#1D2638'}},
+   landuse:{paint:{'fill-color':['match',['get','class'],['residential','suburb','neighbourhood'],'#1E2739',['commercial','retail','industrial'],'#20293C','#1D2638']}},
+   landcover:{paint:{'fill-color':['match',['get','class'],'sand','#232A37','wood','#212E35','#222E36'],'fill-opacity':.85}},
+   park:{paint:{'fill-color':'#232F37','fill-opacity':.95}},
+   'park-edge':{paint:{'line-opacity':0}},
+   hill:{paint:{'hillshade-shadow-color':'#0B1019','hillshade-highlight-color':'#3B4763','hillshade-accent-color':'#252F47','hillshade-exaggeration':.5}},
+   water:{paint:{'fill-color':'#16203A'}},
+   waterway:{paint:{'line-color':'#1C2744'}},
+   path:{paint:{'line-color':'#2A3550'}},
+   minor:{paint:{'line-color':'#232D44','line-width':M4W.minor}},
+   mid:{paint:{'line-color':'#2D3955','line-width':M4W.mid}},
+   primary:{paint:{'line-color':'#35425F','line-width':M4W.primary}},
    'mw-glow':{paint:{'line-opacity':0}},
-   motorway:{paint:{'line-color':'#ECECEC','line-width':M4W.motorway}},
-   bld:{paint:{'fill-extrusion-color':['interpolate',['linear'],['coalesce',['get','render_height'],5],0,'#B9B7B2',40,'#CBC9C4',150,'#E0DED9',300,'#ECEAE6'],'fill-extrusion-opacity':1}},
-   peaks:{paint:{'text-color':'#E4E4E8','text-halo-color':'#1B1C1F'}},
-   roadname:{paint:{'text-color':'#8D8F95','text-halo-color':'#232428'},layout:{'text-letter-spacing':.02}},
-   place:{paint:{'text-color':'#EDEDF0','text-opacity':.85,'text-halo-color':'#1C1D20'},layout:{'text-field':['coalesce',['get','name_en'],['get','name']],'text-letter-spacing':.01}}}}};
+   motorway:{paint:{'line-color':'#3E4B6A','line-width':M4W.motorway}},
+   bld:{paint:{'fill-extrusion-color':['interpolate',['linear'],['coalesce',['get','render_height'],5],0,'#232B43',40,'#262E48',150,'#2B344F'],'fill-extrusion-opacity':.98,'fill-extrusion-height':M5H,'fill-extrusion-base':M5B}},
+   peaks:{paint:{'text-color':'#DDE1EE','text-halo-color':'#141B2B'}},
+   roadname:{paint:{'text-color':'#66718F','text-halo-color':'#1A2234'},layout:{'text-letter-spacing':.02}},
+   place:{paint:{'text-color':'#E4E7F2','text-opacity':.85,'text-halo-color':'#141B2B'},layout:{'text-field':['coalesce',['get','name_en'],['get','name']],'text-letter-spacing':.01}}}}};
 function themedStyle(th){const P=THEMES[th]||THEMES.light,st=JSON.parse(JSON.stringify(STYLE));st.sky=P.sky;st.light=P.light;
   const at=st.layers.findIndex(l=>l.id==='minor');
   const cas=[['minor-case',['minor','service'],[12,.9,15,3,18,11]],['mid-case',['tertiary','secondary'],[9,1.1,13,2.6,16,7,18,17]],['primary-case',['primary','trunk'],[7,1.2,12,2.8,16,9,18,21]],['mw-case',['motorway'],[6,1.6,10,2.6,14,6,18,23]]]
    .map(([id,c,w])=>({id,type:'line',source:'omt','source-layer':'transportation',minzoom:id==='minor-case'?13:0,filter:cls(c),layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':P.casing,'line-width':lineW(w)}}));
   if(P.casing)st.layers.splice(at<0?st.layers.length:at,0,...cas);
+  // the lavender line around each building, drawn on the ground so it peeks out around the low blocks
+  const bi=st.layers.findIndex(l=>l.id==='bld');
+  if(P.edge&&bi>=0)st.layers.splice(bi,0,{id:'bld-edge',type:'line',source:'omt','source-layer':'building',minzoom:14.5,
+    paint:{'line-color':P.edge.color,'line-opacity':['interpolate',['linear'],['zoom'],14.5,0,15.5,P.edge.opacity],'line-width':['interpolate',['linear'],['zoom'],15,.7,18,1.8]}});
   st.layers.forEach(l=>{const o=P.layers[l.id];if(!o)return;if(o.paint){const p=Object.assign({},o.paint);if(Array.isArray(p['line-width'])&&typeof p['line-width'][0]==='number')p['line-width']=lineW(p['line-width']);l.paint=Object.assign(l.paint||{},p)}if(o.layout)l.layout=Object.assign(l.layout||{},o.layout)});
   return st}
 
