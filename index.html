@@ -2113,7 +2113,7 @@ function realWorld(el){return new Promise(res=>{
   let map=null,done=false,got=false;
   const finish=ok=>{if(done)return;done=true;clearTimeout(t);if(ok)res(map);else{mapFail=1;try{map&&map.remove()}catch(e){}el.innerHTML='';res(null)}};
   const t=setTimeout(()=>finish(got),8000);
-  try{map=new maplibregl.Map({container:el,style:themedStyle(M2T),center:[U.lng,U.lat],zoom:15.8,minZoom:11,pitch:74,bearing:-20,maxPitch:80,attributionControl:false,antialias:true,fadeDuration:150});map.once('load',()=>{map.resize();map.jumpTo({center:[U.lng,U.lat],zoom:15.8,pitch:74});setTimeout(()=>map.resize(),400)})}catch(e){return finish(false)}
+  try{map=new maplibregl.Map({container:el,style:themedStyle(M2T),center:[U.lng,U.lat],zoom:15.8,minZoom:11,pitch:74,bearing:0,maxPitch:80,attributionControl:false,antialias:true,fadeDuration:150});map.once('load',()=>{map.resize();map.jumpTo({center:[U.lng,U.lat],zoom:15.8,pitch:74});setTimeout(()=>map.resize(),400)})}catch(e){return finish(false)}
   map.on('error',e=>{if(!got&&(!e.sourceId||e.sourceId==='omt'))finish(false)});
   map.on('data',e=>{if(e.sourceId==='omt'&&e.tile){got=true;finish(true)}});
 });}
@@ -2135,11 +2135,11 @@ function adapterReal(map){
     update(){countFinds();pins.forEach(p=>p.remove());pins=spots.filter(visible).map(s=>{const w=pinEl(s,36,'big');w.firstChild.classList.toggle('out',s.dist>radius);const mk=new maplibregl.Marker({element:w,anchor:'bottom'}).setLngLat([s.lng,s.lat]).addTo(map);mk._s=s;return mk});
       showFinds();api.moveUser();m2Queue();const src=map.getSource('radius');if(src)src.setData(circlePoly(U.lat,U.lng,radius))},
     moveUser(instant){ringM.setLngLat([U.lng,U.lat]);meM.setLngLat([U.lng,U.lat]);m6Moved();if(follow){if(instant)map.jumpTo(Object.assign({center:[U.lng,U.lat],padding:pad()},m6B()));else map.easeTo(Object.assign({center:[U.lng,U.lat],padding:pad(),duration:600},m6B()))}},
-    recenter(){follow=true;map.easeTo({center:[U.lng,U.lat],zoom:Math.max(map.getZoom(),15.6),pitch:74,padding:pad(),duration:900});setTimeout(m6Btn,20)},
+    recenter(){follow=true;map.easeTo({center:[U.lng,U.lat],zoom:Math.max(map.getZoom(),15.6),pitch:74,bearing:m6Up&&m6Shown!=null?m6Shown:0,padding:pad(),duration:900});setTimeout(m6Btn,20)},
     fitRadius(){const c=circlePoly(U.lat,U.lng,radius).geometry.coordinates[0];let w=180,s=90,e=-180,n=-90;c.forEach(([x,y])=>{w=Math.min(w,x);e=Math.max(e,x);s=Math.min(s,y);n=Math.max(n,y)});
       follow=false;map.fitBounds([[w,s],[e,n]],{padding:pad(),pitch:map.getPitch()>10?60:0,bearing:map.getBearing(),duration:1000})},
     zoom(f){const o={zoom:map.getZoom()+(f>1?1:-1),duration:400};if(follow){o.center=[U.lng,U.lat];o.padding=pad()}map.easeTo(o)},
-    toggleTilt(){const flat=map.getPitch()>10;map.easeTo({pitch:flat?0:74,bearing:flat?0:-20,duration:700});return !flat},
+    toggleTilt(){const flat=map.getPitch()>10;map.easeTo({pitch:flat?0:74,bearing:0,duration:700});return !flat},
     focus(s){follow=false;map.easeTo({center:[s.lng,s.lat],zoom:Math.min(14.8,Math.max(map.getZoom(),13.5)),pitch:Math.min(map.getPitch(),64),padding:pad(),offset:m5Off(pad()),duration:900});m5Settle(s);m6Up=false;m6Btn()},
     select(id){$$('#world .pin').forEach(p=>p.classList.toggle('sel',p.dataset.pin===id))},
     resize(){map.resize()}};
@@ -2633,18 +2633,21 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-m5]');if(!
 function m5Off(p){const w=world&&world.map?world.map.getContainer():null;if(!w)return[0,0];
   const cr=w.getBoundingClientRect(),H=cr.height,top=m4Top(cr);
   const card=$('#sheet.on .m2card.cur'),near=$('#m5near');let cover=H-60;
-  if(card)cover=card.getBoundingClientRect().top-cr.top;else if(near&&!document.body.classList.contains('m2card-on'))cover=near.getBoundingClientRect().top-cr.top;
+  if(card)cover=m5CardTop(card)-cr.top;else if(near&&!document.body.classList.contains('m2card-on'))cover=near.getBoundingClientRect().top-cr.top;
   const want=m5Want(),base=p.top+(H-p.top-p.bottom)/2;return[0,Math.round(want-base)]}
 function m5Want(){const w=world.map.getContainer(),cr=w.getBoundingClientRect(),H=cr.height,top=m4Top(cr);
   const card=$('#sheet.on .m2card.cur'),near=$('#m5near');let cover=H-60;
-  if(card)cover=card.getBoundingClientRect().top-cr.top;else if(near&&!document.body.classList.contains('m2card-on'))cover=near.getBoundingClientRect().top-cr.top;
+  if(card)cover=m5CardTop(card)-cr.top;else if(near&&!document.body.classList.contains('m2card-on'))cover=near.getBoundingClientRect().top-cr.top;
   return Math.max(top+90,Math.min(H-60,cover-56))}
 /* terrain lifts summit pins above where the camera math puts them: nudge once the move ends */
 function m5Settle(s,n=0){const map=world&&world.map;if(!map)return;const tok=m5Settle.tok=(m5Settle.tok||0)+1,t0=Date.now();
   const check=()=>{if(tok!==m5Settle.tok||m2Sel!==s.id)return;if((map.isEasing?map.isEasing():map.isMoving())&&Date.now()-t0<6000)return void setTimeout(check,150);
     const mk=world.pins().find(m=>m._s.id===s.id);if(!mk)return;const cr=map.getContainer().getBoundingClientRect(),q=mk.getElement().getBoundingClientRect();
-    const d=Math.round(q.bottom-cr.top-m5Want());if(Math.abs(d)>24&&n<3){map.panBy([0,d],{duration:450});setTimeout(()=>m5Settle(s,n+1),60)}};
+    const d=Math.round(q.bottom-cr.top-m5Want());if(Math.abs(d)>24&&n<6){map.panBy([0,d],{duration:350});setTimeout(()=>m5Settle(s,n+1),60)}};
   setTimeout(check,250)}
+
+/* where the card will sit once it has finished sliding up */
+function m5CardTop(card){const sh=$('#sheet');let ty=0;try{ty=new DOMMatrix(getComputedStyle(sh).transform).m42||0}catch(e){}return card.getBoundingClientRect().top-ty}
 
 /* ======================= which way you're facing ======================= */
 /* Heading comes from the phone's compass. Without one (desktop, permission refused), it falls back to the direction you are moving. */
@@ -2668,7 +2671,8 @@ function m6Listen(){if(m6Listen.on)return;m6Listen.on=true;
 const m6NeedsAsk=!!(window.DeviceOrientationEvent&&typeof DeviceOrientationEvent.requestPermission==='function');
 function m6Ask(){if(m6Asked)return;m6Asked=true;if(!m6NeedsAsk||Date.now()-m6CompassAt<3000)return;
   try{DeviceOrientationEvent.requestPermission().then(s=>{if(s==='granted')m6Listen()}).catch(()=>{})}catch(e){}}
-m6Listen();if(m6NeedsAsk){const once=()=>{m6Ask();$('#s-map').removeEventListener('click',once,true)};$('#s-map').addEventListener('click',once,true)}
+/* the first tap anywhere (even the age check) asks, so the beam is there as soon as the map shows */
+m6Listen();if(m6NeedsAsk){const once=()=>{m6Ask();document.removeEventListener('click',once,true)};document.addEventListener('click',once,true)}
 /* direction of travel, from your last few positions */
 function m6Moved(){if(m6Last){const m=miles(m6Last,[U.lat,U.lng])*1609;if(m<4)return;
     const la1=m6Last[0]*Math.PI/180,la2=U.lat*Math.PI/180,dl=(U.lng-m6Last[1])*Math.PI/180;
@@ -2685,7 +2689,7 @@ function m6Btn(){const b=$('#m6loc');if(!b)return;const st=m6State();if(b.datase
 function m6Locate(){const map=world&&world.map,st=m6State();m6Ask();
   if(st==='free'){closeSheet();if(!U.real&&watchId==null)locate();m6Up=false;world&&world.recenter()}
   else if(st==='follow'){m6Up=true;if(m6H==null)toast('Turn on motion access or start moving to point the map');else if(map)map.easeTo({bearing:m6Shown,duration:500})}
-  else m6Up=false;
+  else{m6Up=false;if(map)map.easeTo({bearing:0,duration:500})}
   m6Btn()}
 function m6Bind(map){
   map.on('dragstart',()=>{m6Up=false;m6Btn()});
