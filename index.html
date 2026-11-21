@@ -2120,7 +2120,7 @@ function realWorld(el){return new Promise(res=>{
   let map=null,done=false,got=false;
   const finish=ok=>{if(done)return;done=true;clearTimeout(t);if(ok)res(map);else{mapFail=1;try{map&&map.remove()}catch(e){}el.innerHTML='';res(null)}};
   const t=setTimeout(()=>finish(got),8000);
-  try{map=new maplibregl.Map({container:el,style:themedStyle(M2T),center:[U.lng,U.lat],zoom:15.8,minZoom:11,pitch:74,bearing:0,maxPitch:80,attributionControl:false,antialias:true,fadeDuration:150});map.once('load',()=>{map.resize();map.jumpTo({center:[U.lng,U.lat],zoom:15.8,pitch:74});setTimeout(()=>map.resize(),400)})}catch(e){return finish(false)}
+  try{map=new maplibregl.Map({container:el,style:themedStyle(M2T),center:[U.lng,U.lat],zoom:16.8,minZoom:11,pitch:74,bearing:0,maxPitch:80,attributionControl:false,antialias:true,fadeDuration:150});map.once('load',()=>{map.resize();map.jumpTo({center:[U.lng,U.lat],zoom:16.8,pitch:74});setTimeout(()=>map.resize(),400)})}catch(e){return finish(false)}
   map.on('error',e=>{if(!got&&(!e.sourceId||e.sourceId==='omt'))finish(false)});
   map.on('data',e=>{if(e.sourceId==='omt'&&e.tile){got=true;finish(true)}});
 });}
@@ -2142,7 +2142,7 @@ function adapterReal(map){
     update(){countFinds();pins.forEach(p=>p.remove());pins=spots.filter(visible).map(s=>{const w=pinEl(s,36,'big');w.firstChild.classList.toggle('out',s.dist>radius);const mk=new maplibregl.Marker({element:w,anchor:'bottom'}).setLngLat([s.lng,s.lat]).addTo(map);mk._s=s;return mk});
       showFinds();api.moveUser();m2Queue();const src=map.getSource('radius');if(src)src.setData(circlePoly(U.lat,U.lng,radius))},
     moveUser(instant){ringM.setLngLat([U.lng,U.lat]);meM.setLngLat([U.lng,U.lat]);m6Moved();if(follow){if(instant)map.jumpTo(Object.assign({center:[U.lng,U.lat],padding:pad()},m6B()));else map.easeTo(Object.assign({center:[U.lng,U.lat],padding:pad(),duration:600},m6B()))}},
-    recenter(){follow=true;map.easeTo({center:[U.lng,U.lat],zoom:Math.max(map.getZoom(),15.6),pitch:74,bearing:m6Up&&m6Shown!=null?m6Shown:0,padding:pad(),duration:900});setTimeout(m6Btn,20)},
+    recenter(){follow=true;map.easeTo({center:[U.lng,U.lat],zoom:Math.max(map.getZoom(),16.8),pitch:74,bearing:m6Up&&m6Shown!=null?m6Shown:0,padding:pad(),duration:900});setTimeout(m6Btn,20)},
     fitRadius(){const c=circlePoly(U.lat,U.lng,radius).geometry.coordinates[0];let w=180,s=90,e=-180,n=-90;c.forEach(([x,y])=>{w=Math.min(w,x);e=Math.max(e,x);s=Math.min(s,y);n=Math.max(n,y)});
       follow=false;map.fitBounds([[w,s],[e,n]],{padding:pad(),pitch:map.getPitch()>10?60:0,bearing:map.getBearing(),duration:1000})},
     zoom(f){const o={zoom:map.getZoom()+(f>1?1:-1),duration:400};if(follow){o.center=[U.lng,U.lat];o.padding=pad()}map.easeTo(o)},
