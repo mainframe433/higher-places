@@ -1221,6 +1221,16 @@ html.m2 body.on-map #s-map .attrib{top:calc(env(safe-area-inset-top,0px) + 98px)
 html.m2 body.on-map .m2note.on~.m2info{opacity:0;pointer-events:none}
 html.m2 body.on-map .m5near.open~.m2info,html.m2 body.on-map .m5near.open~.attrib{opacity:0;pointer-events:none}
 
+/* ======================= just the map: no header ======================= */
+html.m2 body.on-map .m2top{background:none;box-shadow:none;border-radius:0;padding:calc(env(safe-area-inset-top,0px) + 10px) 0 0;pointer-events:none}
+html.m2 body.on-map .m2top::before,html.m2 .m2top .m4ttl0{display:none}
+html.m2 body.on-map .m2row{justify-content:flex-end;min-height:0;height:auto;padding:0 16px}
+html.m2 body.on-map .m2top .m2icon{pointer-events:auto;width:44px;height:44px;background:var(--surface);color:var(--ink);box-shadow:0 0 0 1px var(--line),0 10px 22px -10px rgba(var(--shadow),.7)}
+html.m2 body.on-map .m2info{top:calc(env(safe-area-inset-top,0px) + 64px);right:23px}
+html.m2 body.on-map #s-map .attrib{top:calc(env(safe-area-inset-top,0px) + 60px);right:62px}
+html.m2 body.on-map .m2note{top:calc(env(safe-area-inset-top,0px) + 10px);right:72px}
+html.m2 .m5near{top:calc(env(safe-area-inset-top,0px) + 64px)}
+
 /* ======================= heading beam + locate button ======================= */
 html.m2 .me3d{position:relative}
 html.m2 .me3d b{position:relative;z-index:1}
@@ -2454,7 +2464,7 @@ function m2Note(h){const n=$('#m2note');clearTimeout(m2Note._t);if(!h){n.classLi
 
 /* declutter: higher-ranked places win when markers would overlap */
 const M2FAME={horseshoe:10,mather:10,cathedral:9,camel:9,devilsbridge:8,hole:8,powell:8,bellrock:8,desertview:7,sabino:7,piestewa:7,sliderock:6,watson:6,lockett:6,gates:6,windy:6,dutchman:6,airportmesa:6,picacho:5,havasu:5,thumbbutte:5,saguarolake:5,canyonlake:5,townlake:5};
-function m4Top(cr){const h=$('.m2top');return h?h.getBoundingClientRect().bottom-cr.top+4:120}
+function m4Top(cr){const b=$('#m2theme');return b&&b.offsetParent?Math.max(4,b.getBoundingClientRect().top-cr.top-6):20}
 /* where you are, under the wordmark */
 let m4Here='';function m4Where(){const k=U.lat.toFixed(4)+','+U.lng.toFixed(4);if(k===m4Here)return;m4Here=k;const el=$('#m4where');if(el)el.textContent='You’re '+spotArea(U.lat,U.lng)}
 function m2Queue(){if(!m2Raf)m2Raf=requestAnimationFrame(m2Layout)}
