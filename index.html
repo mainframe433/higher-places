@@ -726,10 +726,15 @@ html,body{margin:0}#world,#world.maplibregl-map{bottom:calc(77px + env(safe-area
    Copper & patina: Arizona is the Copper State. Patina green leads, raw copper is only for spot counts.
    Type: Overpass (after the US highway-sign lettering), one family, sentence case. */
 html.m2{--sans:'Overpass',system-ui,-apple-system,sans-serif;
-  --surface:#FAFBF8;--surface-2:#EDF1EB;--ink:#17231F;--ink-2:#58665F;--line:rgba(23,35,31,.12);
-  --accent:#2E7A68;--accent-ink:#FFFFFF;--copper:#A5532A;--shadow:23,35,31;--scrim:250,251,248;--mapbg:#E8ECE5}
-html.m2[data-theme=dark]{--surface:#14211E;--surface-2:#1D2D29;--ink:#E6EEEA;--ink-2:#9AAEA6;--line:rgba(230,238,234,.13);
-  --accent:#6CC1AB;--accent-ink:#0B1916;--copper:#E39461;--shadow:0,0,0;--scrim:20,33,30;--mapbg:#16211E}
+  /* one palette everywhere: navy ink, cool grays, and one accent, the purple of a ripe bud */
+  --surface:#FFFFFF;--surface-2:#EEF0F5;--ink:#161A26;--ink-2:#616A80;--line:rgba(22,26,38,.1);
+  --accent:#6B3A9E;--accent-ink:#FFFFFF;--copper:var(--accent);--shadow:22,26,38;--scrim:255,255,255;--dot:22,26,38;
+  --mapbg:#E4E7EC;--m-road:#FFFFFF;--m-park:#D2E2D3;--m-water:#B8CCE4;
+  --pinbg:#161A26;--pinedge:rgba(255,255,255,.95);--pinic:#C9A6F2;--hood-bg:#EFE6F9;--hood:#6B3A9E;--hood-face:#1E1428}
+html.m2[data-theme=dark]{--surface:#121826;--surface-2:#1E2638;--ink:#F1F2F8;--ink-2:#9BA2B8;--line:rgba(200,210,255,.09);
+  --accent:#B184E6;--accent-ink:#170D22;--copper:var(--accent);--shadow:0,0,0;--scrim:18,24,38;--dot:255,255,255;
+  --mapbg:#1D2638;--m-road:#2D3955;--m-park:#232F37;--m-water:#16203A;
+  --pinbg:#0F1422;--pinedge:rgba(255,255,255,.16);--pinic:#C39BF0;--hood-bg:#2A1F36;--hood:#B184E6;--hood-face:#120C18}
 html.m2 body{font-family:var(--sans)}
 html.m2 #s-map{background:var(--surface)}
 html.m2 #world.maplibregl-map{background:var(--mapbg)}
@@ -858,7 +863,7 @@ html.m2 .m2cred{position:absolute;z-index:2;left:10px;top:102px;max-width:calc(1
 
 /* ======================= every screen, in the copper & patina system ======================= */
 html.m2{--bg:var(--surface);--bg2:var(--surface-2);--panel:var(--surface-2);--gold:var(--accent);--gold-hi:var(--accent);--haze:var(--accent);--sun:var(--copper);
-  --cream:var(--ink);--muted:var(--ink-2);--dim:var(--ink-2);--line-soft:var(--line);--serif:var(--sans);--danger:#B23B2B;color-scheme:light}
+  --cream:var(--ink);--muted:var(--ink-2);--dim:var(--ink-2);--line-soft:var(--line);--serif:var(--sans);--danger:#C0392F;color-scheme:light}
 html.m2[data-theme=dark]{--danger:#F08A7A;color-scheme:dark}
 html.m2 body{background:var(--surface);color:var(--ink);-webkit-font-smoothing:antialiased}
 html.m2 .app{background:var(--surface);box-shadow:none}
@@ -912,7 +917,7 @@ html.m2 .feature h2 br{display:none}
 html.m2 .feature .loc{margin-top:6px;padding:0;font:500 14px/1.3 var(--sans);color:rgba(255,255,255,.86)}
 html.m2 .feature .loc svg{display:none}
 html.m2 .feature p{max-width:30ch;margin:8px 0 0;padding:0;font:400 14.5px/1.4 var(--sans);color:rgba(255,255,255,.9)}
-html.m2 .feature .btn{top:16px;right:16px;bottom:auto;height:40px;padding:3px 14px 0;border:0;border-radius:12px;background:rgba(255,255,255,.94);color:#17231F;box-shadow:none;font:700 14px/1 var(--sans)}
+html.m2 .feature .btn{top:16px;right:16px;bottom:auto;height:40px;padding:3px 14px 0;border:0;border-radius:12px;background:rgba(255,255,255,.94);color:#161A26;box-shadow:none;font:700 14px/1 var(--sans)}
 html.m2 .feature .btn svg{display:none}
 html.m2 .fgrid{gap:8px}
 html.m2 #freshfinds{padding:14px 16px 0!important}
@@ -1035,8 +1040,9 @@ html.m2 .toast.on{transform:translate(-50%,0)}
 /* age check */
 html.m2 .gate{background:var(--surface);padding:24px max(24px,env(safe-area-inset-right,0px)) 24px max(24px,env(safe-area-inset-left,0px))}
 html.m2 .gate-in{width:min(100%,360px);gap:0;text-align:left;justify-items:stretch}
-html.m2 .m2dio{display:flex;align-items:flex-end;gap:6px;margin-bottom:26px}
-html.m2 .m2dio svg{flex:none}
+html.m2 .m2dio{display:flex;align-items:center;gap:8px;margin-bottom:26px}
+html.m2 .m2dio>span{flex:none;display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:var(--surface-2);color:var(--accent);box-shadow:inset 0 0 0 1px var(--line)}
+html.m2 .m2dio>span:first-child{width:54px;height:54px;background:var(--accent);color:var(--accent-ink);box-shadow:none}
 html.m2 .m2gbrand{display:flex;align-items:center;gap:9px;color:var(--ink);font:800 30px/1 var(--sans);letter-spacing:-.022em}
 html.m2 .m2gbrand svg{color:var(--accent);margin-top:-4px}
 html.m2 .gate h2{margin:30px 0 0;font:800 24px/1.15 var(--sans);letter-spacing:-.015em;color:var(--ink);text-align:left}
@@ -1053,12 +1059,10 @@ html.m2 .islide p{color:var(--ink-2);font-size:16px;line-height:1.5}
 html.m2 .ivis{border-radius:24px;background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--line)}
 html.m2 .imap{color:var(--line)}
 html.m2 .imap-bg{fill:var(--mapbg)}
-html.m2 .imap-road{stroke:var(--surface);stroke-width:10}
-html.m2[data-theme=dark] .imap-road{stroke:#2F3D38}
-html.m2 .imap-park{fill:color-mix(in srgb,var(--accent) 22%,transparent)}
-html.m2 .imap-water{fill:#9DC7CC}
-html.m2[data-theme=dark] .imap-water{fill:#0D2A30}
-html.m2 .ipin{width:46px;height:62px;color:var(--accent);filter:drop-shadow(0 3px 3px rgba(var(--shadow),.3))}
+html.m2 .imap-road{stroke:var(--m-road);stroke-width:10}
+html.m2 .imap-park{fill:var(--m-park)}
+html.m2 .imap-water{fill:var(--m-water)}
+html.m2 .ipin{width:40px;height:54px;color:var(--accent);filter:drop-shadow(0 3px 3px rgba(var(--shadow),.3))}
 html.m2 .ipin.pp{color:var(--accent)}
 html.m2 .ipin path{stroke:none}
 html.m2 .ipin .rim{stroke:currentColor;stroke-width:.9}
@@ -1081,15 +1085,14 @@ html.m2 .lb-cap b{font:800 17px/1.2 var(--sans)}
 html.m2 .lb-cap span{font:500 13.5px/1.4 var(--sans)}
 html.m2 :is(.btn,.chip,.iconbtn,.setrow,.lcard,.ncard,.scard,.ftile,.seg button,.more,.onplace,.delbtn):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
+/* backup map (drawn when the real map can't load): pull its painted colors into the same navy family; pins and you sit above, untouched */
+html.m2 .plane3d>canvas{filter:grayscale(1) contrast(.85) brightness(.6) sepia(1) hue-rotate(190deg) saturate(2.6)}
+html.m2[data-theme=light] .plane3d>canvas{filter:grayscale(1) contrast(.6) brightness(1.75) sepia(.4) hue-rotate(185deg) saturate(1.6)}
+html.m2 #world .fog{display:none}
+
 /* ======================= MAP: architectural model, cannabis purple =======================
    The map reads like a white study model: charcoal (or pale) ground, bright extruded blocks, hairline roads.
    One accent: the purple of a ripe Purple Kush bud, lavender on dark, plum on light. Used for icons and the selected state only. */
-html.m2 body.on-map{--surface:#FFFFFF;--surface-2:#EEF0F5;--ink:#17161A;--ink-2:#67646E;--line:rgba(23,22,26,.1);
-  --accent:#6B3A9E;--accent-ink:#FFFFFF;--copper:#6B3A9E;--shadow:20,18,26;--scrim:255,255,255;--mapbg:#E4E7EC;--dot:23,22,26;
-  --pinbg:#17161A;--pinedge:rgba(255,255,255,.95);--pinic:#C9A6F2;--hood-bg:#EFE6F9;--hood:#6B3A9E;--hood-face:#1E1428}
-html.m2[data-theme=dark] body.on-map{--surface:#121826;--surface-2:#1E2638;--ink:#F1F2F8;--ink-2:#9BA2B8;--line:rgba(200,210,255,.09);
-  --accent:#B184E6;--accent-ink:#170D22;--copper:#B184E6;--shadow:0,0,0;--scrim:18,24,38;--mapbg:#1D2638;--dot:255,255,255;
-  --pinbg:#0F1422;--pinedge:rgba(255,255,255,.16);--pinic:#C39BF0;--hood-bg:#2A1F36;--hood:#B184E6;--hood-face:#120C18}
 html.m2 body.on-map #s-map{background:var(--mapbg)}
 
 /* header: a solid panel with a rounded lower edge, like a sheet pulled down over the map */
@@ -1286,7 +1289,7 @@ html.m2 .m5near.open .m6row{visibility:hidden}
   <symbol id="i-up" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 15l6-6 6 6"/></symbol>
   <symbol id="i-bookmark" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" d="M6 3h12v18l-6-4.5L6 21Z"/></symbol>
   <symbol id="i-bookmark-f" viewBox="0 0 24 24"><path fill="currentColor" stroke="currentColor" stroke-width="1.7" d="M6 3h12v18l-6-4.5L6 21Z"/></symbol>
-  <symbol id="hood" viewBox="0 0 40 40"><rect width="40" height="40" style="fill:var(--hood-bg,#E6F0EB)"/><path d="M20 7c-6.5 0-10 5-10 11 0 3 1 5 2 6.5-4 2-7 5-7.5 15.5h31c-.5-10.5-3.5-13.5-7.5-15.5 1-1.5 2-3.5 2-6.5 0-6-3.5-11-10-11Z" style="fill:var(--hood,#2E7A68)"/><path d="M15 19.5c0-3.3 2.2-6 5-6s5 2.7 5 6-2 6-5 6-5-2.7-5-6Z" style="fill:var(--hood-face,#13261F)"/></symbol>
+  <symbol id="hood" viewBox="0 0 40 40"><rect width="40" height="40" style="fill:var(--hood-bg,#EFE6F9)"/><path d="M20 7c-6.5 0-10 5-10 11 0 3 1 5 2 6.5-4 2-7 5-7.5 15.5h31c-.5-10.5-3.5-13.5-7.5-15.5 1-1.5 2-3.5 2-6.5 0-6-3.5-11-10-11Z" style="fill:var(--hood,#6B3A9E)"/><path d="M15 19.5c0-3.3 2.2-6 5-6s5 2.7 5 6-2 6-5 6-5-2.7-5-6Z" style="fill:var(--hood-face,#1E1428)"/></symbol>
 </svg>
 
 <div class="app" id="app">
@@ -1826,7 +1829,7 @@ function pinInner(p,size){const ic=p.icon||ICON[p.id]||'leaf';p._col=PURPLE.has(
    (p._lab&&p.name?`<span class="plabel"><b>${esc(p.name)}</b><small><svg width="12" height="9"><use href="#leaf"/></svg>${esc(p.tags?p.tags[0]:'Spot')}<em>${fmt(p.dist)}</em></small></span>`:'')}
 
 /* ================= map component ================= */
-const FIG=`<svg viewBox="0 0 34 58" aria-hidden="true"><defs><linearGradient id="hdg" x1="0" x2="1"><stop offset="0" stop-color="#7CC7B4"/><stop offset=".55" stop-color="#2E7A68"/><stop offset="1" stop-color="#1F5A4C"/></linearGradient></defs><path d="M11.5 40 10.2 55.5h4.6l2.2-11 2.2 11h4.6L22.5 40Z" fill="#24433a"/><path d="M9.5 55.5h5.6M19 55.5h5.6" stroke="#1fb26b" stroke-width="1.8" stroke-linecap="round"/><path d="M7.5 25 4.6 38.5M26.5 25l2.9 13.5" stroke="#286B5B" stroke-width="4.6" stroke-linecap="round"/><path d="M7 24.5C7 17.5 11 14.6 17 14.6s10 2.9 10 9.9l1 17.5H6Z" fill="url(#hdg)" stroke="#ffffff" stroke-width=".8"/><path d="M12 33h10l-1 5h-8Z" fill="none" stroke="#1F5A4C" stroke-width=".7"/><svg x="13.5" y="25.5" width="7" height="5"><use href="#leaf" style="color:#ffffff"/></svg><path d="M9.6 13.2C9.6 5.6 13.2 2 17 2s7.4 3.6 7.4 11.2c0 4.1-3.3 6.4-7.4 6.4s-7.4-2.3-7.4-6.4Z" fill="url(#hdg)" stroke="#ffffff" stroke-width=".8"/><ellipse cx="17" cy="12.2" rx="4.3" ry="5.1" fill="#14332a"/><path d="M14.6 11.6h1.6M17.8 11.6h1.6" stroke="#E6F0EB" stroke-width=".8" stroke-linecap="round" opacity=".55"/></svg>`;
+const FIG=`<svg viewBox="0 0 34 58" aria-hidden="true"><defs><linearGradient id="hdg" x1="0" x2="1"><stop offset="0" stop-color="#C9A6F2"/><stop offset=".55" stop-color="#8F5CC9"/><stop offset="1" stop-color="#4E2777"/></linearGradient></defs><path d="M11.5 40 10.2 55.5h4.6l2.2-11 2.2 11h4.6L22.5 40Z" fill="#2B3350"/><path d="M9.5 55.5h5.6M19 55.5h5.6" stroke="#8F5CC9" stroke-width="1.8" stroke-linecap="round"/><path d="M7.5 25 4.6 38.5M26.5 25l2.9 13.5" stroke="#6B3A9E" stroke-width="4.6" stroke-linecap="round"/><path d="M7 24.5C7 17.5 11 14.6 17 14.6s10 2.9 10 9.9l1 17.5H6Z" fill="url(#hdg)" stroke="#ffffff" stroke-width=".8"/><path d="M12 33h10l-1 5h-8Z" fill="none" stroke="#4E2777" stroke-width=".7"/><svg x="13.5" y="25.5" width="7" height="5"><use href="#leaf" style="color:#ffffff"/></svg><path d="M9.6 13.2C9.6 5.6 13.2 2 17 2s7.4 3.6 7.4 11.2c0 4.1-3.3 6.4-7.4 6.4s-7.4-2.3-7.4-6.4Z" fill="url(#hdg)" stroke="#ffffff" stroke-width=".8"/><ellipse cx="17" cy="12.2" rx="4.3" ry="5.1" fill="#1E2438"/><path d="M14.6 11.6h1.6M17.8 11.6h1.6" stroke="#EFE6F9" stroke-width=".8" stroke-linecap="round" opacity=".55"/></svg>`;
 class LocalMap{
   constructor(el,o={}){this.el=el;this.o=o;this.cx=0;this.cy=0;this.s=o.s||8;this.radius=null;this.items=[];
     this.cv=document.createElement('canvas');el.appendChild(this.cv);this.layer=document.createElement('div');this.layer.className='lm-layer';el.appendChild(this.layer);
@@ -2052,7 +2055,7 @@ function renderFeature(){const s=byId('golden');$('.feature .ph').style.backgrou
 function renderRotation(){$('#rotation').innerHTML=rotationIds.map(id=>{const s=byId(id);return `<button class="scard" data-spot="${s.id}" aria-label="${esc(s.name)}"><img src="${s.img}" alt="">${s.mine?'<span class="rise">Your spot</span>':''}<span class="meta"><b>${esc(s.name)}</b><span class="row"><span>${esc(s.area)}</span><em>${fmt(s.dist)}</em></span></span></button>`}).join('')}
 function ncard(s){return `<button class="ncard" data-spot="${s.id}"><span class="nimg"><img src="${s.img}" alt=""><span class="away">${fmt(s.dist)} away</span></span>
   <span class="nbody"><b>${esc(s.name)}</b><span class="narea"><svg width="10" height="11"><use href="#i-pin"/></svg>${esc(s.area)}</span><span class="ntags">${s.tags.map(t=>`<i>${esc(t)}</i>`).join('')}</span></span></button>`}
-function lcard(s){const k=kindOf(s);return `<button class="lcard" data-spot="${s.id}"><img src="${s.img}" alt=""><div><b>${esc(s.name)}</b><div class="loc">${esc(s.area||'')}</div><div class="r">${isFind(s)?'<span class="k">Spot</span>':k?`<span class="k">${m2mini(k,12)}${M2ONE[k]}</span>`:''}<span>${fmt(s.dist)} away</span></div></div></button>`}
+function lcard(s){const k=kindOf(s);return `<button class="lcard" data-spot="${s.id}"><img src="${s.img}" alt=""><div><b>${esc(s.name)}</b><div class="loc">${esc(s.area||'')}</div><div class="r">${isFind(s)?'<span class="k">Spot</span>':k?`<span class="k">${m2ico('c_'+k,14)}${M2ONE[k]}</span>`:''}<span>${fmt(s.dist)} away</span></div></div></button>`}
 const visible=s=>!isFind(s)||s.mine||s.privacy==='public';
 const sorted=()=>spots.filter(visible).sort((a,b)=>a.dist-b.dist);
 function renderAll(){$('#alllist').innerHTML=sorted().filter(x=>!isFind(x)).map(lcard).join('')}
@@ -2429,7 +2432,7 @@ const m2ico=(n,s=16,x='')=>`<svg class="ic ${x}" width="${s}" height="${s}" view
 const m2mini=(k,w=15)=>`<svg class="mini" width="${w}" height="${Math.round(w*4/3)}" viewBox="0 0 30 40" aria-hidden="true">${LM[k]}</svg>`;
 
 /* map pins: a dark teardrop holding the category icon */
-function m4Pin(p,size){const k=lmKind(p);return `<svg class="lm np m4pin" width="${size}" height="${Math.round(size*4/3)}" viewBox="0 0 30 40" aria-hidden="true"><ellipse cx="15" cy="38.4" rx="4.6" ry="1.2" fill="#000" opacity=".4"/><path class="m4b" d="M15 37.4C13.6 32.7 10.6 27.4 8.35 24.5A11.6 11.6 0 1 1 21.65 24.5C19.4 27.4 16.4 32.7 15 37.4Z"/><g class="m4i" transform="translate(7.8 7.8) scale(.6)" fill="none" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">${M2IC['c_'+k]}</g></svg>`}
+function m4Pin(p,size){const k=p._k||lmKind(p);return `<svg class="lm np m4pin" width="${size}" height="${Math.round(size*4/3)}" viewBox="0 0 30 40" aria-hidden="true"><ellipse cx="15" cy="38.4" rx="4.6" ry="1.2" fill="#000" opacity=".4"/><path class="m4b" d="M15 37.4C13.6 32.7 10.6 27.4 8.35 24.5A11.6 11.6 0 1 1 21.65 24.5C19.4 27.4 16.4 32.7 15 37.4Z"/><g class="m4i" transform="translate(7.8 7.8) scale(.6)" fill="none" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">${M2IC['c_'+k]}</g></svg>`}
 
 /* categories */
 const M2CATS=[['all','All'],['mountain','Mountains'],['canyon','Canyons'],['water','Water'],['forest','Forest'],['desert','Desert']];
@@ -2583,14 +2586,14 @@ function m3Spot(id){const s=byId(id),isSaved=saved.has(id),find=isFind(s),k=kind
   <div class="dbody">
    ${tags.length?`<div>${tags.join('')}</div>`:''}
    <h2>${esc(s.name)}</h2>
-   <p class="m2where">${find?'<span class="m2kind">Spot</span>':k?`<span class="m2kind">${m2mini(k,13)}${M2ONE[k]}</span>`:''}<span>${esc(par?'on '+par.name:(s.area||''))}</span></p>
+   <p class="m2where">${find?'<span class="m2kind">Spot</span>':k?`<span class="m2kind">${m2ico('c_'+k,15)}${M2ONE[k]}</span>`:''}<span>${esc(par?'on '+par.name:(s.area||''))}</span></p>
    <ul class="m2facts">${facts.join('')}</ul>
    ${s.desc?`<p class="desc">${esc(s.desc)}${s.more?' '+esc(s.more):''}</p>`:''}
    ${s.tags&&s.tags.length?`<div class="chips">${s.tags.map(t=>`<span class="chip">${esc(t)}</span>`).join('')}</div>`:''}
    <div class="actions"><button class="btn ${isSaved?'':'solid'}" data-save="${id}"><svg width="14" height="14"><use href="#i-bookmark${isSaved?'-f':''}"/></svg>${isSaved?'Saved to Stash':'Save to Stash'}</button>
      <button class="btn" data-mapto="${id}"><svg width="13" height="14"><use href="#i-mappin"/></svg>Show on map</button>
      <a class="btn" href="${m2Dir(s)}" target="_blank" rel="noopener">${m2ico('dir',16)}Directions</a>
-     ${par?`<button class="btn" data-spot="${par.id}">${m2mini(kindOf(par),13)}Open ${esc(par.name)}</button>`:''}</div>
+     ${par?`<button class="btn" data-spot="${par.id}">${m2ico('c_'+kindOf(par),15)}Open ${esc(par.name)}</button>`:''}</div>
    <div class="m2rec" data-for="${id}">${m2Rec(s)}</div>
    ${s.mine?`<div class="delbox" id="delbox"><button class="delbtn" data-act="delask" data-id="${id}"><svg width="15" height="15"><use href="#i-trash"/></svg>Delete this spot</button></div>`:''}
    ${find&&s.photos.length>1?`<h3 class="m2h">${s.photos.length} photos of this spot</h3><div class="pstrip">${s.photos.map((ph,i)=>`<img src="${ph.src}" alt="Photo ${i+1}" data-act="zoomimg" data-id="${s.id}" data-i="${i}" role="button" tabindex="0" style="cursor:zoom-in">`).join('')}</div>`:''}
@@ -2602,9 +2605,9 @@ function m3Spot(id){const s=byId(id),isSaved=saved.has(id),find=isFind(s),k=kind
 
 /* diorama art for the age check and the intro */
 (()=>{const solid=h=>h.replace(/fill="([^"]+)"/g,'style="fill:$1"');
-  const dio=$('#m2dio');if(dio)dio.innerHTML=['mountain','canyon','water','forest','desert'].map((k,i)=>`<svg width="${i===0?40:34}" height="${i===0?53:45}" viewBox="0 0 30 40" aria-hidden="true"><ellipse cx="15" cy="38.3" rx="11.5" ry="1.9" fill="#000" opacity=".18"/>${LM[k]}</svg>`).join('');
+  const dio=$('#m2dio');if(dio)dio.innerHTML=['mountain','canyon','water','forest','desert'].map((k,i)=>`<span>${m2ico('c_'+k,i===0?26:22)}</span>`).join('');
   const K={p1:'mountain',p2:'water',p3:'canyon',p4:'desert',goal:'mountain'};
-  $$('.ipin').forEach(el=>{const c=Object.keys(K).find(x=>el.classList.contains(x));el.innerHTML=`<svg viewBox="0 0 30 40"><ellipse cx="15" cy="38.3" rx="11.5" ry="1.9" style="fill:#000;opacity:.22"/>${solid(LM[K[c]||'mountain'])}</svg>`})})();
+  $$('.ipin').forEach(el=>{const c=Object.keys(K).find(x=>el.classList.contains(x));el.innerHTML=m4Pin({kind:K[c]||'mountain',_k:K[c]||'mountain'},40)})})();
 
 /* ======================= Near you: a pull-up panel on the map ======================= */
 let m5Open=false;
