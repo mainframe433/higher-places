@@ -1249,6 +1249,78 @@ html.m2 .m5near.open .m6row{visibility:hidden}
 html.m2 .me3d::after{display:none}
 html.m2 .me3d b{transform:translateY(21px)}
 html.m2 .m6beam{top:42px}
+
+/* ======================= private circles ======================= */
+html.m2 #c9box{padding:14px 16px 0}
+html.m2 .c9card{padding:20px;border-radius:22px;background:var(--surface-2);color:var(--ink)}
+html.m2 .c9card h4{margin:14px 0 0;font:800 20px/1.2 var(--sans);letter-spacing:-.012em}
+html.m2 .c9card p{margin:6px 0 0;font:400 15px/1.45 var(--sans);color:var(--ink-2)}
+html.m2 .c9muted{font:500 15px/1.4 var(--sans);color:var(--ink-2)}
+html.m2 .c9art{display:grid;place-items:center;width:48px;height:48px;border-radius:16px;background:var(--accent);color:var(--accent-ink)}
+html.m2 .c9row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:18px}
+html.m2 .c9row.c9one{grid-template-columns:auto;justify-content:start;margin-top:12px}
+html.m2 .c9row .btn{justify-content:center;padding-left:10px;padding-right:10px;white-space:nowrap}
+html.m2 .c9tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px 12px}
+html.m2 .c9tabs::-webkit-scrollbar{display:none}
+html.m2 .c9tab{flex:none;max-width:220px;height:38px;padding:2px 16px 0;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);font:700 14.5px/1 var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+html.m2 .c9tab.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+html.m2 .c9add{border-style:dashed;color:var(--accent)}
+html.m2 .c9panel{padding:18px 16px 12px;border-radius:22px;background:var(--surface-2);color:var(--ink)}
+html.m2 .c9panel h4{margin:0;font:800 22px/1.15 var(--sans);letter-spacing:-.015em;overflow-wrap:anywhere}
+html.m2 .c9who{display:flex;align-items:center;gap:10px;min-width:0;margin-top:10px}
+html.m2 .c9av{display:flex;flex:none}
+html.m2 .c9av i{display:grid;place-items:center;width:30px;height:30px;margin-left:-8px;padding-top:2px;border:2px solid var(--surface-2);border-radius:50%;background:var(--surface);color:var(--ink);font:800 11.5px/1 var(--sans);font-style:normal}
+html.m2 .c9av i:first-child{margin-left:0}
+html.m2 .c9av i.c9you{background:var(--accent);color:var(--accent-ink)}
+html.m2 .c9who>span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:500 14px/1.3 var(--sans);color:var(--ink-2)}
+html.m2 .c9inv{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;padding:12px 12px 12px 16px;border-radius:16px;background:var(--surface)}
+html.m2 .c9inv small{display:block;font:600 13px/1 var(--sans);color:var(--ink-2)}
+html.m2 .c9inv b{display:block;margin-top:7px;font:800 19px/1 var(--sans);letter-spacing:.05em;font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap}
+html.m2 .c9inv .btn{flex:none;height:44px}
+html.m2 .c9grid{margin-top:14px}
+html.m2 .c9grid .ftile{background:var(--surface)}
+html.m2 .c9empty{margin:16px 2px 4px;font:400 15px/1.5 var(--sans);color:var(--ink-2)}
+html.m2 .c9empty b{color:var(--ink)}
+html.m2 .c9ft{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:8px;border-top:1px solid var(--line);font:500 14px/1.3 var(--sans);color:var(--ink-2)}
+html.m2 .c9ft>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html.m2 .c9ft button{min-height:40px;padding:4px 2px 0;border:0;background:none;color:var(--accent);font:700 14px/1 var(--sans);cursor:pointer}
+html.m2 .c9ft .c9out{flex:none;color:var(--danger);text-align:right}
+html.m2 .c9note{margin:10px 4px 0;font:500 13px/1.4 var(--sans);color:var(--ink-2)}
+html.m2 :is(.c9tab,.c9ft button,.c9link,.c9x):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* the sheet that slides up for start / join */
+html.m2 .c9m{position:fixed;inset:0;z-index:120;display:flex;align-items:flex-end;justify-content:center}
+html.m2 .c9m[hidden]{display:none}
+html.m2 .c9scrim{position:absolute;inset:0;background:rgba(var(--shadow),.5);animation:c9fade .2s ease-out}
+html.m2[data-theme=dark] .c9scrim{background:rgba(0,0,0,.6)}
+html.m2 .c9sheet{position:relative;width:min(100%,480px);max-height:calc(100% - 24px);overflow-y:auto;overscroll-behavior:contain;padding:14px 20px calc(22px + env(safe-area-inset-bottom,0px));border-radius:28px 28px 0 0;background:var(--surface);color:var(--ink);box-shadow:0 -18px 40px -20px rgba(0,0,0,.45);animation:c9up .34s cubic-bezier(.2,.8,.2,1)}
+html.m2 .c9sheet::before{content:"";display:block;width:38px;height:5px;margin:0 auto;border-radius:3px;background:var(--ink-2);opacity:.3}
+html.m2 .c9sheet h3{margin:16px 44px 0 0;font:800 24px/1.15 var(--sans);letter-spacing:-.016em;overflow-wrap:anywhere}
+html.m2 .c9sheet>p{margin:8px 0 18px;font:400 15.5px/1.45 var(--sans);color:var(--ink-2)}
+html.m2 .c9sheet .field{margin:0 0 14px}
+html.m2 .c9sheet .field input{width:100%}
+html.m2 .c9sheet .err{min-height:20px;margin:-2px 0 4px}
+html.m2 .c9sheet .btn{width:100%;height:52px;margin-top:8px;justify-content:center;font-size:16px}
+html.m2 .c9x{position:absolute;top:22px;right:16px;display:grid;place-items:center;width:40px;height:40px;border:0;border-radius:50%;background:var(--surface-2);color:var(--ink);cursor:pointer}
+html.m2 .c9link{display:block;width:100%;min-height:46px;margin-top:6px;padding:4px 0 0;border:0;background:none;color:var(--accent);font:700 15px/1 var(--sans);cursor:pointer}
+html.m2 .c9big{margin:0 0 8px;padding:24px 0 20px;border-radius:18px;background:var(--surface-2);text-align:center;font:800 30px/1 var(--sans);letter-spacing:.07em;font-variant-numeric:tabular-nums;user-select:all;-webkit-user-select:all}
+html.m2 #c9-code{text-transform:uppercase;letter-spacing:.07em;font-weight:700}
+html.m2 #c9-code::placeholder{letter-spacing:.07em}
+body.c9on{overflow:hidden}
+@keyframes c9up{from{transform:translateY(100%)}}
+@keyframes c9fade{from{opacity:0}}
+@media (prefers-reduced-motion:reduce){html.m2 .c9sheet,html.m2 .c9scrim{animation:none}}
+
+/* the drop form: which circle */
+html.m2 #c9pick{margin-top:14px}
+html.m2 #c9pick[hidden]{display:none}
+html.m2 .c9plabel{margin-bottom:8px;font:700 15px/1.2 var(--sans);color:var(--ink)}
+html.m2 .c9pnote{margin:0;font:400 14.5px/1.45 var(--sans);color:var(--ink-2)}
+html.m2 #c9pick .c9row{margin-top:10px}
+html.m2 #c9pick .chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+
+/* circle spots on the map get a thicker ring in the accent color */
+html.m2 .mkc .bubble,html.m2 body.on-map .mkc .bubble{box-shadow:0 0 0 3px var(--accent),0 8px 16px -6px rgba(0,0,0,.55)}
 </style>
 </head>
 <body>
@@ -1350,7 +1422,7 @@ html.m2 .m6beam{top:42px}
       <div class="field"><label for="d-name">Spot name</label><input id="d-name" maxlength="40" placeholder="Name your spot"></div>
       <div class="field"><label for="d-desc">Description</label><textarea id="d-desc" maxlength="220" placeholder="What makes it special? Views, vibe, best time to go."></textarea></div>
       <div class="field"><label>Vibe</label><div class="chips" id="vibes"></div></div>
-      <div class="field"><label>Who can see it</label><div class="seg" id="privseg" role="group" aria-label="Who can see it" style="margin:0"><button type="button" class="on" data-priv="public" aria-pressed="true">Public</button><button type="button" data-priv="circle" aria-pressed="false">Circle</button><button type="button" data-priv="secret" aria-pressed="false">Secret</button></div><div class="hint" id="privhint">Everyone can see it</div></div>
+      <div class="field"><label>Who can see it</label><div class="seg" id="privseg" role="group" aria-label="Who can see it" style="margin:0"><button type="button" class="on" data-priv="public" aria-pressed="true">Public</button><button type="button" data-priv="circle" aria-pressed="false">Circle</button><button type="button" data-priv="secret" aria-pressed="false">Secret</button></div><div class="hint" id="privhint">Everyone can see it</div><div id="c9pick" hidden></div></div>
       <div id="dupbox"></div>
       <div class="err" id="derr" role="alert"></div>
       <button class="btn solid" type="submit" style="justify-content:center">Drop it here</button>
@@ -1360,6 +1432,8 @@ html.m2 .m6beam{top:42px}
   <!-- COMMUNITY -->
   <section class="screen" id="s-circle" aria-label="Community">
     <div class="bar"><h2 class="spaced">Community</h2></div>
+    <div class="sect"><div><h3>Your circles</h3><p>Private groups for sharing spots with your people.</p></div></div>
+    <div id="c9box"></div>
     <div class="sect">
       <div><span class="eyebrow"><svg width="12" height="12"><use href="#i-flame"/></svg>Must-see Arizona</span><h3>Sparking up</h3><p>Iconic places to visit around the state.</p></div>
       <button class="more" data-go="all">See all<svg width="12" height="12"><use href="#i-arrow"/></svg></button>
@@ -1382,7 +1456,7 @@ html.m2 .m6beam{top:42px}
     </div>
     <div class="fgrid" id="freshfinds" style="padding:16px 18px 0"></div>
     <div class="sect">
-      <div><span class="eyebrow"><svg width="12" height="12"><use href="#i-people"/></svg>The community</span><h3>The Circle</h3><p>Spots and posts from members.</p></div>
+      <div><span class="eyebrow"><svg width="12" height="12"><use href="#i-people"/></svg>The community</span><h3>Member posts</h3><p>Spots and posts from members.</p></div>
     </div>
     <div class="members" id="members" style="margin-top:12px"></div>
     <div id="feed"></div>
@@ -1423,7 +1497,7 @@ html.m2 .m6beam{top:42px}
       <li><b>Leave no trace.</b> Pack out everything you bring and keep every spot better than you found it.</li>
       <li><b>No trespassing.</b> Only drop spots that are open to the public or that you have permission to use.</li>
       <li><b>Respect people's privacy.</b> Don't post photos of people without their OK, and never share someone's home or personal info.</li>
-      <li><b>Keep it chill.</b> No harassment, hate or selling. Good vibes only in the Circle.</li>
+      <li><b>Keep it chill.</b> No harassment, hate or selling. Good vibes only.</li>
     </ol>
   </section>
 
@@ -1441,6 +1515,7 @@ html.m2 .m6beam{top:42px}
   <button class="tab" data-tab="stash"><svg class="ic" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="3.6" width="10" height="3.4" rx="1"/><path d="M6.8 7h10.4A2.3 2.3 0 0 1 19.5 9.3v9.2a2.3 2.3 0 0 1-2.3 2.3H6.8a2.3 2.3 0 0 1-2.3-2.3V9.3A2.3 2.3 0 0 1 6.8 7Z"/><path d="M12 17.6v-5.2m0 3.4c-1.7-.3-2.7-1.5-2.9-3.3 1.7.3 2.7 1.5 2.9 3.3Zm0 0c1.7-.3 2.7-1.5 2.9-3.3-1.7.3-2.7 1.5-2.9 3.3Z"/></svg>Stash</button>
 </div></nav>
 
+<div class="c9m" id="c9m" hidden><div class="c9scrim" data-c9="close"></div><form class="c9sheet" id="c9form" novalidate role="dialog" aria-modal="true" aria-labelledby="c9h"></form></div>
 <div class="sheet" id="sheet"></div>
 <div class="scrim" id="scrim"></div>
 <aside class="menu" id="menu" aria-label="Menu">
@@ -2059,7 +2134,7 @@ function parentPlace(lat,lng){let best=null,bd=1e9;for(const p of places()){cons
 function spotArea(lat,lng){const pl=parentPlace(lat,lng);if(pl)return'on '+pl.name;const[x,y]=toXY(lat,lng);
   if(AREAS.some(([n,ax,ay])=>Math.hypot(ax-x,ay-y)<4))return'near '+nearestArea(x,y);const[np,d]=nearestPlace(lat,lng);return d<25?'near '+np.area.split(',').pop().trim():'in Arizona'}
 const noun=s=>isFind(s)?'spot':'place';
-const PRIV={public:['Public','Everyone can see it'],circle:['Circle','Only your Circle can see it'],secret:['Secret','Only you can see it']};
+const PRIV={public:['Public','Everyone can see it'],circle:['Circle','Only people in the circle you pick can see it'],secret:['Secret','Only you can see it']};
 function countFinds(){places().forEach(p=>p._n=findsOf(p.id).length)}
 function bubbleInner(p){return `<span class="bubble"><img src="${p.img}" alt=""></span><span class="btail"></span>`}
 function nearestArea(x,y){let best='Phoenix',bd=1e9;for(const[n,ax,ay]of AREAS){const d=Math.hypot(ax-x,ay-y);if(d<bd){bd=d;best=n}}return best}
@@ -2070,7 +2145,7 @@ function renderRotation(){$('#rotation').innerHTML=rotationIds.map(id=>{const s=
 function ncard(s){return `<button class="ncard" data-spot="${s.id}"><span class="nimg"><img src="${s.img}" alt=""><span class="away">${fmt(s.dist)} away</span></span>
   <span class="nbody"><b>${esc(s.name)}</b><span class="narea"><svg width="10" height="11"><use href="#i-pin"/></svg>${esc(s.area)}</span><span class="ntags">${s.tags.map(t=>`<i>${esc(t)}</i>`).join('')}</span></span></button>`}
 function lcard(s){const k=kindOf(s);return `<button class="lcard" data-spot="${s.id}"><img src="${s.img}" alt=""><div><b>${esc(s.name)}</b><div class="loc">${esc(s.area||'')}</div><div class="r">${isFind(s)?'<span class="k">Spot</span>':k?`<span class="k">${m2ico('c_'+k,14)}${M2ONE[k]}</span>`:''}<span>${fmt(s.dist)} away</span></div></div></button>`}
-const visible=s=>!isFind(s)||s.mine||s.privacy==='public';
+const visible=s=>!isFind(s)||s.mine||s.privacy==='public'||!!s.circle;
 const sorted=()=>spots.filter(visible).sort((a,b)=>a.dist-b.dist);
 function renderAll(){$('#alllist').innerHTML=sorted().filter(x=>!isFind(x)).map(lcard).join('')}
 function renderDrawer(){const list=sorted().filter(s=>s.dist<=radius);
@@ -2082,10 +2157,10 @@ function renderStash(){const list=[...saved].map(byId);
   $('#stashlist').innerHTML=list.length?`<div class="list">${list.map(lcard).join('')}</div>`:
    `<div class="empty"><div class="leafbig">${leafSvg(46,32)}</div>Your stash is empty.<br>Tap <b style="color:var(--cream)">Save to Stash</b> on any place or spot to keep it here.<div style="margin-top:16px"><button class="btn" data-go="map">Explore the map</button></div></div>`}
 function renderSpot(id){m3Spot(id)}
-function renderCircle(){
+function renderCircle(){c9Render();
   $('#members').innerHTML=members.map(m=>`<div><span class="ini">${m[0]}</span>${m[1]}</div>`).join('');$('#members').hidden=!members.length;
   posts=posts.filter(p=>byId(p.s));
-  $('#feed').innerHTML=posts.length?'':`<div class="empty" style="margin:8px 16px 0">The Circle is just getting started.<br>Drop a spot with the camera and it shows up here for everyone.</div>`;
+  $('#feed').innerHTML=posts.length?'':`<div class="empty" style="margin:8px 16px 0">Nothing posted yet.<br>Drop a spot with the camera and it shows up here for everyone.</div>`;
   if(posts.length)$('#feed').innerHTML=posts.map((p,i)=>{const s=byId(p.s),on=liked.has(i);return `<article class="post">
    <div class="hd"><span class="ini">${p.i}</span><div><b>${p.n}</b><small>${p.t}</small></div></div><p>${esc(p.p)}</p>
    <button class="ref" data-spot="${s.id}"><img src="${s.img}" alt=""><div><b>${esc(s.name)}</b><div class="loc" style="font-size:10px;color:var(--muted)">${esc(s.area)} · ${fmt(s.dist)}</div></div></button>
@@ -2129,7 +2204,7 @@ const STYLE={version:8,glyphs:'https://tiles.openfreemap.org/fonts/{fontstack}/{
  ]};
 function circlePoly(lat,lng,mi){const pts=[];for(let i=0;i<=72;i++){const a=i/72*2*Math.PI;pts.push([lng+Math.sin(a)*mi/(Math.cos(lat*Math.PI/180)*69.17),lat+Math.cos(a)*mi/69])}return{type:'Feature',properties:{},geometry:{type:'Polygon',coordinates:[pts]}}}
 function pinEl(s,size,where){const w=document.createElement('div');w.className='mk';
-  w.innerHTML=`<button class="pin" data-pin="${s.id}" data-where="${where}" aria-label="${esc(s.name||'Pin')}">${isFind(s)?bubbleInner(s):pinInner(s,size)+(s._n?`<span class="pcount">${s._n}</span>`:'')}</button>`;if(isFind(s)){w.className='mk mkf';w.firstChild.classList.add('find')}else if(s._col==='p')w.firstChild.classList.add('pp');return w}
+  w.innerHTML=`<button class="pin" data-pin="${s.id}" data-where="${where}" aria-label="${esc(s.name||'Pin')}">${isFind(s)?bubbleInner(s):pinInner(s,size)+(s._n?`<span class="pcount">${s._n}</span>`:'')}</button>`;if(isFind(s)){w.className='mk mkf'+(s.circle?' mkc':'');w.firstChild.classList.add('find')}else if(s._col==='p')w.firstChild.classList.add('pp');return w}
 const hoodSvg='<svg width="100%" height="100%" viewBox="0 0 40 40"><use href="#hood"/></svg>';
 
 let mapFail=null;
@@ -2236,7 +2311,7 @@ function go(name,{push=true}={}){
   if(push&&name!==current)history.push(current);
   $$('.screen').forEach(s=>s.classList.remove('on'));$('#s-'+name).classList.add('on');document.body.classList.toggle('on-map',name==='map');$('#centerbtn').setAttribute('aria-label',name==='map'?'Camera: drop a spot here':'Back to the map');
   const t=name in tabOf&&name!=='spot'?tabOf[name]:tabOf[history[history.length-1]]||null;$$('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
-  if(name!=='map')closeSheet();if(name==='stash')renderStash();if(name==='profile')renderProfile();if(name==='map'){renderNear();requestAnimationFrame(()=>world&&world.resize())}
+  if(name!=='map')closeSheet();if(name==='circle')c9Load();if(name==='stash')renderStash();if(name==='profile')renderProfile();if(name==='map'){renderNear();requestAnimationFrame(()=>world&&world.resize())}
   if(name==='drop')renderDropLoc();
   current=name;if(name!=='map')window.scrollTo(0,0)}
 function back(){go(history.pop()||'map',{push:false})}
@@ -2252,19 +2327,20 @@ $('#d-photo').addEventListener('change',e=>{const f=e.target.files[0];if(!f)retu
 let priv='public',dupOK=false;
 function resetDrop(){$('#dropform').reset();dropImg=null;dupOK=false;$('#photobox').querySelector('img')?.remove();$('#photobox').classList.remove('has');$('.camhint').hidden=false;$('#dupbox').innerHTML='';$('#derr').textContent='';
   $$('#vibes .chip').forEach(c=>{c.classList.remove('on');c.setAttribute('aria-pressed','false')});setPriv('public')}
-function setPriv(v){priv=v;$$('#privseg button').forEach(b=>{const on=b.dataset.priv===v;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});$('#privhint').textContent=PRIV[v][1]}
+function setPriv(v){priv=v;$$('#privseg button').forEach(b=>{const on=b.dataset.priv===v;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});$('#privhint').textContent=PRIV[v][1];c9Pick()}
 function doneDrop(id,msg){resetDrop();refreshAll();history=[];go('map',{push:false});setTimeout(()=>{world&&world.recenter();openSheet(id)},80);toast(msg)}
 function addPhotoTo(id){const f=byId(id);if(!f||!dropImg)return;f.photos.push({src:dropImg,by:'You',at:Date.now()});
   posts.unshift({i:'YOU',n:'You',t:'Just now',p:'Added a photo to '+f.name+'.',s:id,l:0});doneDrop(id,'Photo added to '+f.name)}
 $('#dropform').addEventListener('submit',e=>{e.preventDefault();
   const name=$('#d-name').value.trim(),desc=$('#d-desc').value.trim(),tags=$$('#vibes .chip.on').map(c=>c.dataset.vibe);
   const err=!dropImg?'Snap a photo first. The photo is the spot.':!name?'Give your spot a name.':'';$('#derr').textContent=err;if(err)return;
-  if(!dupOK){const near=spots.filter(x=>isFind(x)&&visible(x)&&miles([U.lat,U.lng],[x.lat,x.lng])<=SAME_SPOT).sort((a,b)=>miles([U.lat,U.lng],[a.lat,a.lng])-miles([U.lat,U.lng],[b.lat,b.lng]))[0];
+  if(!dupOK&&priv!=='circle'){const near=spots.filter(x=>isFind(x)&&visible(x)&&miles([U.lat,U.lng],[x.lat,x.lng])<=SAME_SPOT).sort((a,b)=>miles([U.lat,U.lng],[a.lat,a.lng])-miles([U.lat,U.lng],[b.lat,b.lng]))[0];
     if(near){const ft=Math.max(1,Math.round(miles([U.lat,U.lng],[near.lat,near.lng])/FT));
       $('#dupbox').innerHTML=`<div class="dupcheck" role="group" aria-label="Same spot check"><b>Same spot as \u201c${esc(near.name)}\u201d?</b><p>Someone dropped a spot ${ft} ft from here. Compare the photos.</p>
         <div class="duppics"><figure><img src="${near.img}" alt=""><figcaption>${esc(near.name)}</figcaption></figure><figure><img src="${dropImg}" alt=""><figcaption>Your photo</figcaption></figure></div>
         <div class="row"><button type="button" class="btn solid" data-act="dupsame" data-id="${near.id}">Same spot \u00b7 add my photo</button><button type="button" class="btn" data-act="dupdiff">Different spot</button></div></div>`;
       $('#dupbox').scrollIntoView({behavior:'smooth',block:'center'});return}}
+  if(priv==='circle'){c9Send(name,desc,tags);return}
   const pl=parentPlace(U.lat,U.lng),id='find'+Date.now(),[x,y]=toXY(U.lat,U.lng);
   spots.push({id,type:'find',place:pl?pl.id:null,name,area:spotArea(U.lat,U.lng),lat:U.lat,lng:U.lng,x,y,rating:null,count:0,img:dropImg,photos:[{src:dropImg,by:'You',at:Date.now()}],privacy:priv,created:Date.now(),
     tags:tags.length?tags:['Chill'],desc:desc||'A spot found by a Society member.',mine:true});
@@ -2300,7 +2376,7 @@ document.addEventListener('click',e=>{
   else if(d.act==='replayintro'){history=[];go('map',{push:false});showIntro()}
   else if(d.act==='delask'){$('#delbox').innerHTML=`<div class="delconfirm" role="alertdialog" aria-label="Delete spot"><b>Delete this spot?</b><p>It\u2019ll be removed from the map, Community and everyone\u2019s stash. This can\u2019t be undone.</p><div class="row"><button class="delbtn solid" data-act="deldo" data-id="${d.id}">Delete</button><button class="btn" data-act="delno" data-id="${d.id}">Cancel</button></div></div>`}
   else if(d.act==='delno'){$('#delbox').innerHTML=`<button class="delbtn" data-act="delask" data-id="${d.id}"><svg width="15" height="15"><use href="#i-trash"/></svg>Delete this spot</button>`}
-  else if(d.act==='deldo'){const k=spots.findIndex(x=>x.id===d.id&&x.mine);if(k<0)return;const nm=spots[k].name;spots.splice(k,1);saved.delete(d.id);posts=posts.filter(p=>p.s!==d.id);closeSheet();refreshAll();history=[];go('map',{push:false});toast(nm+' was deleted')}
+  else if(d.act==='deldo'){const k=spots.findIndex(x=>x.id===d.id&&x.mine);if(k<0)return;if(spots[k].circle){c9Del(spots[k]);return}const nm=spots[k].name;spots.splice(k,1);saved.delete(d.id);posts=posts.filter(p=>p.s!==d.id);closeSheet();refreshAll();history=[];go('map',{push:false});toast(nm+' was deleted')}
   else if(d.act==='camera'&&current!=='map'){history=[];go('map',{push:false})}
   else if(d.act==='camera'){history=[];go('drop',{push:false});const f=$('#d-photo');try{f.click()}catch(err){}}
   else if(d.act==='tilt'){const on=world&&world.toggleTilt();el.textContent=on?'2D':'3D'}
@@ -2591,7 +2667,8 @@ function m3Spot(id){const s=byId(id),isSaved=saved.has(id),find=isFind(s),k=kind
   const tags=[];
   if(s.mine)tags.push(`<span class="mine-tag"><svg width="12" height="12"><use href="#i-user"/></svg>Yours</span>`);
   if(id==='golden')tags.push(`<span class="badge"><svg width="12" height="12"><use href="#i-crown"/></svg>Hotbox of the week</span>`);
-  if(find)tags.push(`<span class="mine-tag"><svg width="12" height="12"><use href="#i-${s.privacy==='secret'?'lock':s.privacy==='circle'?'people':'globe'}"/></svg>${PRIV[s.privacy][0]}</span>`);
+  if(find)tags.push(`<span class="mine-tag"><svg width="12" height="12"><use href="#i-${s.privacy==='secret'?'lock':s.privacy==='circle'?'people':'globe'}"/></svg>${s.circle?esc((typeof c9Circle==='function'&&c9Circle(s.circle)||{name:'Circle'}).name):PRIV[s.privacy][0]}</span>`);
+  if(s.circle&&!s.mine&&s.by)tags.push(`<span class="mine-tag"><svg width="12" height="12"><use href="#i-user"/></svg>${esc(s.by)}</span>`);
   const here=find?'':(()=>{const f=findsOf(id).filter(visible);return `<h3 class="m2h">Spots here</h3>`+(f.length?`<div class="fgrid">${f.map(x=>`<button class="ftile" data-spot="${x.id}"><img src="${x.img}" alt=""><b>${esc(x.name)}</b>${x.photos.length>1?`<i>${x.photos.length} photos</i>`:''}</button>`).join('')}</div>`
     :`<div class="empty">No spots shared here yet. Explore ${esc(s.name)}, find a boulder, ledge or view you love, and snap it with the camera.</div>`)})();
   $('#s-spot').innerHTML=`<div class="dhero"><img src="${s.img}" alt="${esc(s.name)}" data-act="zoomimg" data-id="${id}" role="button" tabindex="0" aria-label="View bigger photo">${s.credit?`<a class="credit" href="${s.credit.page}" target="_blank" rel="noopener">${esc(credTxt(s.credit))}</a>`:''}
@@ -2747,6 +2824,194 @@ function m6Bind(map){m7Guard(map);
   map.on('movestart',m6Btn);map.on('moveend',()=>{m6Btn();if(m6Up&&m6Shown!=null&&world&&world.heading)setTimeout(()=>world.heading(m6Shown,m6Acc,m6Up),30)})}
 document.addEventListener('click',e=>{if(e.target.closest('#m6loc'))m6Locate()});
 m6Btn();
+/* ======================= circles: a tiny Supabase client (no library needed) ======================= */
+function hpDB(URL,KEY,store){
+  const SK='hp_sb';let S=null,refreshing=null;
+  try{S=JSON.parse(store.getItem(SK)||'null')}catch(e){S=null}
+  const save=()=>{try{S?store.setItem(SK,JSON.stringify(S)):store.removeItem(SK)}catch(e){}};
+  const keep=j=>{if(!j||!j.access_token)throw new Error('no session');S={a:j.access_token,r:j.refresh_token,e:j.expires_at||Math.floor(Date.now()/1000)+(j.expires_in||3600),u:j.user&&j.user.id||(S&&S.u)};save()};
+  async function req(path,o={}){
+    const h=Object.assign({apikey:KEY},o.headers||{});let body=o.body;
+    if(o.auth!==false){await fresh();h.Authorization='Bearer '+S.a}
+    if(body!==undefined&&!(typeof Blob!=='undefined'&&body instanceof Blob)&&!(body instanceof Uint8Array)){h['Content-Type']='application/json';body=JSON.stringify(body)}
+    let r;try{r=await fetch(URL+path,{method:o.method||'GET',headers:h,body})}catch(e){const er=new Error('offline');er.offline=true;throw er}
+    const txt=await r.text();let j=null;try{j=txt?JSON.parse(txt):null}catch(e){j=txt}
+    if(!r.ok){const er=new Error((j&&(j.message||j.msg||j.error_description||j.error))||('HTTP '+r.status));er.status=r.status;er.body=j;throw er}
+    return j}
+  async function fresh(){
+    if(!S)throw new Error('not signed in');
+    if(S.e-90>Date.now()/1000)return;
+    refreshing=refreshing||req('/auth/v1/token?grant_type=refresh_token',{method:'POST',auth:false,body:{refresh_token:S.r}})
+      .then(keep,e=>{if(e.status>=400&&e.status<500){S=null;save()}throw e}).finally(()=>{refreshing=null});
+    await refreshing}
+  const row=j=>Array.isArray(j)?j[0]||null:j;
+  return{
+    me:()=>S&&S.u,
+    signedIn:()=>!!S,
+    async signIn(){if(S)return S.u;keep(await req('/auth/v1/signup',{method:'POST',auth:false,body:{data:{}}}));return S.u},
+    forget(){S=null;save()},
+    sel:(t,q)=>req('/rest/v1/'+t+'?'+q),
+    ins:(t,r,q='')=>req('/rest/v1/'+t+(q?'?'+q:''),{method:'POST',body:r,headers:{Prefer:'return=representation'}}).then(row),
+    upsert:(t,r)=>req('/rest/v1/'+t,{method:'POST',body:r,headers:{Prefer:'resolution=merge-duplicates,return=representation'}}).then(row),
+    del:(t,q)=>req('/rest/v1/'+t+'?'+q,{method:'DELETE',headers:{Prefer:'return=representation'}}),
+    rpc:(f,a)=>req('/rest/v1/rpc/'+f,{method:'POST',body:a}).then(j=>{j=row(j);return j&&j.id?j:null}),
+    upload:(b,p,blob,type)=>req('/storage/v1/object/'+b+'/'+p,{method:'POST',body:blob,headers:{'Content-Type':type||blob.type,'x-upsert':'false'}}),
+    sign:(b,paths,sec)=>req('/storage/v1/object/sign/'+b,{method:'POST',body:{expiresIn:sec,paths}}).then(a=>{const m={};(a||[]).forEach(x=>{if(x&&x.signedURL)m[x.path]=URL+'/storage/v1'+x.signedURL});return m}),
+    unlink:(b,paths)=>req('/storage/v1/object/'+b,{method:'DELETE',body:{prefixes:paths}})
+  }}
+
+/* ======================= private circles ======================= */
+var C9={circles:[],members:[],names:{},myName:'',sel:null,drop:null,state:'idle',at:0,busy:false,sending:false};
+const c9db=hpDB('https://yltvzutjxlsqmxpmpggv.supabase.co','sb_publishable_McvHKJzSaNuP-ibiLfdQVg_4vRjSTKb',
+  (()=>{try{localStorage.getItem('x');return localStorage}catch(e){const m={};return{getItem:k=>k in m?m[k]:null,setItem:(k,v)=>{m[k]=v},removeItem:k=>{delete m[k]}}}})());
+try{C9.sel=localStorage.getItem('hp_c9_sel')}catch(e){}
+const c9Fmt=c=>'HP-'+c.slice(0,4)+'-'+c.slice(4);
+const c9Circle=id=>C9.circles.find(c=>c.id===id);
+const c9Link=c=>location.origin+location.pathname+'?join='+c.code;
+const c9Ini=n=>(n||'?').trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase()||'?';
+function c9Save(){try{C9.sel?localStorage.setItem('hp_c9_sel',C9.sel):localStorage.removeItem('hp_c9_sel')}catch(e){}}
+function c9Err(e,fall){const m=String(e&&e.message||'');
+  if(e&&e.offline)return'You’re offline. Try again when you have signal.';
+  if(/too many tries/.test(m))return'Too many wrong codes. Wait an hour, then try again.';
+  if(/20 circles/.test(m))return'You can own up to 20 circles.';
+  return fall}
+
+/* load everything this person can see: their circles, who's in them, and the spots shared there */
+async function c9Load(force){
+  if(!c9db.signedIn()){C9.circles=[];C9.state='ready';c9Render();c9Pick();return}
+  if(C9.busy||(!force&&Date.now()-C9.at<30000))return;
+  C9.busy=true;if(!C9.circles.length){C9.state='loading';c9Render()}
+  try{
+    const[cs,ms,ps,ss]=await Promise.all([
+      c9db.sel('circles','select=id,name,code,owner_id,created_at&order=created_at.asc'),
+      c9db.sel('circle_members','select=circle_id,user_id,role,joined_at&order=joined_at.asc'),
+      c9db.sel('profiles','select=id,name'),
+      c9db.sel('circle_spots','select=*&order=created_at.desc&limit=500')]);
+    const paths=ss.map(s=>s.photo_path).filter(Boolean);
+    const urls=paths.length?await c9db.sign('circle-photos',paths,86400):{};
+    C9.circles=cs;C9.members=ms;C9.names={};ps.forEach(p=>{C9.names[p.id]=p.name});C9.myName=C9.names[c9db.me()]||'';
+    if(!c9Circle(C9.sel)){C9.sel=cs[0]?cs[0].id:null;c9Save()}
+    c9Merge(ss,urls);C9.state='ready';C9.at=Date.now();
+  }catch(e){if(!c9db.signedIn()){C9.circles=[];c9Merge([],{});C9.state='ready'}else C9.state='error'}
+  C9.busy=false;c9Render();c9Pick()}
+
+function c9Spot(r,src,old){const me=c9db.me(),[x,y]=toXY(r.lat,r.lng),pl=r.place_id&&byId(r.place_id)?r.place_id:(parentPlace(r.lat,r.lng)||{}).id||null,at=Date.parse(r.created_at)||Date.now(),by=r.user_id===me?'You':(C9.names[r.user_id]||'Someone');
+  return{id:'c-'+r.id,type:'find',place:pl,name:r.name,area:spotArea(r.lat,r.lng),lat:r.lat,lng:r.lng,x,y,rating:null,count:0,img:src,photos:[{src,by,at}],
+    privacy:'circle',circle:r.circle_id,row:r.id,path:r.photo_path,by,created:at,tags:old&&old.tags||[],desc:r.note||'',mine:r.user_id===me}}
+function c9Merge(rows,urls){
+  const old=new Map(spots.filter(s=>s.circle).map(s=>[s.id,s]));
+  for(let i=spots.length-1;i>=0;i--)if(spots[i].circle)spots.splice(i,1);
+  rows.forEach(r=>{const o=old.get('c-'+r.id);spots.push(c9Spot(r,urls[r.photo_path]||(o&&o.img)||'',o))});
+  [...saved].forEach(id=>{if(!byId(id))saved.delete(id)});
+  refreshAll()}
+
+/* the Community tab: your circles */
+function c9Render(){const box=$('#c9box');if(!box||typeof C9==='undefined')return;
+  if(C9.state==='loading'&&!C9.circles.length){box.innerHTML='<div class="c9card c9muted">Loading your circles…</div>';return}
+  if(C9.state==='error'&&!C9.circles.length){box.innerHTML='<div class="c9card"><p style="margin:0">Couldn’t reach your circles. Check your signal.</p><div class="c9row c9one"><button class="btn" data-c9="retry">Try again</button></div></div>';return}
+  if(!C9.circles.length){box.innerHTML=`<div class="c9card"><span class="c9art"><svg width="24" height="24"><use href="#i-people"/></svg></span><h4>Start a private circle</h4><p>Invite your people with a code. Spots you share in a circle stay inside it.</p><div class="c9row"><button class="btn solid" data-c9="create">Start a circle</button><button class="btn" data-c9="join">Join with a code</button></div></div>`;return}
+  const c=c9Circle(C9.sel)||C9.circles[0],me=c9db.me(),own=c.owner_id===me;C9.sel=c.id;
+  const mem=C9.members.filter(m=>m.circle_id===c.id),names=mem.map(m=>m.user_id===me?'You':(C9.names[m.user_id]||'Member'));
+  const list=spots.filter(s=>s.circle===c.id).sort((a,b)=>b.created-a.created);
+  box.innerHTML=`<div class="c9tabs" role="tablist" aria-label="Your circles">${C9.circles.map(x=>`<button role="tab" class="c9tab${x.id===c.id?' on':''}" aria-selected="${x.id===c.id}" data-c9="sel" data-id="${x.id}">${esc(x.name)}</button>`).join('')}<button class="c9tab c9add" data-c9="add">+ Add</button></div>
+  <div class="c9panel">
+    <h4>${esc(c.name)}</h4>
+    <div class="c9who"><span class="c9av" aria-hidden="true">${mem.slice(0,5).map(m=>`<i class="${m.user_id===me?'c9you':''}">${esc(c9Ini(m.user_id===me?C9.myName:C9.names[m.user_id]))}</i>`).join('')}</span><span>${mem.length} member${mem.length===1?'':'s'}: ${esc(names.join(', '))}</span></div>
+    <div class="c9inv"><div><small>Invite code</small><b>${c9Fmt(c.code)}</b></div><button class="btn solid" data-c9="share" data-id="${c.id}"><svg width="15" height="15"><use href="#i-people"/></svg>Invite</button></div>
+    ${list.length?`<div class="fgrid c9grid">${list.map(x=>`<button class="ftile" data-spot="${x.id}"><img src="${x.img}" alt=""><b>${esc(x.name)}</b><i>${esc(x.by)}</i></button>`).join('')}</div>`
+      :`<p class="c9empty">No spots in ${esc(c.name)} yet. Tap the camera, choose <b>Circle</b>, and share one.</p>`}
+    <div class="c9ft"><span>You’re ${esc(C9.myName||'in this circle')} <button data-c9="rename">Change</button></span><button class="c9out" data-c9="leave" data-id="${c.id}" data-own="${own?1:''}">${own?'Delete circle':'Leave circle'}</button></div>
+  </div><p class="c9note">Your circles are kept on this device.</p>`}
+
+/* the drop form: pick which circle gets the spot */
+function c9Pick(){const el=$('#c9pick');if(!el||typeof C9==='undefined')return;const on=typeof priv!=='undefined'&&priv==='circle';el.hidden=!on;if(!on)return;
+  if(!C9.circles.length){el.innerHTML='<p class="c9pnote">You’re not in a circle yet.</p><div class="c9row"><button type="button" class="btn" data-c9="create">Start a circle</button><button type="button" class="btn" data-c9="join">Join with a code</button></div>';return}
+  if(!c9Circle(C9.drop))C9.drop=c9Circle(C9.sel)?C9.sel:C9.circles[0].id;
+  el.innerHTML=`<div class="c9plabel">Share with</div><div class="chips">${C9.circles.map(c=>`<button type="button" class="chip${c.id===C9.drop?' on':''}" data-c9="drop" data-id="${c.id}" aria-pressed="${c.id===C9.drop}">${esc(c.name)}</button>`).join('')}</div>`}
+
+/* sheet for start / join / ready / name */
+const c9NameField=()=>`<div class="field"><label for="c9-me">Your name</label><input id="c9-me" maxlength="30" placeholder="What your circle calls you" autocomplete="nickname" value="${esc(C9.myName)}"></div>`;
+const c9Pre=a=>{const p=a?String(a).toUpperCase().replace(/[^A-Z0-9]/g,'').replace(/^HP(?=.{8}$)/,''):'';return p.length===8?c9Fmt(p):p};
+function c9Open(mode,arg){const f=$('#c9form'),need=!C9.myName;C9.mode=mode;C9.arg=arg;let h='';
+  if(mode==='create')h=`<h3 id="c9h">Start a circle</h3><p>You’ll get a code to send to the people you want in it.</p>${need?c9NameField():''}<div class="field"><label for="c9-name">Circle name</label><input id="c9-name" maxlength="40" placeholder="The crew" autocomplete="off"></div><div class="err" id="c9err" role="alert"></div><button class="btn solid" type="submit">Create circle</button><button type="button" class="c9link" data-c9="join">Have a code? Join instead</button>`;
+  else if(mode==='join')h=`<h3 id="c9h">Join a circle</h3><p>Enter the invite code someone sent you.</p>${need?c9NameField():''}<div class="field"><label for="c9-code">Invite code</label><input id="c9-code" maxlength="16" placeholder="HP-XXXX-XXXX" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" value="${esc(c9Pre(arg))}"></div><div class="err" id="c9err" role="alert"></div><button class="btn solid" type="submit">Join circle</button><button type="button" class="c9link" data-c9="create">Start your own instead</button>`;
+  else if(mode==='made'){const c=c9Circle(arg);h=`<h3 id="c9h">${esc(c.name)} is ready</h3><p>Send this code to the people you want in it. They tap the link, or enter the code in Community.</p><div class="c9big">${c9Fmt(c.code)}</div><button class="btn solid" type="button" data-c9="share" data-id="${c.id}">Share invite</button><button class="btn" type="button" data-c9="close">Done</button>`}
+  else if(mode==='rename')h=`<h3 id="c9h">Your name</h3><p>This is how you show up in your circles.</p>${c9NameField()}<div class="err" id="c9err" role="alert"></div><button class="btn solid" type="submit">Save</button>`;
+  f.innerHTML=`<button type="button" class="c9x" data-c9="close" aria-label="Close"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 2l10 10M12 2 2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>`+h;
+  $('#c9m').hidden=false;document.body.classList.add('c9on');
+  setTimeout(()=>{const i=f.querySelector(need&&mode!=='made'?'#c9-me':mode==='join'&&!arg?'#c9-code':mode==='create'?'#c9-name':mode==='rename'?'#c9-me':'.btn.solid');i&&i.focus()},60)}
+function c9Close(){$('#c9m').hidden=true;document.body.classList.remove('c9on');C9.mode=null}
+async function c9Submit(){const f=$('#c9form'),err=$('#c9err'),btn=f.querySelector('button[type=submit]');if(!btn||btn.disabled)return;
+  const nm=f.querySelector('#c9-me'),name=nm?nm.value.trim().replace(/\s+/g,' '):C9.myName;
+  const cn=f.querySelector('#c9-name'),code=f.querySelector('#c9-code');
+  const clean=code?code.value.toUpperCase().replace(/[^A-Z0-9]/g,'').replace(/^HP(?=.{8}$)/,''):'';
+  const bad=nm&&!name?'Add your name so your circle knows who you are.':cn&&!cn.value.trim()?'Give your circle a name.':code&&clean.length!==8?'Codes look like HP-ABCD-EFGH.':'';
+  err.textContent=bad;if(bad)return;
+  const label=btn.textContent;btn.disabled=true;btn.textContent=C9.mode==='create'?'Creating…':C9.mode==='join'?'Joining…':'Saving…';
+  try{
+    await c9db.signIn();
+    if(nm&&name!==C9.myName){await c9db.upsert('profiles',{id:c9db.me(),name});C9.myName=name;C9.names[c9db.me()]=name}
+    if(C9.mode==='create'){const c=await c9db.rpc('create_circle',{circle_name:cn.value.trim().replace(/\s+/g,' ')});if(!c)throw new Error('create');
+      C9.sel=C9.drop=c.id;c9Save();await c9Load(true);c9Open('made',c.id)}
+    else if(C9.mode==='join'){const had=new Set(C9.circles.map(c=>c.id)),c=await c9db.rpc('join_circle',{invite:clean});
+      if(!c){err.textContent='That code didn’t match a circle. Check it and try again.';return}
+      C9.sel=C9.drop=c.id;c9Save();c9Close();await c9Load(true);if(current!=='drop'){history=[];go('circle',{push:false})}toast(had.has(c.id)?'You’re already in '+c.name:'You joined '+c.name)}
+    else{c9Close();c9Render()}
+  }catch(e){err.textContent=c9Err(e,'Something went wrong. Try again.')}
+  finally{btn.disabled=false;btn.textContent=label}}
+
+async function c9Share(id){const c=c9Circle(id);if(!c)return;const url=c9Link(c),text=`Join my circle “${c.name}” on Higher Places. Invite code: ${c9Fmt(c.code)}`;
+  if(navigator.share){try{await navigator.share({title:'Join my circle',text,url});return}catch(e){if(e&&e.name==='AbortError')return}}
+  try{await navigator.clipboard.writeText(text+'\n'+url);toast('Invite copied. Paste it in a text.')}catch(e){toast('Your invite code is '+c9Fmt(c.code))}}
+
+async function c9Leave(el){const id=el.dataset.id,c=c9Circle(id),own=!!el.dataset.own;if(!c)return;
+  if(!el.dataset.armed){el.dataset.armed=1;el.textContent=own?'Tap again to delete it for everyone':'Tap again to leave';clearTimeout(el._t);el._t=setTimeout(()=>{if(el.isConnected){delete el.dataset.armed;el.textContent=own?'Delete circle':'Leave circle'}},4000);return}
+  el.disabled=true;
+  try{if(own){const mine=spots.filter(s=>s.circle===id&&s.mine&&s.path).map(s=>s.path);if(mine.length)await c9db.unlink('circle-photos',mine).catch(()=>{});await c9db.del('circles','id=eq.'+id)}
+    else await c9db.del('circle_members','circle_id=eq.'+id+'&user_id=eq.'+c9db.me());
+    C9.sel=null;c9Save();await c9Load(true);toast(own?c.name+' was deleted':'You left '+c.name)}
+  catch(e){el.disabled=false;toast(c9Err(e,'Couldn’t do that. Try again.'))}}
+
+/* sharing a spot from the camera into a circle */
+function c9Shrink(src){return new Promise((res,rej)=>{const im=new Image();im.onload=()=>{const k=Math.min(1,1600/Math.max(im.naturalWidth,im.naturalHeight)),w=Math.max(1,Math.round(im.naturalWidth*k)),h=Math.max(1,Math.round(im.naturalHeight*k)),cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(im,0,0,w,h);cv.toBlob(b=>b?res(b):rej(new Error('photo')),'image/jpeg',.82)};im.onerror=()=>rej(new Error('photo'));im.src=src})}
+async function c9Send(name,desc,tags){const c=c9Circle(C9.drop),btn=$('#dropform button[type=submit]');
+  if(!c){$('#derr').textContent=C9.circles.length?'Pick a circle to share it with.':'Start or join a circle first, or pick Public or Secret.';return}
+  if(C9.sending)return;C9.sending=true;const label=btn.innerHTML;btn.disabled=true;btn.textContent='Sharing…';$('#derr').textContent='';
+  try{const blob=await c9Shrink(dropImg).catch(()=>{throw new Error('photo')});
+    const path=c.id+'/'+(crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random().toString(36).slice(2))+'.jpg';
+    await c9db.upload('circle-photos',path,blob,'image/jpeg');
+    const pl=parentPlace(U.lat,U.lng);let r;
+    try{r=await c9db.ins('circle_spots',{circle_id:c.id,name:name.slice(0,60),note:desc?desc.slice(0,500):null,lat:U.lat,lng:U.lng,place_id:pl?pl.id:null,photo_path:path})}
+    catch(e){c9db.unlink('circle-photos',[path]).catch(()=>{});throw e}
+    const s=c9Spot(r,dropImg,{tags});spots.push(s);C9.sel=c.id;c9Save();
+    btn.disabled=false;btn.innerHTML=label;C9.sending=false;
+    doneDrop(s.id,'Shared with '+c.name);return}
+  catch(e){$('#derr').textContent=e.message==='photo'?'That photo couldn’t be read. Try another one.':c9Err(e,'Couldn’t share it. Check your signal and try again.')}
+  C9.sending=false;btn.disabled=false;btn.innerHTML=label}
+async function c9Del(s){try{await c9db.del('circle_spots','id=eq.'+s.row);if(s.path)c9db.unlink('circle-photos',[s.path]).catch(()=>{})}catch(e){toast(c9Err(e,'Couldn’t delete it. Try again.'));return}
+  const k=spots.indexOf(s);if(k>=0)spots.splice(k,1);saved.delete(s.id);closeSheet();refreshAll();history=[];go('map',{push:false});toast(s.name+' was deleted')}
+
+document.addEventListener('click',e=>{const el=e.target.closest('[data-c9]');if(!el)return;const a=el.dataset.c9;
+  if(a==='create'||a==='join')c9Open(a);
+  else if(a==='add')c9Open('create');
+  else if(a==='rename')c9Open('rename');
+  else if(a==='close')c9Close();
+  else if(a==='retry')c9Load(true);
+  else if(a==='sel'){C9.sel=el.dataset.id;c9Save();c9Render()}
+  else if(a==='share')c9Share(el.dataset.id);
+  else if(a==='leave')c9Leave(el);
+  else if(a==='drop'){C9.drop=el.dataset.id;c9Pick();$('#derr').textContent=''}});
+document.addEventListener('submit',e=>{if(e.target.id!=='c9form')return;e.preventDefault();c9Submit()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#c9m').hidden)c9Close()});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)c9Load()});
+
+/* opened from an invite link: ?join=CODE */
+(()=>{let code=null;try{code=new URLSearchParams(location.search).get('join')}catch(e){}if(!code)return;
+  try{const u=new URL(location.href);u.searchParams.delete('join');window.history.replaceState(null,'',u.pathname+u.search+u.hash)}catch(e){}
+  const t=setInterval(()=>{const g=$('#gate'),i=$('#intro');if(g&&!g.classList.contains('out'))return;if(i&&!i.hidden)return;clearInterval(t);
+    history=[];go('circle',{push:false});c9Open('join',code)},400)})();
+setTimeout(()=>c9Load(true),0);
+window.c9Load=c9Load;
 
 window.HP={_m6:()=>({h:m6H,shown:m6Shown,up:m6Up,src:m6Src}),_map:()=>world&&world.map,_lay:()=>m2Layout(),m2:()=>({theme:M2T,cat:m2Cat,sel:m2Sel}),setTheme:m2SetTheme,setCat:m2SetCat,spots,renderSpot,go,openSheet,zoom:f=>world&&world.zoom(f),moveTo:(lat,lng)=>{U.lat=lat;U.lng=lng;[U.x,U.y]=toXY(lat,lng);refreshAll()}};
 document.body.classList.add('on-map');
