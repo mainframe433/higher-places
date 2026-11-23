@@ -2137,7 +2137,7 @@ function realWorld(el){return new Promise(res=>{
   let map=null,done=false,got=false;
   const finish=ok=>{if(done)return;done=true;clearTimeout(t);if(ok)res(map);else{mapFail=1;try{map&&map.remove()}catch(e){}el.innerHTML='';res(null)}};
   const t=setTimeout(()=>finish(got),8000);
-  try{map=new maplibregl.Map({container:el,style:themedStyle(M2T),center:[U.lng,U.lat],zoom:16,minZoom:11,pitch:0,bearing:0,maxPitch:80,attributionControl:false,antialias:true,fadeDuration:150});map.once('load',()=>{map.resize();map.jumpTo({center:[U.lng,U.lat],zoom:16,pitch:0});setTimeout(()=>map.resize(),400)})}catch(e){return finish(false)}
+  try{map=new maplibregl.Map({container:el,style:themedStyle(M2T),center:[U.lng,U.lat],zoom:16,minZoom:3,pitch:0,bearing:0,maxPitch:80,attributionControl:false,antialias:true,fadeDuration:150});map.once('load',()=>{map.resize();map.jumpTo({center:[U.lng,U.lat],zoom:16,pitch:0});setTimeout(()=>map.resize(),400)})}catch(e){return finish(false)}
   map.on('error',e=>{if(!got&&(!e.sourceId||e.sourceId==='omt'))finish(false)});
   map.on('data',e=>{if(e.sourceId==='omt'&&e.tile){got=true;finish(true)}});
 });}
@@ -2152,7 +2152,7 @@ function adapterReal(map){
   if(map.isStyleLoaded())addRadius();else map.once('load',addRadius);map.on('styledata',()=>{try{if(map.isStyleLoaded()&&!map.getSource('radius'))addRadius()}catch(e){}});map.on('move',m2Queue);map.on('moveend',m2Queue);
   let pins=[],follow=true;m6Bind(map);const aimBeam=()=>{if(beamH==null)return;const r=beamH*Math.PI/180,p0=map.project([U.lng,U.lat]),p1=map.project([U.lng+.0004*Math.sin(r)/Math.cos(U.lat*Math.PI/180),U.lat+.0004*Math.cos(r)]);beam.style.transform=`rotate(${Math.atan2(p1.x-p0.x,p0.y-p1.y)*180/Math.PI}deg)`};map.on('move',aimBeam);
   map.on('dragstart',()=>{follow=false});let snapT,snapN=0,snapAt=0;const snap=()=>{clearTimeout(snapT);snapT=setTimeout(()=>{if(!follow||map.isMoving())return;const c=map.getCenter();if(Math.abs(c.lat-U.lat)+Math.abs(c.lng-U.lng)<2e-5)return;const now=Date.now();if(now-snapAt>1500)snapN=0;if(++snapN>3)return;snapAt=now;map.jumpTo({center:[U.lng,U.lat],padding:pad()})},120)};map.on('moveend',snap);map.on('data',e=>{if(e.sourceId==='dem')snap()});
-  let idle=null;map.on('dragend',()=>{clearTimeout(idle);idle=setTimeout(()=>{if(!follow&&!$('#sheet').classList.contains('on'))api.recenter()},9000)});
+  let idle=null;map.on('dragend',()=>{clearTimeout(idle);idle=setTimeout(()=>{if(!follow&&!$('#sheet').classList.contains('on')&&map.getZoom()>=14)api.recenter()},9000)});
   const pad=()=>m7Pad();
   const showFinds=()=>{const on=map.getZoom()>=15;$$('#world .mkf').forEach(w=>w.style.display=on?'':'none')};map.on('zoom',showFinds);
   const api={kind:'real',map,pins:()=>pins,isFollow:()=>follow,heading(h,acc,up){beamH=h;aimBeam();beam.classList.add('on');const a=Math.round(acc);if(a!==beamA){beamA=a;const R=86,x=R*Math.sin(a*Math.PI/180),y=-R*Math.cos(a*Math.PI/180);beam.querySelector('.m6w').setAttribute('d',`M0 0L${-x} ${y}A${R} ${R} 0 0 1 ${x} ${y}Z`)}if(up&&follow&&!map.isMoving()&&Math.abs(((map.getBearing()-h+540)%360)-180)>.8)map.jumpTo({bearing:h})},restyle(st){map.setStyle(st);const fix=()=>{try{map.setSky(st.sky);if(map.setLight)map.setLight(st.light);if(map.isStyleLoaded()&&!map.getSource('radius'))addRadius()}catch(e){}m2Queue()};fix();map.once('idle',fix)},
