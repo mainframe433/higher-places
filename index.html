@@ -1232,7 +1232,7 @@ html.m2 body.on-map .m2note{top:calc(env(safe-area-inset-top,0px) + 10px);right:
 html.m2 .m5near{top:calc(env(safe-area-inset-top,0px) + 64px)}
 
 /* ======================= heading beam + locate button ======================= */
-html.m2 .me3d{position:relative}
+/* the marker is already absolutely positioned by the map; that gives the beam its anchor */
 html.m2 .me3d b{position:relative;z-index:1}
 html.m2 .m6beam{position:absolute;z-index:0;left:50%;top:23px;width:180px;height:180px;margin:-90px 0 0 -90px;pointer-events:none;opacity:0;transition:opacity .5s}
 html.m2 .m6beam.on{opacity:1}
@@ -1245,6 +1245,10 @@ html.m2 .m6loc[data-st=follow],html.m2 .m6loc[data-st=heading]{color:var(--accen
 html.m2 .m6loc[data-st=heading]{background:var(--accent);color:var(--accent-ink)}
 html.m2 .m6loc:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 html.m2 .m5near.open .m6row{visibility:hidden}
+/* flat map: you are a dot sitting right on your location (no stick), with the beam fanning from its center */
+html.m2 .me3d::after{display:none}
+html.m2 .me3d b{transform:translateY(21px)}
+html.m2 .m6beam{top:42px}
 </style>
 </head>
 <body>
@@ -2133,7 +2137,7 @@ function realWorld(el){return new Promise(res=>{
   let map=null,done=false,got=false;
   const finish=ok=>{if(done)return;done=true;clearTimeout(t);if(ok)res(map);else{mapFail=1;try{map&&map.remove()}catch(e){}el.innerHTML='';res(null)}};
   const t=setTimeout(()=>finish(got),8000);
-  try{map=new maplibregl.Map({container:el,style:themedStyle(M2T),center:[U.lng,U.lat],zoom:16.8,minZoom:11,pitch:48,bearing:0,maxPitch:80,attributionControl:false,antialias:true,fadeDuration:150});map.once('load',()=>{map.resize();map.jumpTo({center:[U.lng,U.lat],zoom:16.8,pitch:48});setTimeout(()=>map.resize(),400)})}catch(e){return finish(false)}
+  try{map=new maplibregl.Map({container:el,style:themedStyle(M2T),center:[U.lng,U.lat],zoom:16,minZoom:11,pitch:0,bearing:0,maxPitch:80,attributionControl:false,antialias:true,fadeDuration:150});map.once('load',()=>{map.resize();map.jumpTo({center:[U.lng,U.lat],zoom:16,pitch:0});setTimeout(()=>map.resize(),400)})}catch(e){return finish(false)}
   map.on('error',e=>{if(!got&&(!e.sourceId||e.sourceId==='omt'))finish(false)});
   map.on('data',e=>{if(e.sourceId==='omt'&&e.tile){got=true;finish(true)}});
 });}
@@ -2155,7 +2159,7 @@ function adapterReal(map){
     update(){countFinds();pins.forEach(p=>p.remove());pins=spots.filter(visible).map(s=>{const w=pinEl(s,36,'big');w.firstChild.classList.toggle('out',s.dist>radius);const mk=new maplibregl.Marker({element:w,anchor:'bottom'}).setLngLat([s.lng,s.lat]).addTo(map);mk._s=s;return mk});
       showFinds();api.moveUser();m2Queue();const src=map.getSource('radius');if(src)src.setData(circlePoly(U.lat,U.lng,radius))},
     moveUser(instant){ringM.setLngLat([U.lng,U.lat]);meM.setLngLat([U.lng,U.lat]);m6Moved();if(follow){if(instant)map.jumpTo(Object.assign({center:[U.lng,U.lat],padding:pad()},m6B()));else map.easeTo(Object.assign({center:[U.lng,U.lat],padding:pad(),duration:600},m6B()))}},
-    recenter(){follow=true;map.easeTo({center:[U.lng,U.lat],zoom:Math.max(map.getZoom(),16.8),pitch:48,bearing:m6Up&&m6Shown!=null?m6Shown:0,padding:pad(),duration:900});setTimeout(m6Btn,20)},
+    recenter(){follow=true;map.easeTo({center:[U.lng,U.lat],zoom:Math.max(map.getZoom(),16),pitch:0,bearing:m6Up&&m6Shown!=null?m6Shown:0,padding:pad(),duration:900});setTimeout(m6Btn,20)},
     fitRadius(){const c=circlePoly(U.lat,U.lng,radius).geometry.coordinates[0];let w=180,s=90,e=-180,n=-90;c.forEach(([x,y])=>{w=Math.min(w,x);e=Math.max(e,x);s=Math.min(s,y);n=Math.max(n,y)});
       follow=false;map.fitBounds([[w,s],[e,n]],{padding:pad(),pitch:map.getPitch()>10?60:0,bearing:map.getBearing(),duration:1000})},
     zoom(f){const o={zoom:map.getZoom()+(f>1?1:-1),duration:400};if(follow){o.center=[U.lng,U.lat];o.padding=pad()}map.easeTo(o)},
@@ -2361,56 +2365,56 @@ document.addEventListener('keydown',e=>{if($('#intro').hidden)return;if(e.key===
 var M2T=(document.documentElement.dataset.theme==='dark')?'dark':'light';
 var m2Cat='all',m2Sel=null,m2Raf=0;
 const M4W={minor:[12,.3,15,.9,18,3.5],mid:[9,.4,13,1,16,2.4,18,6],primary:[7,.5,12,1.2,16,3,18,8],motorway:[6,.7,10,1.3,14,2.6,18,10]};
-/* Night city (after Snap Map): the map is a quiet backdrop so spots and people stand out.
-   Low, dark buildings with a lavender edge, faint roads, murky parks. Day is the same idea in pale tones. */
-const M5H=['interpolate',['linear'],['zoom'],13.5,0,15,['*',.42,['coalesce',['get','render_height'],5]]];
-const M5B=['interpolate',['linear'],['zoom'],13.5,0,15,['*',.42,['coalesce',['get','render_min_height'],0]]];
+/* Clean and flat (after the Districts map): pale land, soft green parks, blue water, white roads with a hairline edge,
+   building footprints instead of blocks, no 3D terrain. Dark is the same map in the app's navy. */
+const FLATB={'fill-extrusion-height':0,'fill-extrusion-base':0};
 const THEMES={
- light:{rad:'#6B3A9E',casing:null,meta:'#FFFFFF',edge:{color:'#A9AECB',opacity:.75},
-  sky:{'sky-color':'#C9D3E3','horizon-color':'#EEF1F5','fog-color':'#E4E8EE','sky-horizon-blend':.8,'horizon-fog-blend':.7,'fog-ground-blend':.6,'atmosphere-blend':0},
-  light:{anchor:'map',color:'#FFFFFF',intensity:.3,position:[1.3,200,40]},
+ light:{rad:'#6B3A9E',casing:'#E0E0DB',meta:'#FFFFFF',flat:true,edge:{color:'#DCDCD6',opacity:.9},
+  sky:{'sky-color':'#E9EEF4','horizon-color':'#F4F4F2','fog-color':'#F4F4F2','sky-horizon-blend':.5,'horizon-fog-blend':.5,'fog-ground-blend':.9,'atmosphere-blend':0},
+  light:{anchor:'viewport',color:'#FFFFFF',intensity:.15,position:[1.15,210,30]},
   layers:{
-   bg:{paint:{'background-color':'#E4E7EC'}},
-   landuse:{paint:{'fill-color':['match',['get','class'],['residential','suburb','neighbourhood'],'#E2E5EA',['commercial','retail','industrial'],'#DFE2E9','#E4E7EC']}},
-   landcover:{paint:{'fill-color':['match',['get','class'],'sand','#E6E3DC','wood','#D3E0D4','#D8E3D6'],'fill-opacity':.8}},
-   park:{paint:{'fill-color':'#D2E2D3','fill-opacity':.9}},
+   bg:{paint:{'background-color':'#F4F4F2'}},
+   landuse:{paint:{'fill-color':['match',['get','class'],['residential','suburb','neighbourhood'],'#F4F4F2',['commercial','retail','industrial'],'#F1F1EE','#F3F3F0']}},
+   landcover:{paint:{'fill-color':['match',['get','class'],'sand','#F1EEE6','wood','#DCEAD3','#E2EDD9'],'fill-opacity':.9}},
+   park:{paint:{'fill-color':'#DDEBD4','fill-opacity':1}},
    'park-edge':{paint:{'line-opacity':0}},
-   hill:{paint:{'hillshade-shadow-color':'#8A93A8','hillshade-highlight-color':'#FFFFFF','hillshade-accent-color':'#B5BCCB','hillshade-exaggeration':.45}},
-   water:{paint:{'fill-color':'#B8CCE4'}},
-   waterway:{paint:{'line-color':'#A9BFDB'}},
-   path:{paint:{'line-color':'#C9CEDA'}},
-   minor:{paint:{'line-color':'#F7F8FA','line-width':M4W.minor}},
+   hill:{paint:{'hillshade-shadow-color':'#B9BEB4','hillshade-highlight-color':'#FFFFFF','hillshade-accent-color':'#D8DBD3','hillshade-exaggeration':.22}},
+   water:{paint:{'fill-color':'#AAD3EB'}},
+   waterway:{paint:{'line-color':'#AAD3EB'}},
+   path:{paint:{'line-color':'#E1E1DC'}},
+   minor:{paint:{'line-color':'#FFFFFF','line-width':M4W.minor}},
    mid:{paint:{'line-color':'#FFFFFF','line-width':M4W.mid}},
    primary:{paint:{'line-color':'#FFFFFF','line-width':M4W.primary}},
    'mw-glow':{paint:{'line-opacity':0}},
    motorway:{paint:{'line-color':'#FFFFFF','line-width':M4W.motorway}},
-   bld:{paint:{'fill-extrusion-color':['interpolate',['linear'],['coalesce',['get','render_height'],5],0,'#D6DAE5',40,'#DDE0EA',150,'#E4E7F0'],'fill-extrusion-opacity':.95,'fill-extrusion-height':M5H,'fill-extrusion-base':M5B}},
-   peaks:{paint:{'text-color':'#2E3550','text-halo-color':'#F3F5F8'}},
-   roadname:{paint:{'text-color':'#7C849B','text-halo-color':'#F3F5F8'},layout:{'text-letter-spacing':.02}},
-   place:{paint:{'text-color':'#232A42','text-opacity':.85,'text-halo-color':'#EEF1F5'},layout:{'text-field':['coalesce',['get','name_en'],['get','name']],'text-letter-spacing':.01}}}},
- dark:{rad:'#B184E6',casing:null,meta:'#121826',edge:{color:'#C3C6EC',opacity:.7},
-  sky:{'sky-color':'#0C1120','horizon-color':'#26304A','fog-color':'#1C2538','sky-horizon-blend':.8,'horizon-fog-blend':.7,'fog-ground-blend':.6,'atmosphere-blend':0},
-  light:{anchor:'map',color:'#B9C2E6',intensity:.18,position:[1.3,200,40]},
+   bld:{paint:Object.assign({'fill-extrusion-color':'#EAEAE6','fill-extrusion-opacity':1},FLATB)},
+   peaks:{paint:{'text-color':'#5F7559','text-halo-color':'#F4F4F2'}},
+   roadname:{paint:{'text-color':'#8B8F96','text-halo-color':'#FFFFFF'},layout:{'text-letter-spacing':.02}},
+   place:{paint:{'text-color':'#4A4E56','text-opacity':.9,'text-halo-color':'#F4F4F2'},layout:{'text-field':['coalesce',['get','name_en'],['get','name']],'text-letter-spacing':.01}}}},
+ dark:{rad:'#B184E6',casing:null,meta:'#121826',flat:true,edge:{color:'#2A3550',opacity:.85},
+  sky:{'sky-color':'#121826','horizon-color':'#1D2638','fog-color':'#1D2638','sky-horizon-blend':.5,'horizon-fog-blend':.5,'fog-ground-blend':.9,'atmosphere-blend':0},
+  light:{anchor:'viewport',color:'#FFFFFF',intensity:.15,position:[1.15,210,30]},
   layers:{
    bg:{paint:{'background-color':'#1D2638'}},
-   landuse:{paint:{'fill-color':['match',['get','class'],['residential','suburb','neighbourhood'],'#1E2739',['commercial','retail','industrial'],'#20293C','#1D2638']}},
-   landcover:{paint:{'fill-color':['match',['get','class'],'sand','#232A37','wood','#212E35','#222E36'],'fill-opacity':.85}},
-   park:{paint:{'fill-color':'#232F37','fill-opacity':.95}},
+   landuse:{paint:{'fill-color':['match',['get','class'],['residential','suburb','neighbourhood'],'#1D2638',['commercial','retail','industrial'],'#1F293B','#1D2638']}},
+   landcover:{paint:{'fill-color':['match',['get','class'],'sand','#212A38','wood','#22303A','#22303A'],'fill-opacity':.9}},
+   park:{paint:{'fill-color':'#23303A','fill-opacity':1}},
    'park-edge':{paint:{'line-opacity':0}},
-   hill:{paint:{'hillshade-shadow-color':'#0B1019','hillshade-highlight-color':'#3B4763','hillshade-accent-color':'#252F47','hillshade-exaggeration':.5}},
-   water:{paint:{'fill-color':'#16203A'}},
-   waterway:{paint:{'line-color':'#1C2744'}},
-   path:{paint:{'line-color':'#2A3550'}},
-   minor:{paint:{'line-color':'#232D44','line-width':M4W.minor}},
+   hill:{paint:{'hillshade-shadow-color':'#131A28','hillshade-highlight-color':'#2C3854','hillshade-accent-color':'#1A2232','hillshade-exaggeration':.25}},
+   water:{paint:{'fill-color':'#152039'}},
+   waterway:{paint:{'line-color':'#1A2747'}},
+   path:{paint:{'line-color':'#26314A'}},
+   minor:{paint:{'line-color':'#27324A','line-width':M4W.minor}},
    mid:{paint:{'line-color':'#2D3955','line-width':M4W.mid}},
-   primary:{paint:{'line-color':'#35425F','line-width':M4W.primary}},
+   primary:{paint:{'line-color':'#34415F','line-width':M4W.primary}},
    'mw-glow':{paint:{'line-opacity':0}},
-   motorway:{paint:{'line-color':'#3E4B6A','line-width':M4W.motorway}},
-   bld:{paint:{'fill-extrusion-color':['interpolate',['linear'],['coalesce',['get','render_height'],5],0,'#232B43',40,'#262E48',150,'#2B344F'],'fill-extrusion-opacity':.98,'fill-extrusion-height':M5H,'fill-extrusion-base':M5B}},
-   peaks:{paint:{'text-color':'#DDE1EE','text-halo-color':'#141B2B'}},
-   roadname:{paint:{'text-color':'#66718F','text-halo-color':'#1A2234'},layout:{'text-letter-spacing':.02}},
-   place:{paint:{'text-color':'#E4E7F2','text-opacity':.85,'text-halo-color':'#141B2B'},layout:{'text-field':['coalesce',['get','name_en'],['get','name']],'text-letter-spacing':.01}}}}};
+   motorway:{paint:{'line-color':'#3D4A6C','line-width':M4W.motorway}},
+   bld:{paint:Object.assign({'fill-extrusion-color':'#212B3F','fill-extrusion-opacity':1},FLATB)},
+   peaks:{paint:{'text-color':'#8FA79A','text-halo-color':'#1D2638'}},
+   roadname:{paint:{'text-color':'#6F7891','text-halo-color':'#1D2638'},layout:{'text-letter-spacing':.02}},
+   place:{paint:{'text-color':'#D6DAE8','text-opacity':.85,'text-halo-color':'#1D2638'},layout:{'text-field':['coalesce',['get','name_en'],['get','name']],'text-letter-spacing':.01}}}}};
 function themedStyle(th){const P=THEMES[th]||THEMES.light,st=JSON.parse(JSON.stringify(STYLE));st.sky=P.sky;st.light=P.light;
+  if(P.flat)delete st.terrain;   // flat map: no 3D ground, so nothing can rise into the camera
   const at=st.layers.findIndex(l=>l.id==='minor');
   const cas=[['minor-case',['minor','service'],[12,.9,15,3,18,11]],['mid-case',['tertiary','secondary'],[9,1.1,13,2.6,16,7,18,17]],['primary-case',['primary','trunk'],[7,1.2,12,2.8,16,9,18,21]],['mw-case',['motorway'],[6,1.6,10,2.6,14,6,18,23]]]
    .map(([id,c,w])=>({id,type:'line',source:'omt','source-layer':'transportation',minzoom:id==='minor-case'?13:0,filter:cls(c),layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':P.casing,'line-width':lineW(w)}}));
