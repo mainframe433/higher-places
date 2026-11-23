@@ -1321,6 +1321,7 @@ html.m2 #c9pick .chip.on{background:var(--accent);border-color:var(--accent);col
 
 /* circle spots on the map get a thicker ring in the accent color */
 html.m2 .mkc .bubble,html.m2 body.on-map .mkc .bubble{box-shadow:0 0 0 3px var(--accent),0 8px 16px -6px rgba(0,0,0,.55)}
+html.m2 .c9post .hd .ini.c9you{background:var(--accent);color:var(--accent-ink)}
 </style>
 </head>
 <body>
@@ -1435,6 +1436,11 @@ html.m2 .mkc .bubble,html.m2 body.on-map .mkc .bubble{box-shadow:0 0 0 3px var(-
     <div class="sect"><div><h3>Your circles</h3><p>Private groups for sharing spots with your people.</p></div></div>
     <div id="c9box"></div>
     <div class="sect">
+      <div><span class="eyebrow"><svg width="12" height="12"><use href="#i-people"/></svg>The community</span><h3>Latest posts</h3><p>New spots from your circles and the community.</p></div>
+    </div>
+    <div class="members" id="members" style="margin-top:12px"></div>
+    <div id="feed"></div>
+    <div class="sect">
       <div><span class="eyebrow"><svg width="12" height="12"><use href="#i-flame"/></svg>Must-see Arizona</span><h3>Sparking up</h3><p>Iconic places to visit around the state.</p></div>
       <button class="more" data-go="all">See all<svg width="12" height="12"><use href="#i-arrow"/></svg></button>
     </div>
@@ -1455,11 +1461,6 @@ html.m2 .mkc .bubble,html.m2 body.on-map .mkc .bubble{box-shadow:0 0 0 3px var(-
       <div><span class="eyebrow"><svg width="12" height="12"><use href="#i-camera"/></svg>Just dropped</span><h3>Fresh finds</h3><p>The newest spots members have dropped.</p></div>
     </div>
     <div class="fgrid" id="freshfinds" style="padding:16px 18px 0"></div>
-    <div class="sect">
-      <div><span class="eyebrow"><svg width="12" height="12"><use href="#i-people"/></svg>The community</span><h3>Member posts</h3><p>Spots and posts from members.</p></div>
-    </div>
-    <div class="members" id="members" style="margin-top:12px"></div>
-    <div id="feed"></div>
   </section>
 
   <!-- SETTINGS -->
@@ -2160,11 +2161,11 @@ function renderSpot(id){m3Spot(id)}
 function renderCircle(){c9Render();
   $('#members').innerHTML=members.map(m=>`<div><span class="ini">${m[0]}</span>${m[1]}</div>`).join('');$('#members').hidden=!members.length;
   posts=posts.filter(p=>byId(p.s));
-  $('#feed').innerHTML=posts.length?'':`<div class="empty" style="margin:8px 16px 0">Nothing posted yet.<br>Drop a spot with the camera and it shows up here for everyone.</div>`;
+  const c9f=c9Feed();$('#feed').innerHTML=posts.length||c9f.length?'':`<div class="empty" style="margin:8px 16px 0">Nothing posted yet.<br>Drop a spot with the camera and it shows up here for everyone.</div>`;
   if(posts.length)$('#feed').innerHTML=posts.map((p,i)=>{const s=byId(p.s),on=liked.has(i);return `<article class="post">
    <div class="hd"><span class="ini">${p.i}</span><div><b>${p.n}</b><small>${p.t}</small></div></div><p>${esc(p.p)}</p>
    <button class="ref" data-spot="${s.id}"><img src="${s.img}" alt=""><div><b>${esc(s.name)}</b><div class="loc" style="font-size:10px;color:var(--muted)">${esc(s.area)} · ${fmt(s.dist)}</div></div></button>
-   <div class="ft"><button data-like="${i}" class="${on?'on':''}" aria-pressed="${on}"><svg width="14" height="14"><use href="#i-heart"/></svg>${p.l+(on?1:0)}</button><button data-toast="Comments are coming soon"><svg width="14" height="14"><use href="#i-chat"/></svg>Reply</button></div></article>`}).join('')}
+   <div class="ft"><button data-like="${i}" class="${on?'on':''}" aria-pressed="${on}"><svg width="14" height="14"><use href="#i-heart"/></svg>${p.l+(on?1:0)}</button><button data-toast="Comments are coming soon"><svg width="14" height="14"><use href="#i-chat"/></svg>Reply</button></div></article>`}).join('');$('#feed').insertAdjacentHTML('beforeend',c9f.join(''))}
 
 /* ================= map-first world ================= */
 current='map';
@@ -2922,6 +2923,13 @@ function c9Render(){const box=$('#c9box');if(!box||typeof C9==='undefined')retur
       :`<p class="c9empty">No spots in ${esc(c.name)} yet. Tap the camera, choose <b>Circle</b>, and share one.</p>`}
     <div class="c9ft"><span>You’re ${esc(C9.myName||'in this circle')} <button data-c9="rename">Change</button></span><button class="c9out" data-c9="leave" data-id="${c.id}" data-own="${own?1:''}">${own?'Delete circle':'Leave circle'}</button></div>
   </div><p class="c9note">Your circles are kept on this device.</p>`}
+
+/* posts: what people shared in your circles */
+function c9Ago(t){const m=Math.floor((Date.now()-t)/60000);if(m<1)return'Just now';if(m<60)return m+' min ago';const h=Math.floor(m/60);if(h<24)return h+' hr ago';if(h<48)return'Yesterday';return new Date(t).toLocaleDateString('en-US',{month:'short',day:'numeric'})}
+function c9Feed(){if(typeof C9==='undefined')return[];
+  return spots.filter(s=>s.circle&&c9Circle(s.circle)).sort((a,b)=>b.created-a.created).slice(0,20).map(s=>{const c=c9Circle(s.circle);
+    return `<article class="post c9post"><div class="hd"><span class="ini${s.mine?' c9you':''}">${esc(c9Ini(s.mine?C9.myName||'You':s.by))}</span><div><b>${esc(s.mine?'You':s.by)}</b><small>${c9Ago(s.created)} · ${esc(c.name)}</small></div></div><p>${s.desc?esc(s.desc):'Shared a new spot.'}</p>
+     <button class="ref" data-spot="${s.id}"><img src="${s.img}" alt=""><div><b>${esc(s.name)}</b><div class="loc" style="font-size:10px;color:var(--muted)">${esc(s.area)} · ${fmt(s.dist)}</div></div></button></article>`})}
 
 /* the drop form: pick which circle gets the spot */
 function c9Pick(){const el=$('#c9pick');if(!el||typeof C9==='undefined')return;const on=typeof priv!=='undefined'&&priv==='circle';el.hidden=!on;if(!on)return;
