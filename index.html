@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <meta name="theme-color" content="#FAFBF8">
-<script>try{var q=new URLSearchParams(location.search).get("theme");if(q==="light"||q==="dark")localStorage.setItem("hp_m2_theme",q);var t=localStorage.getItem("hp_m2_theme");if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t;document.querySelector("meta[name=theme-color]").content=t==="dark"?"#121826":"#FFFFFF"}catch(e){}</script>
+<script>try{var t=new URLSearchParams(location.search).get("theme");if(t!=="dark")t="light";document.documentElement.dataset.theme=t;document.querySelector("meta[name=theme-color]").content=t==="dark"?"#121826":"#FFFFFF"}catch(e){}</script>
 <title>Higher Places</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
